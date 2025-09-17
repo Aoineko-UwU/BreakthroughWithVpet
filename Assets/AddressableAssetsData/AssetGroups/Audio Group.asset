@@ -1,0 +1,290 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: Audio Group
+  m_EditorClassIdentifier: 
+  m_GroupName: Audio Group
+  m_Data:
+    m_SerializedData: []
+  m_GUID: 83fe8c63215f738469ebf205baed899c
+  m_SerializeEntries:
+  - m_GUID: 00d24b7000434a547a99d946272288a2
+    m_Address: OnePunchState
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 00fcdb3521d094245ac824da26b5d622
+    m_Address: eating
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 014c0bb6db4e6e64d8ce7adbc6d8f41e
+    m_Address: fallen
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 07407903b3bf2df4eb8afd1253f7fff5
+    m_Address: intoWater
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0bcfa4a243ae43348a7b31c426f24463
+    m_Address: Enemy_bear_walk
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0f9c028b82f621a409d7da8f245935e9
+    m_Address: cat02
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1078a05afe3970b4694ffe605e6110e1
+    m_Address: Enemy_frog_jump
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 169ca349823dab543b166c516fa5a365
+    m_Address: slot_cancel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 1b4ca06abb8d4be4ea26773fbd5001ef
+    m_Address: startSleep
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3093dc39f326d424c94ddfd6c0b45ada
+    m_Address: camera
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 33895ec7bfbbbb44aa3b1fc01b6a96f0
+    m_Address: slot_select
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34703d9c51bd757488b654c69196249c
+    m_Address: startFall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 34a2815ffdff2934dbf994da5a47a801
+    m_Address: button_click
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 369585f5061852a4589bdc3e62d3cc7d
+    m_Address: LoseMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3814593b77ba5ac45a079edd7f5fcf34
+    m_Address: place_forbid
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 3fc38842b4e880a4ba3b986016691b0a
+    m_Address: button_hover
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 417137575b315834d9d4963f062bbd4e
+    m_Address: spring_active
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 498e2f8291708ac4a916bdd2e2f481fa
+    m_Address: bomb_explode
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4b995580396ffd841afac4d6130df051
+    m_Address: Assets/Audio/Vpet/climb/ladder5.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 51bf84aaa4c9f1943a660ef889da963a
+    m_Address: Assets/Audio/Vpet/climb/ladder1.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 59337dca5d4b9cf42844bf89151f023a
+    m_Address: teleport
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5cf22fe6221b4844982e0f79e9d9c397
+    m_Address: Enemy_getHurt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6097c4a0d05729e45ab308b4a33f0536
+    m_Address: Enemy_die
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6924fa13a5f15b845aa543099c11f7e6
+    m_Address: die
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 69f2fdb33b8c4054d9c62bd470798751
+    m_Address: WinMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6a5074d07fb7cc94aad730c3cfecb16c
+    m_Address: throw
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6dbe3ecd850572740b15cd5dd5e92fdf
+    m_Address: Enemy_bat_wingbeat
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7157fdfdd2b2f0d45872742894354a7d
+    m_Address: Assets/Audio/Vpet/climb/ladder2.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 786c23af197b6d2499fa169e1916974c
+    m_Address: sleeping
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 78928ce7573213443b46406b7db5d0df
+    m_Address: win
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b0a03e75fbcc9047a7b5c80e95f0b20
+    m_Address: DanceMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7b34175be1a81c544ba2a509d340bfef
+    m_Address: bomb_fuse
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 7ca6cae508e507046b0ea5c59ccb4f0a
+    m_Address: getHurt
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 8063865547888ea429e211fff6a793c5
+    m_Address: log_break
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 83f0f4726d1c97d47b6a5a1ac3cf6278
+    m_Address: setRespawnPoint
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 84c45cfb435d03b44a1b5fa5eb20edd9
+    m_Address: outWater
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 92653a106fd306c48b7f94f5d90878d4
+    m_Address: fall
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9eeac9469d710ac4f8e24551023113df
+    m_Address: pickItem
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a9c19c0dc9cd9ed468c84f9a7dc73339
+    m_Address: Assets/Audio/Vpet/climb/ladder4.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bec44a458f7501a41b381eea87ed920a
+    m_Address: OnePunch
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: bf939b7bf7a3196499e55feacbc12bdc
+    m_Address: place_confirm
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ca199bf3cc3404442becdc5716b77cb9
+    m_Address: Assets/Audio/Vpet/climb/ladder3.wav
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d0cef372da5890742bcbb01b31783469
+    m_Address: getBuff
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d142bcf06f1664349b2ed77dca1ac0e3
+    m_Address: Gacha_item
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d293187dbba6d1643822b20abe033a75
+    m_Address: walk
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: d4f06ab609dd27f4881b7019a76ce03b
+    m_Address: cat01
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: daa76b5a3479a554297f9f003bb8daa9
+    m_Address: stoneBreak
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dbd41b69ec587f547b4001809b20e4a7
+    m_Address: swim
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e51afa6d14d65754a99f8f3b37c00ef7
+    m_Address: brick_break
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f105d5d7b91393441b8dc3cbe822b967
+    m_Address: GameMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f3b4162dd94df5f498b05cfff841355f
+    m_Address: Enemy_frog_idle
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f6e1e0032bebd5144b9098cc376e589b
+    m_Address: MenuMusic
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: fec0bb7290a2a2f43939e7f1964f1f88
+    m_Address: Gacha_bad
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: 44dfc1d484b7ed947ad4d06a36207fd9, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: ab864a50228ba67489aff81cc8c73864, type: 2}
+    - {fileID: 11400000, guid: 96942c4ebb5d48144b5bdff7fbb0b01a, type: 2}

@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: caac808f5a7a37e47924d9de5b6badfb, type: 3}
+  m_Name: Food_Redtea
+  m_EditorClassIdentifier: 
+  itemID: 1
+  icon: {fileID: 21300000, guid: 0918d57f6d3d35c48aadc88bdd786f63, type: 3}
+  prefab: {fileID: 4408189325617070557, guid: 95538895fdfb86544884097e0d6721a2, type: 3}
+  entitySprite: {fileID: 21300000, guid: d9db1763b9e69ef45ae6e8123f8f7454, type: 3}
+  entityScale: 0.7
