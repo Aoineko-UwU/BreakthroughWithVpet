@@ -1,4 +1,14 @@
--本作品为《虚拟桌宠模拟器》二周年同人游戏，禁止无端转载与商用
+-本作品为Steam《虚拟桌宠模拟器》二周年同人游戏，禁止无端转载与商用
+
+-脚本核心功能模块(Assets-Scrpits下)：
+  ·/GameDifficultySystem.cs          -  游戏难度单例脚本
+  ·/Menu/MenuManager.cs              -  游戏主菜单脚本
+  ·/Gaming/Vpet/VpetAction.cs        -  角色行为主脚本
+  ·/Gaming/Vpet/VpetHealthSystem.cs  -  角色生命系统脚本
+  ·/Gaming/UI&Extra Function/CameraScaleBar.cs  -  摄像机脚本(包含摄像机动画)
+  ·/Gaming/InventorySystem/InventoryManager.cs  -  物品栏脚本
+  ·/Gaming/InventorySystem/DragController.cs    -  物品拖拽控制器脚本
+
 
 -下载地址：
 Windows64位：https://aoineko.lanzoup.com/iHKdZ32tjb4j
