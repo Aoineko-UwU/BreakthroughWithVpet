@@ -9,8 +9,8 @@
 - Windows32位：<https://aoineko.lanzoup.com/iWXM832tjgza>
 
 ### 其他内容：
-- [宣传视频地址](https://www.bilibili.com/video/BV1Whbrz5ETK/?spm_id_from=333.1387.list.card_archive.click&vd_source=b88999cf93553d5e453e91b686103c04)
-- [开发者B站个人链接](https://space.bilibili.com/200696277?spm_id_from=333.788.0.0)
+- 宣传视频地址：[视频链接](https://www.bilibili.com/video/BV1Whbrz5ETK/?spm_id_from=333.1387.list.card_archive.click&vd_source=b88999cf93553d5e453e91b686103c04)
+- 开发者B站个人链接：[@葵猫猫neko](https://space.bilibili.com/200696277?spm_id_from=333.788.0.0)
 - 开发者邮箱：2838116695@qq.com
 
 ## 部分脚本功能介绍(Assets/Scrpits路径下)：
