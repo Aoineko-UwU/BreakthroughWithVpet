@@ -4,25 +4,30 @@ using UnityEngine;
 using UnityEngine.UI;
 using Cinemachine;
 using DG.Tweening;
+/// <summary>
+/// ç®¡ç†é•œå¤´ç¼©æ”¾ Slider ä»¥åŠå¼€åœºã€æ­»äº¡å’Œèƒœåˆ©é˜¶æ®µçš„é•œå¤´åŠ¨ç”»ã€‚
+/// </summary>
 public class CameraScaleBar : MonoBehaviour
 {
-    [SerializeField] private CinemachineVirtualCamera virtualCamera; //°ó¶¨ĞéÄâÉãÏñ»ú 
-    [SerializeField] private Transform vpetCameraTrackPoint;         //VpetÉãÏñ»ú¸ú×Ùµã°ó¶¨ 
+    [Tooltip("ç»‘å®šè™šæ‹Ÿæ‘„åƒæœº")]
+    [SerializeField] private CinemachineVirtualCamera virtualCamera; //ç»‘å®šè™šæ‹Ÿæ‘„åƒæœº
+    [Tooltip("Vpetæ‘„åƒæœºè·Ÿè¸ªç‚¹ç»‘å®š")]
+    [SerializeField] private Transform vpetCameraTrackPoint;         //Vpetæ‘„åƒæœºè·Ÿè¸ªç‚¹ç»‘å®š
     private Slider cameraScaleSlider;
     private float _newScale;
-    private float scaleLerp = 0.03f;    //Ëõ·Å²åÖµ(Ô½Ğ¡Ô½Æ½»¬) 
-    private float keyScaleSpeed = 6f;   //°´ÏÂ¼üÅÌÊ±µÄËõ·ÅËÙ¶È(f/s) 
+    private float scaleLerp = 0.03f;    //ç¼©æ”¾æ’å€¼(è¶Šå°è¶Šå¹³æ»‘)
+    private float keyScaleSpeed = 6f;   //æŒ‰ä¸‹é”®ç›˜æ—¶çš„ç¼©æ”¾é€Ÿåº¦(f/s)
 
     private void Awake()
     {
-        cameraScaleSlider = GetComponent<Slider>(); //»ñÈ¡»¬¶¯Ìõ×é¼ş
-        //³õÊ¼»¯Öµ 
+        cameraScaleSlider = GetComponent<Slider>(); //è·å–æ»‘åŠ¨æ¡ç»„ä»¶
+        //åˆå§‹åŒ–å€¼
         _newScale = cameraScaleSlider.value; virtualCamera.m_Lens.OrthographicSize = cameraScaleSlider.value;
     }
     private void Update()
     {
-        float differenceValue = Mathf.Abs(virtualCamera.m_Lens.OrthographicSize - _newScale); //»ñÈ¡ĞÂ¾ÉËõ·ÅÖµ²îÖµ 
-        //²îÖµÈô´óÓÚÄ³ãĞÖµÔò½øĞĞÆ½»¬¹ı¶É                                                                                       
+        float differenceValue = Mathf.Abs(virtualCamera.m_Lens.OrthographicSize - _newScale); //è·å–æ–°æ—§ç¼©æ”¾å€¼å·®å€¼
+        //å·®å€¼è‹¥å¤§äºæŸé˜ˆå€¼åˆ™è¿›è¡Œå¹³æ»‘è¿‡æ¸¡
         if (differenceValue > 0.05f)
         {
             virtualCamera.m_Lens.OrthographicSize = Mathf.Lerp(virtualCamera.m_Lens.OrthographicSize, _newScale, scaleLerp);
@@ -30,29 +35,29 @@ public class CameraScaleBar : MonoBehaviour
 
         KeyControl();
     }
-    //¸ü¸ÄÉãÏñ»úËõ·Å(»¬¶¯ÌõÍâ²¿ÒıÓÃ) 
+    /// <summary>æ ¹æ® Slider å½“å‰å€¼è°ƒæ•´é•œå¤´æ­£äº¤å°ºå¯¸ã€‚</summary>
     public void ChangeCameraScale()
     {
         if (!GameManager.Instance.isAllowPlayerControl) return;
-        _newScale = (cameraScaleSlider.minValue + cameraScaleSlider.maxValue) - cameraScaleSlider.value; //»¬ÌõÖµÔ½´ó£¬Ëõ·ÅÖµÔ½Ğ¡ 
+        _newScale = (cameraScaleSlider.minValue + cameraScaleSlider.maxValue) - cameraScaleSlider.value; //æ»‘æ¡å€¼è¶Šå¤§ï¼Œç¼©æ”¾å€¼è¶Šå°
     }
 
     private void KeyControl()
     {
         if (!GameManager.Instance.isAllowPlayerControl) return;
-        //°´ÏÂAËõĞ¡
+        //æŒ‰ä¸‹Aç¼©å°
         if (Input.GetKey(KeyCode.A))
         {
             cameraScaleSlider.value -= keyScaleSpeed * Time.deltaTime; ChangeCameraScale();
         }
-        //°´ÏÂD·Å´ó 
+        //æŒ‰ä¸‹Dæ”¾å¤§
         if (Input.GetKey(KeyCode.D))
         {
             cameraScaleSlider.value += keyScaleSpeed * Time.deltaTime; ChangeCameraScale();
         }
     }
 
-    //¿ªÊ¼¾µÍ·Ëõ·Å 
+    /// <summary>æ’­æ”¾æ¸¸æˆå¼€åœºçš„é•œå¤´ç¼©æ”¾åŠ¨ç”»ã€‚</summary>
     public void StartCameraScale()
     {
         StartCoroutine(CameraScaleAnimationStart());
@@ -67,7 +72,7 @@ public class CameraScaleBar : MonoBehaviour
         scaleLerp = 0.03f; _newScale = 4f;
     }
 
-    //ËÀÍö¾µÍ·Ëõ·Å 
+    /// <summary>æ’­æ”¾æ¡Œå® æ­»äº¡é˜¶æ®µçš„é•œå¤´ç‰¹å†™ã€‚</summary>
     public void DieCameraScale()
     {
         StartCoroutine(CameraScaleAnimationDie());
@@ -80,7 +85,7 @@ public class CameraScaleBar : MonoBehaviour
         scaleLerp = 0.01f; _newScale = 2f;
     }
 
-    //Ê¤Àû¾µÍ·Ëõ·Å 
+    /// <summary>æ’­æ”¾æ¡Œå® èƒœåˆ©é˜¶æ®µçš„é•œå¤´ç‰¹å†™ã€‚</summary>
     public void WinCameraScale()
     {
         scaleLerp = 0.01f;

@@ -2,45 +2,49 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æ§åˆ¶è™è æ•Œäººçš„å·¡é€»ã€è¿½å‡»ã€æœå‘å’Œç¢°æ’æ”»å‡»è¡Œä¸ºã€‚
+/// </summary>
 public class Enemy02_Bat : MonoBehaviour
 {
     private Rigidbody2D rb;
 
-    [SerializeField] private EnemyHealthSystem healthSystem;   //ÉúÃüÏµÍ³½Å±¾
-    private Vector3 pointA;  //Ñ²Âßµã1
-    private Vector3 pointB;  //Ñ²Âßµã2
-    private float pointRange = 5f;      //Ñ²ÂßµãÉèÖÃ·¶Î§
+    [Tooltip("ç”Ÿå‘½ç³»ç»Ÿè„šæœ¬")]
+    [SerializeField] private EnemyHealthSystem healthSystem;   //ç”Ÿå‘½ç³»ç»Ÿè„šæœ¬
+    private Vector3 pointA;  //å·¡é€»ç‚¹1
+    private Vector3 pointB;  //å·¡é€»ç‚¹2
+    private float pointRange = 5f;      //å·¡é€»ç‚¹è®¾ç½®èŒƒå›´
 
-    private float faceDir;              //Î¨Ò»ÃæÏòÏòÁ¿Öµ
+    private float faceDir;              //å”¯ä¸€é¢å‘å‘é‡å€¼
 
-    private float moveSpeed = 160f;     //ÒÆ¶¯ËÙ¶È
-    private float currentSpeed;         //µ±Ç°ÒÆ¶¯ËÙ¶È
+    private float moveSpeed = 160f;     //ç§»åŠ¨é€Ÿåº¦
+    private float currentSpeed;         //å½“å‰ç§»åŠ¨é€Ÿåº¦
 
-    private GameObject vpet;            //×À³è¶ÔÏó
+    private GameObject vpet;            //æ¡Œå® å¯¹è±¡
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
 
-        vpet = GameObject.FindGameObjectWithTag("Vpet");  //»ñÈ¡×À³èµÄÓÎÏ·¶ÔÏó
+        vpet = GameObject.FindGameObjectWithTag("Vpet");  //è·å–æ¡Œå® çš„æ¸¸æˆå¯¹è±¡
     }
 
     private void Start()
     {
         currentSpeed = moveSpeed;
         faceDir = transform.localScale.x;
-        pointA = new Vector3(transform.position.x - pointRange, transform.position.y); //ÉèÖÃPointA
-        pointB = new Vector3(transform.position.x + pointRange, transform.position.y); //ÉèÖÃPointB
+        pointA = new Vector3(transform.position.x - pointRange, transform.position.y); //è®¾ç½®PointA
+        pointB = new Vector3(transform.position.x + pointRange, transform.position.y); //è®¾ç½®PointB
 
-        InitValueBasedDifficulty();         //³õÊ¼»¯ÄÑ¶ÈÏà¹ØÊıÖµ
+        InitValueBasedDifficulty();         //åˆå§‹åŒ–éš¾åº¦ç›¸å…³æ•°å€¼
 
     }
 
-    private bool isAllowAudioPlay = true;   //ÊÇ·ñÔÊĞí²¥·ÅÒôÆµ
+    private bool isAllowAudioPlay = true;   //æ˜¯å¦å…è®¸æ’­æ”¾éŸ³é¢‘
 
     private void Update()
     {
-        //ÓëÍæ¼Ò¾àÀë³¬¹ı20fºó½ûÖ¹²¥·ÅÒôĞ§
+        //ä¸ç©å®¶è·ç¦»è¶…è¿‡20fåç¦æ­¢æ’­æ”¾éŸ³æ•ˆ
         isAllowAudioPlay = Vector2.Distance(vpet.transform.position, transform.position) > 20f ? false : true;
         audioTimer -= Time.deltaTime;
         Patrol();
@@ -52,25 +56,25 @@ public class Enemy02_Bat : MonoBehaviour
             rb.velocity = new Vector2(currentSpeed * Time.fixedDeltaTime, 0f);
     }
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä(¹¥»÷ÉËº¦|·ÉĞĞËÙ¶È)
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…(æ”»å‡»ä¼¤å®³|é£è¡Œé€Ÿåº¦)
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 attackDamage = 2f;
                 moveSpeed = 120f;
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 attackDamage = 3f;
                 moveSpeed = 160f;
                 break;
 
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 attackDamage = 4f;
                 moveSpeed = 200f;
@@ -83,10 +87,10 @@ public class Enemy02_Bat : MonoBehaviour
     private float audioTimer;
     private float audioCD = 0.9f;
 
-    //Ñ²Âß·½·¨(Update)
+    //å·¡é€»æ–¹æ³•(Update)
     private void Patrol()
     {
-        //Èô³¬³öÁËPointAµÄXÖá·¶Î§£¬ÒÆ¶¯·½Ïò¸ÄÎªÓÒ²à
+        //è‹¥è¶…å‡ºäº†PointAçš„Xè½´èŒƒå›´ï¼Œç§»åŠ¨æ–¹å‘æ”¹ä¸ºå³ä¾§
         if (transform.position.x < pointA.x)
         {
             currentSpeed = moveSpeed;
@@ -107,7 +111,7 @@ public class Enemy02_Bat : MonoBehaviour
     }
 
 
-    //·­×ª¾«ÁéÍ¼(ÄÚ²¿ÒıÓÃ)
+    //ç¿»è½¬ç²¾çµå›¾(å†…éƒ¨å¼•ç”¨)
     private void Flip()
     {
         if (currentSpeed > 0)
@@ -121,10 +125,10 @@ public class Enemy02_Bat : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        //¹¥»÷Íæ¼Ò
+        //æ”»å‡»ç©å®¶
         if (other.collider.CompareTag("Vpet") && !healthSystem.isDead)
         {
-            //¸ù¾İÏà¶ÔÎ»ÖÃ¼ÆËãÁ¦µÄ·½Ïò
+            //æ ¹æ®ç›¸å¯¹ä½ç½®è®¡ç®—åŠ›çš„æ–¹å‘
             Vector2 force = transform.position.x > vpet.transform.position.x ? Vector2.left : Vector2.right;
             other.gameObject.GetComponent<VpetHealthSystem>().VpetGethurt(attackDamage, force * 300f);
         }

@@ -2,28 +2,35 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// ç®¡ç†å¯æ”¾ç½®æ–¹å—çš„ç”Ÿå‘½å€¼ã€å—å‡»åé¦ˆã€ç ´åç‰¹æ•ˆå’Œæ‰è½é€»è¾‘ã€‚
+/// </summary>
 public class Item_Block : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer healthBar;  //ÑªÌõUI°ó¶¨
-    [SerializeField] private float health = 100;        //ÉúÃüÖµ
-    [SerializeField] private GameObject particlePrefab; //Á£×ÓÔ¤ÖÆÌå
-    [SerializeField] private int item_id;               //ÎïÆ·ID
+    [Tooltip("è¡€æ¡UIç»‘å®š")]
+    [SerializeField] private SpriteRenderer healthBar;  //è¡€æ¡UIç»‘å®š
+    [Tooltip("ç”Ÿå‘½å€¼")]
+    [SerializeField] private float health = 100;        //ç”Ÿå‘½å€¼
+    [Tooltip("ç²’å­é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject particlePrefab; //ç²’å­é¢„åˆ¶ä½“
+    [Tooltip("ç‰©å“ID")]
+    [SerializeField] private int item_id;               //ç‰©å“ID
 
-    private float currentHealth; //µ±Ç°ÉúÃüÖµ
-    private float oringinWidth;  //ÑªÌõ³õÊ¼¿í¶È
+    private float currentHealth; //å½“å‰ç”Ÿå‘½å€¼
+    private float oringinWidth;  //è¡€æ¡åˆå§‹å®½åº¦
 
-    private float hurtTimer;    //×ÔËğ¼ÆÊ±Æ÷
-    private float hurtCD = 1f;  //×ÔËğ¼ä¸ôÊ±³¤(s)
-    private int damage = 2;     //µ¥´Î×ÔËğÉËº¦
-    private bool isAllowTimerWork = true;   //ÊÇ·ñÔÊĞí¼ÆÊ±Æ÷¹¤×÷£¿
+    private float hurtTimer;    //è‡ªæŸè®¡æ—¶å™¨
+    private float hurtCD = 1f;  //è‡ªæŸé—´éš”æ—¶é•¿(s)
+    private int damage = 2;     //å•æ¬¡è‡ªæŸä¼¤å®³
+    private bool isAllowTimerWork = true;   //æ˜¯å¦å…è®¸è®¡æ—¶å™¨å·¥ä½œï¼Ÿ
 
 
     private void Start()
     {
-        currentHealth = health; //ÉúÃüÖµ³õÊ¼»¯
-        hurtTimer = hurtCD;     //¼ÆÊ±Æ÷³õÊ¼»¯
+        currentHealth = health; //ç”Ÿå‘½å€¼åˆå§‹åŒ–
+        hurtTimer = hurtCD;     //è®¡æ—¶å™¨åˆå§‹åŒ–
 
-        oringinWidth = healthBar.size.x;  // ¼ÇÂ¼³õÊ¼¿í¶È
+        oringinWidth = healthBar.size.x;  // è®°å½•åˆå§‹å®½åº¦
         figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
     }
 
@@ -31,30 +38,30 @@ public class Item_Block : MonoBehaviour
     {
         if (isAllowTimerWork)
         {
-            hurtTimer -= Time.deltaTime;    //¼ÆÊ±Æ÷¹¤×÷
+            hurtTimer -= Time.deltaTime;    //è®¡æ—¶å™¨å·¥ä½œ
         }
 
-        //ÑªÌõ¸üĞÂ
+        //è¡€æ¡æ›´æ–°
         healthBar.size = new Vector2(oringinWidth * (currentHealth / health), healthBar.size.y);
 
-        BlockHurtSelf();    //·½¿é×ÔËğÓëÉúÃü¼à²â
+        BlockHurtSelf();    //æ–¹å—è‡ªæŸä¸ç”Ÿå‘½ç›‘æµ‹
 
     }
 
-    //·½¿é×ÔËğ&ÉúÃü¼à²â
+    //æ–¹å—è‡ªæŸ&ç”Ÿå‘½ç›‘æµ‹
     private void BlockHurtSelf()
     {
         if (hurtTimer <= 0)
         {
-            currentHealth -= damage;    //ÉúÃüÖµ¼õÉÙ
-            hurtTimer = hurtCD;         //CDÖØÖÃ
+            currentHealth -= damage;    //ç”Ÿå‘½å€¼å‡å°‘
+            hurtTimer = hurtCD;         //CDé‡ç½®
         }
 
-        //ÉúÃü¹éÁãºóÏú»Ù
+        //ç”Ÿå‘½å½’é›¶åé”€æ¯
         if (currentHealth <= 0)
         {
             Destroy(gameObject);
-            Instantiate(particlePrefab, transform.position, Quaternion.identity);   //Éú³ÉÁ£×Ó
+            Instantiate(particlePrefab, transform.position, Quaternion.identity);   //ç”Ÿæˆç²’å­
 
             if (item_id != 0)
             {
@@ -66,19 +73,19 @@ public class Item_Block : MonoBehaviour
         }
     }
 
-    //ÊÜÉËº¯Êı(Íâ²¿µ÷ÓÃ)
+    //å—ä¼¤å‡½æ•°(å¤–éƒ¨è°ƒç”¨)
     public void GetHurt(float damage)
     {
-        float newHealth = currentHealth - damage;  //ÊÜÉËºóµÄÉúÃüÖµ
-        //ÈôÊÜÉËºóÉúÃüÖµµÍÓÚ0
+        float newHealth = currentHealth - damage;  //å—ä¼¤åçš„ç”Ÿå‘½å€¼
+        //è‹¥å—ä¼¤åç”Ÿå‘½å€¼ä½äº0
         if (newHealth <= 0)
-            currentHealth = 0;     //ÉúÃüÖµ¹Ì¶¨Îª0
-        //·ñÔòÕı³£ÊÜÉË
+            currentHealth = 0;     //ç”Ÿå‘½å€¼å›ºå®šä¸º0
+        //å¦åˆ™æ­£å¸¸å—ä¼¤
         else
             currentHealth = newHealth;
 
-        ShowFigure(damage, true);       //ÊÜÉËÊı×Ö
-        StartCoroutine(HurtEffect());   //ÊÜÉËĞ§¹û
+        ShowFigure(damage, true);       //å—ä¼¤æ•°å­—
+        StartCoroutine(HurtEffect());   //å—ä¼¤æ•ˆæœ
     }
 
     IEnumerator HurtEffect()
@@ -90,20 +97,21 @@ public class Item_Block : MonoBehaviour
     }
 
 
-    [SerializeField] private GameObject figureTextPrefab;   //Êı×ÖÎÄ±¾Ô¤ÖÆÌå
-    private GameObject figureCanvas;                        //FigureCanvas¸¸½Úµã
+    [Tooltip("æ•°å­—æ–‡æœ¬é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject figureTextPrefab;   //æ•°å­—æ–‡æœ¬é¢„åˆ¶ä½“
+    private GameObject figureCanvas;                        //FigureCanvasçˆ¶èŠ‚ç‚¹
 
-    //ÏÔÊ¾UIÊı×Ö
+    //æ˜¾ç¤ºUIæ•°å­—
     private void ShowFigure(float num, bool isRed)
     {
         Transform parent = figureCanvas.transform;
-        //´´½¨TMPÉËº¦Êı×ÖÊµÀı
+        //åˆ›å»ºTMPä¼¤å®³æ•°å­—å®ä¾‹
         GameObject figureText = Instantiate(figureTextPrefab, transform.position + Vector3.up, Quaternion.identity, parent);
-        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //»ñÈ¡TMP
+        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //è·å–TMP
 
         tmp.SetText(num.ToString());
 
-        //ÉèÖÃÎÄ±¾ÑÕÉ«
+        //è®¾ç½®æ–‡æœ¬é¢œè‰²
         if (isRed)
             tmp.color = new Color(1, 0.4f, 0.4f, 1);
         else

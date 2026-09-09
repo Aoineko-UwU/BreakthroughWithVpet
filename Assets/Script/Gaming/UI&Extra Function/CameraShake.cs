@@ -2,6 +2,9 @@ using System.Collections;
 using UnityEngine;
 using Cinemachine;
 
+/// <summary>
+/// 控制 Cinemachine 虚拟摄像机的屏幕震动效果。
+/// </summary>
 public class CameraShake : Singleton<CameraShake>
 {
     private CinemachineVirtualCamera virtualCamera;    //虚拟摄像机
@@ -28,6 +31,9 @@ public class CameraShake : Singleton<CameraShake>
     }
 
     //屏幕晃动(外部调用)
+    /// <summary>
+    /// 触发一次屏幕震动；重复触发会重启当前震动协程。
+    /// </summary>
     public void ShakeScreen()
     {
         if(shakeScreenCoroutine != null)

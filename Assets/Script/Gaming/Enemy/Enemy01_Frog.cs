@@ -2,59 +2,63 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æ§åˆ¶é’è›™æ•Œäººçš„å·¡é€»ã€è¿½å‡»ã€è·³è·ƒã€è½åœ°æ£€æµ‹å’Œæ”»å‡»è¡Œä¸ºã€‚
+/// </summary>
 public class Enemy01_Frog : MonoBehaviour
 {
     private Animator animator;
     private Rigidbody2D rb;
 
-    private float jumpForceY = 5f; //´¹Ö±ÌøÔ¾Á¦
-    private float jumpForceX = 5f; //Ë®Æ½ÌøÔ¾Á¦
+    private float jumpForceY = 5f; //å‚ç›´è·³è·ƒåŠ›
+    private float jumpForceX = 5f; //æ°´å¹³è·³è·ƒåŠ›
 
-    [SerializeField] private EnemyHealthSystem healthSystem;   //ÉúÃüÏµÍ³½Å±¾
-    private Vector3 pointA;  //Ñ²Âßµã1
-    private Vector3 pointB;  //Ñ²Âßµã2
-    private float pointRange = 5f;      //Ñ²ÂßµãÉèÖÃ·¶Î§
+    [Tooltip("ç”Ÿå‘½ç³»ç»Ÿè„šæœ¬")]
+    [SerializeField] private EnemyHealthSystem healthSystem;   //ç”Ÿå‘½ç³»ç»Ÿè„šæœ¬
+    private Vector3 pointA;  //å·¡é€»ç‚¹1
+    private Vector3 pointB;  //å·¡é€»ç‚¹2
+    private float pointRange = 5f;      //å·¡é€»ç‚¹è®¾ç½®èŒƒå›´
 
-    private bool isVpetInRange = false;    //×À³èÊÇ·ñÔÚ¹¥»÷·¶Î§ÄÚ
+    private bool isVpetInRange = false;    //æ¡Œå® æ˜¯å¦åœ¨æ”»å‡»èŒƒå›´å†…
     private bool isAttacking = true;
-    private float faceDir;                 //Î¨Ò»ÃæÏòÏòÁ¿Öµ
+    private float faceDir;                 //å”¯ä¸€é¢å‘å‘é‡å€¼
 
-    private GameObject vpet;               //×À³è¶ÔÏó
+    private GameObject vpet;               //æ¡Œå® å¯¹è±¡
 
-    //ÉúÃüÖÜÆÚº¯Êı--------------------------------------------------------------------------------------//
+    //ç”Ÿå‘½å‘¨æœŸå‡½æ•°--------------------------------------------------------------------------------------//
 
     private void Awake()
     {
         animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
-        vpet = GameObject.FindGameObjectWithTag("Vpet");  //»ñÈ¡×À³èµÄÓÎÏ·¶ÔÏó
+        vpet = GameObject.FindGameObjectWithTag("Vpet");  //è·å–æ¡Œå® çš„æ¸¸æˆå¯¹è±¡
     }
 
     private void Start()
     {
         faceDir = transform.localScale.x;
-        pointA = new Vector3(transform.position.x - pointRange, transform.position.y); //ÉèÖÃPointA
-        pointB = new Vector3(transform.position.x + pointRange, transform.position.y); //ÉèÖÃPointB
+        pointA = new Vector3(transform.position.x - pointRange, transform.position.y); //è®¾ç½®PointA
+        pointB = new Vector3(transform.position.x + pointRange, transform.position.y); //è®¾ç½®PointB
 
-        InitValueBasedDifficulty();     //³õÊ¼»¯ÄÑ¶ÈÏà¹ØÊıÖµ
-        jumpCD = Random.Range(1f, 2f);  //Ëæ»úÌøÔ¾CD
+        InitValueBasedDifficulty();     //åˆå§‹åŒ–éš¾åº¦ç›¸å…³æ•°å€¼
+        jumpCD = Random.Range(1f, 2f);  //éšæœºè·³è·ƒCD
 
     }
 
     private void Update()
     {
-        if (healthSystem.isDead) return;    //ÈôÒÑËÀÍöÔò²»Ö´ĞĞ
+        if (healthSystem.isDead) return;    //è‹¥å·²æ­»äº¡åˆ™ä¸æ‰§è¡Œ
 
-        CheckIsGrounded();      //ÂäµØ¼à²â
-        CheckFall();            //×¹Âä¼à²â
-        CheckHasFallGround();   //ÊÇ·ñÒÑÂäµØ¼à²â
-        CheckVpetEnter();       //¼à²â×À³èÊÇ·ñ½øÈë¹¥»÷·¶Î§
-        FrogIdleAudio();        //ÇàÍÜ´ı»úÒôĞ§
+        CheckIsGrounded();      //è½åœ°ç›‘æµ‹
+        CheckFall();            //å è½ç›‘æµ‹
+        CheckHasFallGround();   //æ˜¯å¦å·²è½åœ°ç›‘æµ‹
+        CheckVpetEnter();       //ç›‘æµ‹æ¡Œå® æ˜¯å¦è¿›å…¥æ”»å‡»èŒƒå›´
+        FrogIdleAudio();        //é’è›™å¾…æœºéŸ³æ•ˆ
 
-        if (isVpetInRange)      //Íæ¼ÒÔÚ¹¥»÷·¶Î§ÄÚÖ´ĞĞ×·ÖğĞĞÎª
+        if (isVpetInRange)      //ç©å®¶åœ¨æ”»å‡»èŒƒå›´å†…æ‰§è¡Œè¿½é€è¡Œä¸º
             ChaseVpet();
         else
-            Patrol();           //·ñÔòÖ´ĞĞÑ²ÂßĞĞÎª
+            Patrol();           //å¦åˆ™æ‰§è¡Œå·¡é€»è¡Œä¸º
 
         if (isAllowTimerWork)
         {
@@ -63,47 +67,47 @@ public class Enemy01_Frog : MonoBehaviour
         }
 
 
-        //ÓëÍæ¼Ò¾àÀë³¬¹ı20fºó½ûÖ¹²¥·ÅÒôĞ§
-        isAllowAudioPlay = Vector2.Distance(vpet.transform.position, transform.position) > 20f ? false : true;  
+        //ä¸ç©å®¶è·ç¦»è¶…è¿‡20fåç¦æ­¢æ’­æ”¾éŸ³æ•ˆ
+        isAllowAudioPlay = Vector2.Distance(vpet.transform.position, transform.position) > 20f ? false : true;
     }
 
 
-    //¹¦ÄÜº¯Êı-----------------------------------------------------------------------------------------//
+    //åŠŸèƒ½å‡½æ•°-----------------------------------------------------------------------------------------//
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä(ÉËº¦)
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…(ä¼¤å®³)
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 attackDamage = 2f;
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 attackDamage = 3f;
                 break;
 
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 attackDamage = 4f;
                 break;
         }
     }
 
-    private float jumpTimer;           //ÌøÔ¾¼ÆÊ±Æ÷
-    private float jumpCD;              //ÌøÔ¾CD
+    private float jumpTimer;           //è·³è·ƒè®¡æ—¶å™¨
+    private float jumpCD;              //è·³è·ƒCD
     private bool isAllowTimerWork = true;
     Vector2 jumpDir = Vector2.right;
 
-    private bool isAllowAudioPlay = true;   //ÊÇ·ñÔÊĞí²¥·ÅÒôÆµ
+    private bool isAllowAudioPlay = true;   //æ˜¯å¦å…è®¸æ’­æ”¾éŸ³é¢‘
 
-    //Ñ²Âß·½·¨(Update)
+    //å·¡é€»æ–¹æ³•(Update)
     private void Patrol()
     {
-        //Èô³¬³öÁËPointAµÄXÖá·¶Î§£¬Á¦·½Ïò¸ü¸ÄÎªÓÒ²à
+        //è‹¥è¶…å‡ºäº†PointAçš„Xè½´èŒƒå›´ï¼ŒåŠ›æ–¹å‘æ›´æ”¹ä¸ºå³ä¾§
         if (transform.position.x < pointA.x)
             jumpDir = Vector2.right;
 
@@ -115,14 +119,14 @@ public class Enemy01_Frog : MonoBehaviour
 
     }
 
-    //×·»÷·½·¨(Update)
+    //è¿½å‡»æ–¹æ³•(Update)
     private void ChaseVpet()
     {
         if (vpet == null) return;
 
-        //¼ÆËãÇàÍÜÓëÍæ¼ÒµÄÏà¶ÔÎ»ÖÃ
+        //è®¡ç®—é’è›™ä¸ç©å®¶çš„ç›¸å¯¹ä½ç½®
         float pos = transform.position.x - vpet.transform.position.x;
-        //ÈôÍæ¼ÒÔÚÇàÍÜ×ó²à
+        //è‹¥ç©å®¶åœ¨é’è›™å·¦ä¾§
         if (pos > 0)
             jumpDir = Vector2.left;
         else
@@ -132,29 +136,29 @@ public class Enemy01_Frog : MonoBehaviour
             Jump(jumpDir);
     }
 
-    //ÌøÔ¾·½·¨(ÄÚ²¿ÒıÓÃ)
+    //è·³è·ƒæ–¹æ³•(å†…éƒ¨å¼•ç”¨)
     private void Jump(Vector2 jumpDir)
     {
-        if (!isGrounded) return;    //´¦ÓÚµØÃæÊ±²ÅÄÜÌøÔ¾
-        isAttacking = true;         //¹¥»÷ÖĞ
-        isAllowTimerWork = false;   //ÆÚ¼ä½ûÖ¹¼ÆÊ±
-        isAllowCheckFall = true;    //ÔÊĞí½øĞĞÂäµØ¼à²â
-        jumpTimer = jumpCD;         //CDÖØÖÃ
+        if (!isGrounded) return;    //å¤„äºåœ°é¢æ—¶æ‰èƒ½è·³è·ƒ
+        isAttacking = true;         //æ”»å‡»ä¸­
+        isAllowTimerWork = false;   //æœŸé—´ç¦æ­¢è®¡æ—¶
+        isAllowCheckFall = true;    //å…è®¸è¿›è¡Œè½åœ°ç›‘æµ‹
+        jumpTimer = jumpCD;         //CDé‡ç½®
 
-        rb.velocity = new Vector2(rb.velocity.x, jumpForceY);  //¸³ÓèyÏòËÙ¶È   
-        rb.AddForce(jumpDir * jumpForceX, ForceMode2D.Impulse); //Ìí¼ÓÌøÔ¾Á¦
-        Flip(); //½øĞĞ³¯Ïò½ÃÕı
+        rb.velocity = new Vector2(rb.velocity.x, jumpForceY);  //èµ‹äºˆyå‘é€Ÿåº¦
+        rb.AddForce(jumpDir * jumpForceX, ForceMode2D.Impulse); //æ·»åŠ è·³è·ƒåŠ›
+        Flip(); //è¿›è¡Œæœå‘çŸ«æ­£
 
-        animator.SetTrigger("jump");        //¶¯»­²¥·Å
-        
+        animator.SetTrigger("jump");        //åŠ¨ç”»æ’­æ”¾
+
         if (isAllowAudioPlay)
-            AudioManager.Instance.PlaySound3D("Enemy_frog_jump", transform.position);    //²¥·ÅÒôĞ§
-    }   
+            AudioManager.Instance.PlaySound3D("Enemy_frog_jump", transform.position);    //æ’­æ”¾éŸ³æ•ˆ
+    }
 
-    //¼à²â×À³èÊÇ·ñ½øÈë·¶Î§(Update)
+    //ç›‘æµ‹æ¡Œå® æ˜¯å¦è¿›å…¥èŒƒå›´(Update)
     private void CheckVpetEnter()
     {
-        //Èô×À³èµÄX×ø±êÔÚpointAÓëpointBÇø¼ä
+        //è‹¥æ¡Œå® çš„Xåæ ‡åœ¨pointAä¸pointBåŒºé—´
         if (vpet.transform.position.x > pointA.x &&
            vpet.transform.position.x < pointB.x)
         {
@@ -163,20 +167,21 @@ public class Enemy01_Frog : MonoBehaviour
         else isVpetInRange = false;
     }
 
-    private bool isGrounded = true;     //ÊÇ·ñÂäµØ
+    private bool isGrounded = true;     //æ˜¯å¦è½åœ°
 
-    private float rayLength = 0.1f;                 //ÉäÏß³¤¶È
-    private float halfWidth = 0.46f;                //ÉäÏß°ë¿í¼ä¸ô
-    [SerializeField] private LayerMask Layer;       //µØÃæ&&µĞÈË²ã
+    private float rayLength = 0.1f;                 //å°„çº¿é•¿åº¦
+    private float halfWidth = 0.46f;                //å°„çº¿åŠå®½é—´éš”
+    [Tooltip("åœ°é¢&&æ•Œäººå±‚")]
+    [SerializeField] private LayerMask Layer;       //åœ°é¢&&æ•Œäººå±‚
     private void CheckIsGrounded()
     {
-        // Èı¸öÉäÏßÆğµã£ºÖĞ¡¢×ó¡¢ÓÒ
+        // ä¸‰ä¸ªå°„çº¿èµ·ç‚¹ï¼šä¸­ã€å·¦ã€å³
         Vector2 centerOrigin = transform.position + Vector3.down *0.3f;
         Vector2 leftOrigin = centerOrigin + Vector2.left * halfWidth;
         Vector2 rightOrigin = centerOrigin + Vector2.right * halfWidth;
         isGrounded = false;
 
-        // ÒÀ´Î·¢ÉäÈıÌõÏòÏÂÉäÏß£¬Ê¹ÓÃ groundLayer ¹ıÂË
+        // ä¾æ¬¡å‘å°„ä¸‰æ¡å‘ä¸‹å°„çº¿ï¼Œä½¿ç”¨ groundLayer è¿‡æ»¤
         foreach (Vector2 origin in new[] { centerOrigin, leftOrigin, rightOrigin })
         {
             RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayLength, Layer);
@@ -186,18 +191,18 @@ public class Enemy01_Frog : MonoBehaviour
                 break;
             }
         }
-        animator.SetBool("isGround", isGrounded);   //Óë¶¯»­Æ÷Í¬²½
-    }   
+        animator.SetBool("isGround", isGrounded);   //ä¸åŠ¨ç”»å™¨åŒæ­¥
+    }
 
-    private bool isAllowCheckFall = false;  //ÊÇ·ñÔÊĞí¼ì²â×¹Âä
+    private bool isAllowCheckFall = false;  //æ˜¯å¦å…è®¸æ£€æµ‹å è½
 
-    //×¹Âä¼à²â(Update)
+    //å è½ç›‘æµ‹(Update)
     private void CheckFall()
     {
-        //ÈôÔÊĞí¼à²â
+        //è‹¥å…è®¸ç›‘æµ‹
         if (isAllowCheckFall)
         {
-            //µ±yÏòËÙ¶ÈµÍÓÚÒ»¶¨ãĞÖµÔò´¥·¢×¹Âä¶¯×÷
+            //å½“yå‘é€Ÿåº¦ä½äºä¸€å®šé˜ˆå€¼åˆ™è§¦å‘å è½åŠ¨ä½œ
             if (rb.velocity.y < 0.1)
             {
                 isAllowCheckFall = false;
@@ -209,22 +214,22 @@ public class Enemy01_Frog : MonoBehaviour
 
     private bool hasFallGround = true;
 
-    //ÊÇ·ñÒÑÂäµØ¼à²â(ÄÚ²¿ÒıÓÃ)
+    //æ˜¯å¦å·²è½åœ°ç›‘æµ‹(å†…éƒ¨å¼•ç”¨)
     private void CheckHasFallGround()
     {
         if (!hasFallGround)
         {
-            //Èô´ËÊ±ÒÑÂäµØ
+            //è‹¥æ­¤æ—¶å·²è½åœ°
             if (isGrounded)
             {
-                hasFallGround = true;       //ÒÑÂäµØ
-                isAllowTimerWork = true;    //ÔÊĞí¼ÆÊ±Æ÷¹¤×÷
-                isAttacking = false;        //¹Ø±Õ¹¥»÷×´Ì¬
+                hasFallGround = true;       //å·²è½åœ°
+                isAllowTimerWork = true;    //å…è®¸è®¡æ—¶å™¨å·¥ä½œ
+                isAttacking = false;        //å…³é—­æ”»å‡»çŠ¶æ€
             }
         }
     }
 
-    //·­×ª¾«ÁéÍ¼(ÄÚ²¿ÒıÓÃ)
+    //ç¿»è½¬ç²¾çµå›¾(å†…éƒ¨å¼•ç”¨)
     private void Flip()
     {
         if(jumpDir == Vector2.right)
@@ -251,16 +256,16 @@ public class Enemy01_Frog : MonoBehaviour
 
     }
 
-    private float attackDamage = 3f;        //¹¥»÷ÉËº¦
+    private float attackDamage = 3f;        //æ”»å‡»ä¼¤å®³
 
-    //Åö×²ĞĞÎª
+    //ç¢°æ’è¡Œä¸º
     private void OnCollisionStay2D(Collision2D other)
     {
-        //¹¥»÷Íæ¼Ò
+        //æ”»å‡»ç©å®¶
         if (other.collider.CompareTag("Vpet") && isAttacking && !healthSystem.isDead)
         {
-            //¸ù¾İÏà¶ÔÎ»ÖÃ¼ÆËãÁ¦µÄ·½Ïò
-            Vector2 force = transform.position.x > vpet.transform.position.x ? Vector2.left : Vector2.right;        
+            //æ ¹æ®ç›¸å¯¹ä½ç½®è®¡ç®—åŠ›çš„æ–¹å‘
+            Vector2 force = transform.position.x > vpet.transform.position.x ? Vector2.left : Vector2.right;
             other.gameObject.GetComponent<VpetHealthSystem>().VpetGethurt(attackDamage, force * 200f);
         }
     }

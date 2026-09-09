@@ -2,21 +2,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ç®¡ç†çŸ³é”¥çš„æ‰è½ã€ä¸æ¡Œå® æ¥è§¦åˆ¤å®šåŠç ´ç¢æ•ˆæœã€‚
+/// </summary>
 public class StoneCone : MonoBehaviour
 {
     private Rigidbody2D rb;
     private GameObject vpet;
-    [SerializeField]private GameObject breakParticle;   //ÆÆËéÁ£×Ó
+    [Tooltip("ç ´ç¢ç²’å­")]
+    [SerializeField]private GameObject breakParticle;   //ç ´ç¢ç²’å­
 
     private void Awake()
     {
-        vpet = GameObject.FindGameObjectWithTag("Vpet");  //»ñÈ¡×À³èµÄÓÎÏ·¶ÔÏó
-        rb = GetComponent<Rigidbody2D>();                 //»ñÈ¡¸ÕÌå
+        vpet = GameObject.FindGameObjectWithTag("Vpet");  //è·å–æ¡Œå® çš„æ¸¸æˆå¯¹è±¡
+        rb = GetComponent<Rigidbody2D>();                 //è·å–åˆšä½“
     }
 
     private void Start()
     {
-        InitValueBasedDifficulty();     //³õÊ¼»¯ÊıÖµ
+        InitValueBasedDifficulty();     //åˆå§‹åŒ–æ•°å€¼
     }
 
     private void Update()
@@ -24,25 +28,25 @@ public class StoneCone : MonoBehaviour
         CheckVpetArrive();
     }
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä(¶Ô×À³èÉËº¦|¶Ô½¨ÖşÉËº¦)
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…(å¯¹æ¡Œå® ä¼¤å®³|å¯¹å»ºç­‘ä¼¤å®³)
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 damageToVpet = 3f;
                 damageToBlock = 6f;
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 damageToVpet = 4f;
                 damageToBlock = 8f;
                 break;
 
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 damageToVpet = 5f;
                 damageToBlock = 10f;
@@ -63,17 +67,20 @@ public class StoneCone : MonoBehaviour
         if (Vector2.Distance(vpetV2PosX, transform.position) < 2f)
         {
             isFalling = true;
-            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;    //½â³ıYÖáÏŞÖÆ
+            rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;    //è§£é™¤Yè½´é™åˆ¶
             Invoke("StartCheck", startCheckTime);
         }
     }
 
+    /// <summary>
+    /// å¯åŠ¨çŸ³é”¥çš„è½åœ°æˆ–æ¡Œå® æ¥è¿‘æ£€æµ‹ã€‚
+    /// </summary>
     public void StartCheck()
     {
-        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;    //½â³ıYÖáÏŞÖÆ
+        rb.constraints = RigidbodyConstraints2D.FreezePositionX | RigidbodyConstraints2D.FreezeRotation;    //è§£é™¤Yè½´é™åˆ¶
         isStartCheck = true;
         Destroy(gameObject, 5f);
-        rb.AddForce(Vector2.up * 0.1f);     //¼¤»î¸ÕÌå
+        rb.AddForce(Vector2.up * 0.1f);     //æ¿€æ´»åˆšä½“
     }
 
     private void OnTriggerEnter2D(Collider2D other)
@@ -89,9 +96,9 @@ public class StoneCone : MonoBehaviour
             if (other.CompareTag("Ground") && other.GetComponent<Item_Block>() != null)
                 other.GetComponent<Item_Block>().GetHurt(damageToBlock);
 
-            AudioManager.Instance.PlaySound3D("stoneBreak", transform.position);    //²¥·ÅÒôĞ§
-            Instantiate(breakParticle, transform.position, Quaternion.identity);    //Éú³ÉÆÆËéÁ£×Ó
-            Destroy(gameObject);    //Ïú»Ù
+            AudioManager.Instance.PlaySound3D("stoneBreak", transform.position);    //æ’­æ”¾éŸ³æ•ˆ
+            Instantiate(breakParticle, transform.position, Quaternion.identity);    //ç”Ÿæˆç ´ç¢ç²’å­
+            Destroy(gameObject);    //é”€æ¯
         }
     }
 

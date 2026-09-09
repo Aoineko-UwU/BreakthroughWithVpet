@@ -1,11 +1,14 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// æ ¹æ®æŒ‰é’®æ˜¯å¦å¯ç”¨æ§åˆ¶åŠé€æ˜æŒ‰é’®çš„ç‚¹å‡»åé¦ˆå’Œæ˜¾ç¤ºçŠ¶æ€ã€‚
+/// </summary>
 public class AlphaButtonClick : MonoBehaviour
 {
-    private Image buttonImage;            //°´Å¥µÄImage×é¼ş
-    private Button button;                //°´Å¥×é¼ş
-    private float alphaThreshold = 0.5f;  //Í¸Ã÷¶ÈãĞÖµ
+    private Image buttonImage;            //æŒ‰é’®çš„Imageç»„ä»¶
+    private Button button;                //æŒ‰é’®ç»„ä»¶
+    private float alphaThreshold = 0.5f;  //é€æ˜åº¦é˜ˆå€¼
 
     private void Awake()
     {
@@ -15,10 +18,10 @@ public class AlphaButtonClick : MonoBehaviour
 
     private void Update()
     {
-        // »ñÈ¡°´Å¥µÄµ±Ç° Alpha Öµ
+        // è·å–æŒ‰é’®çš„å½“å‰ Alpha å€¼
         float alpha = buttonImage.color.a;
 
-        // Èç¹û Alpha ÖµµÍÓÚãĞÖµ£¬½ûÓÃ°´Å¥½»»¥
+        // å¦‚æœ Alpha å€¼ä½äºé˜ˆå€¼ï¼Œç¦ç”¨æŒ‰é’®äº¤äº’
         if (alpha < alphaThreshold)
         {
             button.interactable = false;

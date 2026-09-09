@@ -2,25 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// è¡¨ç¤ºå¯è¢«æ¡Œå® æ‹¾å–çš„åœºæ™¯ç‰©å“ï¼Œå¹¶è´Ÿè´£å°†å…¶å†™å…¥ç‰©å“æ ã€‚
+/// </summary>
 public class CanPickItem : MonoBehaviour
 {
-    [SerializeField] SpriteRenderer icoSprite;      //ÎïÆ·ÌùÍ¼äÖÈ¾Æ÷
-    [SerializeField] private ItemData itemData;     //ÎïÆ·Êı¾İ
-    public bool isAllowSelfDestroy = true;          //ÊÇ·ñÔÊĞí×Ô´İ»Ù(Ä¬ÈÏÔÊĞí)
+    [Tooltip("ç‰©å“è´´å›¾æ¸²æŸ“å™¨")]
+    [SerializeField] SpriteRenderer icoSprite;      //ç‰©å“è´´å›¾æ¸²æŸ“å™¨
+    [Tooltip("ç‰©å“æ•°æ®")]
+    [SerializeField] private ItemData itemData;     //ç‰©å“æ•°æ®
+    [Tooltip("æ˜¯å¦å…è®¸ç‰©å“åœ¨è¶…æ—¶åè‡ªåŠ¨é”€æ¯ã€‚")]
+    public bool isAllowSelfDestroy = true;
 
-    //ÉèÖÃÎïÆ·Êı¾İ(Íâ²¿µ÷ÓÃ)
+    /// <summary>è®¾ç½®è¯¥åœºæ™¯ç‰©å“å¯¹åº”çš„ç‰©å“æ æ•°æ®ã€‚</summary>
     public void SetItemData(ItemData data)
     {
-        itemData = data;                //´«µİÎïÆ·Êı¾İ
+        itemData = data;                //ä¼ é€’ç‰©å“æ•°æ®
         if(icoSprite!= null)
-            icoSprite.sprite = data.icon;   //ÉèÖÃÌùÍ¼
+            icoSprite.sprite = data.icon;   //è®¾ç½®è´´å›¾
     }
 
     private void Start()
-    {    
+    {
         if (isAllowSelfDestroy)
         {
-            //Ëæ»úÊ±¿Ìºó×Ô¶¯´İ»Ù
+            //éšæœºæ—¶åˆ»åè‡ªåŠ¨æ‘§æ¯
             float randDestroyTime = Random.Range(7f, 8f);
             Destroy(gameObject, randDestroyTime);
         }
@@ -31,7 +37,7 @@ public class CanPickItem : MonoBehaviour
         }
     }
 
-    //Ê°È¡ÎïÆ·Âß¼­
+    /// <summary>å°è¯•å°†ç‰©å“åŠ å…¥ç‰©å“æ ï¼ŒæˆåŠŸåé”€æ¯åœºæ™¯ç‰©å“ã€‚</summary>
     public void ItemPickUpLogic()
     {
         if (InventoryManager.Instance.TryAddSpecificItem(itemData))

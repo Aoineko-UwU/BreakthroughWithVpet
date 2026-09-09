@@ -3,21 +3,30 @@ using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 
+/// <summary>
+/// ç®¡ç†æ‰­è›‹çš„å¼€å¯åŠ¨ç”»ï¼Œå¹¶æ ¹æ®éšæœºäº‹ä»¶ç”Ÿæˆå¥–åŠ±æˆ–é£é™©äº‹ä»¶ã€‚
+/// </summary>
 public class Item_Gacha : MonoBehaviour
 {
-    [SerializeField] private List<GameObject> enemyPool; //¹ÖÎï³Ø
-    [SerializeField] private GameObject canPickItem;     //¿ÉÊ°È¡ÎïÆ·Ô¤ÖÆ¼ş
-    [SerializeField] private GameObject bomb;            //Õ¨µ¯
-    [SerializeField] private GameObject spring;          //µ¯»É
-    [SerializeField] private GameObject stoneCone;       //Ê¯×¶
-    [SerializeField] private GameObject openParticle;    //Å¤µ°¿ªÆôÁ£×ÓĞ§¹û
+    [Tooltip("æ€ªç‰©æ± ")]
+    [SerializeField] private List<GameObject> enemyPool; //æ€ªç‰©æ± 
+    [Tooltip("å¯æ‹¾å–ç‰©å“é¢„åˆ¶ä»¶")]
+    [SerializeField] private GameObject canPickItem;     //å¯æ‹¾å–ç‰©å“é¢„åˆ¶ä»¶
+    [Tooltip("ç‚¸å¼¹")]
+    [SerializeField] private GameObject bomb;            //ç‚¸å¼¹
+    [Tooltip("å¼¹ç°§")]
+    [SerializeField] private GameObject spring;          //å¼¹ç°§
+    [Tooltip("çŸ³é”¥")]
+    [SerializeField] private GameObject stoneCone;       //çŸ³é”¥
+    [Tooltip("æ‰­è›‹å¼€å¯ç²’å­æ•ˆæœ")]
+    [SerializeField] private GameObject openParticle;    //æ‰­è›‹å¼€å¯ç²’å­æ•ˆæœ
 
     private SpriteRenderer sprite;
 
 
     private void Awake()
     {
-        sprite = GetComponent<SpriteRenderer>();    //»ñÈ¡¾«Áé×é¼ş
+        sprite = GetComponent<SpriteRenderer>();    //è·å–ç²¾çµç»„ä»¶
     }
 
     private void Start()
@@ -25,90 +34,90 @@ public class Item_Gacha : MonoBehaviour
         StartCoroutine(GachaAction());
     }
 
-    Color shiningColor = new Color(0.3f, 0.3f, 0.3f, 1f);   //ÉÁË¸ÑÕÉ«
+    Color shiningColor = new Color(0.3f, 0.3f, 0.3f, 1f);   //é—ªçƒé¢œè‰²
 
     IEnumerator GachaAction()
     {
-        //ÉèÖÃÉÁË¸Ğ§¹û
+        //è®¾ç½®é—ªçƒæ•ˆæœ
         var tween =  sprite.DOColor(shiningColor, 0.5f)
                     .SetEase(Ease.Linear)
                     .SetLoops(-1, LoopType.Yoyo);
-        //µÈ´ıÉÁË¸
+        //ç­‰å¾…é—ªçƒ
         yield return new WaitForSeconds(2f);
 
-        OpenRandomItemEvent();  //Ëæ»úÊÂ¼ş
-        //Éú³ÉÁ£×Ó
+        OpenRandomItemEvent();  //éšæœºäº‹ä»¶
+        //ç”Ÿæˆç²’å­
         Instantiate(openParticle, transform.position, Quaternion.identity);
-        tween.Kill();           //ÖÕÖ¹¶¯»­
+        tween.Kill();           //ç»ˆæ­¢åŠ¨ç”»
         Destroy(gameObject);
     }
 
-    //¿ªµ½Ëæ»úÎïÆ·ÊÂ¼ş
+    //å¼€åˆ°éšæœºç‰©å“äº‹ä»¶
     private void OpenRandomItemEvent()
     {
-        //»ñÈ¡Ëæ»úµÄÊÂ¼ş±àºÅ
+        //è·å–éšæœºçš„äº‹ä»¶ç¼–å·
         int eventIndex = RandomSelector.Instance.EventRandomSelector(2);
 
         switch (eventIndex)
         {
-            //Éú³ÉÊı¸ö¿ÉÊ°È¡ÎïÆ·
+            //ç”Ÿæˆæ•°ä¸ªå¯æ‹¾å–ç‰©å“
             case 1:
-                int randItemAmount = Random.Range(1, 3);    //Ëæ»úÊıÁ¿
+                int randItemAmount = Random.Range(1, 3);    //éšæœºæ•°é‡
                 for(int i = 0; i < randItemAmount; i++)
                 {
-                    ItemData item = InventoryManager.Instance.GetRandomItem();  //»ñÈ¡Ëæ»úµÄÎïÆ·Êı¾İ
-                    //ÉèÖÃËæ»úÎ»ÖÃ²¢Éú³É
+                    ItemData item = InventoryManager.Instance.GetRandomItem();  //è·å–éšæœºçš„ç‰©å“æ•°æ®
+                    //è®¾ç½®éšæœºä½ç½®å¹¶ç”Ÿæˆ
                     Vector2 randPos = new Vector2(transform.position.x + Random.Range(-1f, 1f), transform.position.y + Random.Range(-1f, 1f));
                     var itemCanPick = Instantiate(canPickItem, randPos, Quaternion.identity);
-                    itemCanPick.GetComponent<CanPickItem>().SetItemData(item);      //ÉèÖÃÎïÆ·Êı¾İ
+                    itemCanPick.GetComponent<CanPickItem>().SetItemData(item);      //è®¾ç½®ç‰©å“æ•°æ®
                     AudioManager.Instance.PlaySound3D("Gacha_item", transform.position);
                 }
                 break;
 
-            //Éú³ÉÊı¸öËæ»ú¹ÖÎï
+            //ç”Ÿæˆæ•°ä¸ªéšæœºæ€ªç‰©
             case 2:
-                int randEnemyAmount = Random.Range(1, 4);    //Ëæ»úÊıÁ¿
+                int randEnemyAmount = Random.Range(1, 4);    //éšæœºæ•°é‡
                 AudioManager.Instance.PlaySound3D("Gacha_bad", transform.position);
                 for (int i = 0; i < randEnemyAmount; i++)
                 {
-                    GameObject enemy = enemyPool[Random.Range(0, enemyPool.Count)]; //Ñ¡ÔñÒ»¸öËæ»ú¹ÖÎï
-                    //ÉèÖÃËæ»úÎ»ÖÃ²¢Éú³É
+                    GameObject enemy = enemyPool[Random.Range(0, enemyPool.Count)]; //é€‰æ‹©ä¸€ä¸ªéšæœºæ€ªç‰©
+                    //è®¾ç½®éšæœºä½ç½®å¹¶ç”Ÿæˆ
                     Vector2 randPos = new Vector2(transform.position.x + Random.Range(-1f, 1f), transform.position.y + Random.Range(-1f, 1f));
                     var newEnemy = Instantiate(enemy, randPos, Quaternion.identity);
-                    newEnemy.GetComponent<EnemyHealthSystem>().health = 5f;         //¼õÉÙ¹ÖÎïµÄÉúÃü
+                    newEnemy.GetComponent<EnemyHealthSystem>().health = 5f;         //å‡å°‘æ€ªç‰©çš„ç”Ÿå‘½
                 }
                 break;
 
-            //Éú³ÉÊı¸öÕ¨µ¯
+            //ç”Ÿæˆæ•°ä¸ªç‚¸å¼¹
             case 3:
-                int randBombAmount = Random.Range(2, 8);    //Ëæ»úÊıÁ¿
+                int randBombAmount = Random.Range(2, 8);    //éšæœºæ•°é‡
                 for (int i = 0; i < randBombAmount; i++)
                 {
-                    //ÉèÖÃËæ»úÎ»ÖÃ²¢Éú³É
+                    //è®¾ç½®éšæœºä½ç½®å¹¶ç”Ÿæˆ
                     Vector2 randPos = new Vector2(transform.position.x + Random.Range(-1f, 1f), transform.position.y + Random.Range(-1f, 1f));
                     Instantiate(bomb, randPos, Quaternion.identity);
                 }
                 break;
 
-            //Éú³ÉÊı¸öµ¯»É
+            //ç”Ÿæˆæ•°ä¸ªå¼¹ç°§
             case 4:
                 AudioManager.Instance.PlaySound3D("spring_active", transform.position);
-                int randSpringAmount = Random.Range(2, 6);    //Ëæ»úÊıÁ¿
+                int randSpringAmount = Random.Range(2, 6);    //éšæœºæ•°é‡
                 for (int i = 0; i < randSpringAmount; i++)
                 {
-                    //ÉèÖÃËæ»úÎ»ÖÃ²¢Éú³É
+                    //è®¾ç½®éšæœºä½ç½®å¹¶ç”Ÿæˆ
                     Vector2 randPos = new Vector2(transform.position.x + Random.Range(-2f, 2f), transform.position.y + Random.Range(-2f, 2f));
                     Instantiate(spring, randPos, Quaternion.identity);
                 }
                 break;
 
-            //Éú³ÉÊı¸öÊ¯×¶
+            //ç”Ÿæˆæ•°ä¸ªçŸ³é”¥
             case 5:
                 AudioManager.Instance.PlaySound3D("Gacha_bad", transform.position);
-                int randStoneconeAmount = Random.Range(3, 7);    //Ëæ»úÊıÁ¿
+                int randStoneconeAmount = Random.Range(3, 7);    //éšæœºæ•°é‡
                 for (int i = 0; i < randStoneconeAmount; i++)
                 {
-                    //ÉèÖÃËæ»úÎ»ÖÃ²¢Éú³É
+                    //è®¾ç½®éšæœºä½ç½®å¹¶ç”Ÿæˆ
                     Vector2 randPos = new Vector2(transform.position.x + Random.Range(-3f, 3f), transform.position.y + Random.Range(-2f, 2f));
                     var stone = Instantiate(stoneCone, randPos, Quaternion.identity);
                     stone.GetComponent<StoneCone>().isFalling = true;
@@ -118,7 +127,7 @@ public class Item_Gacha : MonoBehaviour
 
 
             default:
-                Debug.Log("Éú³ÉÊ§°Ü£ºÎ´ÖªµÄÅ¤µ°ÊÂ¼ş");
+                Debug.Log("ç”Ÿæˆå¤±è´¥ï¼šæœªçŸ¥çš„æ‰­è›‹äº‹ä»¶");
                 break;
         }
 

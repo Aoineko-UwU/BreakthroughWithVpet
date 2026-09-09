@@ -2,18 +2,21 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using TMPro;
 
+/// <summary>
+/// 为菜单按钮提供悬停缩放、颜色反馈与悬停音效。
+/// </summary>
 public class ButtonHover : MonoBehaviour, IPointerEnterHandler ,IPointerExitHandler
 {
     [SerializeField] private TextMeshProUGUI text;
 
-    private Color initColor;                                    //ԭʼ��ɫ
-    private Color targetColor = new Color(1f, 0.8f, 0, 1f);     //Ŀ����ɫ
+    private Color initColor;                                    //原始颜色
+    private Color targetColor = new Color(1f, 0.8f, 0, 1f);     //目标颜色
     public bool isAllowUse = false;
 
     private void Start()
     {
         if (text != null)
-            initColor = text.color;     //�洢���ֳ�ʼ��ɫ
+            initColor = text.color;     //存储文字初始颜色
     }
 
     public void OnPointerEnter(PointerEventData eventData)

@@ -1,9 +1,13 @@
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 显示单个物品栏格子，并将用户点击转换为拖拽操作。
+/// </summary>
 public class SlotUI : MonoBehaviour
 {
-    public int index;                 // 插槽索引
+    [Tooltip("该格子对应物品栏列表的索引。")]
+    public int index;
     private InventoryManager inv;
     private GameObject previewItem;
 
@@ -17,6 +21,9 @@ public class SlotUI : MonoBehaviour
     }
 
     // Button 绑定：点击格子
+    /// <summary>
+    /// 响应物品栏格子点击并开始拖拽当前物品。
+    /// </summary>
     public void ClickSlot()
     {
         if (inv == null || GameManager.Instance == null || DragController.Instance == null) return;
@@ -78,6 +85,9 @@ public class SlotUI : MonoBehaviour
     }
 
     // 外部调用：更新 slot 图标
+    /// <summary>
+    /// 更新格子图标；传入空值时隐藏图标。
+    /// </summary>
     public void SetItemImage(ItemData data)
     {
         if (slotItemImage == null)
@@ -95,6 +105,9 @@ public class SlotUI : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 设置格子选中框的显示状态。
+    /// </summary>
     public void SetActiveOfSelectedFrame(bool isActive)
     {
         if (slotSelectedFrame != null)

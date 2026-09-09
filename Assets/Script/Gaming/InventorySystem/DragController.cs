@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 管理物品栏道具的预览、旋转、放置、投掷和取消拖拽流程。
+/// </summary>
 public class DragController : Singleton<DragController>
 {
     private GameObject previewItem;         //半透明物品预览
@@ -34,6 +37,9 @@ public class DragController : Singleton<DragController>
     public bool isSelected = false;    //是否有物品已被选中？
 
     //开始拖拽方法(外部调用)
+    /// <summary>
+    /// 注册新的拖拽预览对象和对应的物品数据。
+    /// </summary>
     public void BeginDrag(GameObject preview, ItemData data)
     {
         if (preview == null || data == null)
@@ -101,7 +107,7 @@ public class DragController : Singleton<DragController>
                 if (collider != null && preItemSprite != null)
                 {
                     ContactFilter2D filter = new ContactFilter2D();     //准备一个 ContactFilter2D
-                    filter.useTriggers = false;                         //检测其他 trigger 的碰撞体             
+                    filter.useTriggers = false;                         //检测其他 trigger 的碰撞体
                     Collider2D[] results = new Collider2D[10];          //存储检测到的碰撞体
 
                     //执行重叠检测
@@ -169,7 +175,7 @@ public class DragController : Singleton<DragController>
                 Vector2 dir = (mouseWorldPosition - vpet.transform.position).normalized;    // 计算从Vpet到鼠标的方向
                 GameObject thrownItem = Instantiate(currentItemData.prefab, vpet.transform.position, Quaternion.identity);  //生成
                 thrownItem.transform.localScale = new Vector2(currentItemData.entityScale, currentItemData.entityScale);    //更新缩放值
-                thrownItem.GetComponent<Rigidbody2D>().AddForce(dir * throwForce, ForceMode2D.Impulse);     //投掷力给予                  
+                thrownItem.GetComponent<Rigidbody2D>().AddForce(dir * throwForce, ForceMode2D.Impulse);     //投掷力给予
 
                 //其他处理
                 inv.RemoveAt(itemIndex);

@@ -4,75 +4,87 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
-public enum VpetAvatarState     //×À³èÍ·Ïñ×´Ì¬
+/// <summary>
+/// å®šä¹‰ç”Ÿå‘½å€¼å¯¹åº”çš„æ¡Œå® å¤´åƒæ˜¾ç¤ºçŠ¶æ€ã€‚
+/// </summary>
+public enum VpetAvatarState     //æ¡Œå® å¤´åƒçŠ¶æ€
 {
     healthy,    //0
     normal,     //1
     bad         //2
 }
 
+/// <summary>
+/// ç®¡ç†æ¡Œå® ç”Ÿå‘½å€¼ã€å—å‡»æ— æ•Œã€å‡»é€€ã€æ¢å¤ä»¥åŠç”Ÿå‘½å€¼ UI åé¦ˆã€‚
+/// </summary>
 public class VpetHealthSystem : MonoBehaviour
 {
-    private float vpetHealth = 30f;        //×À³è×ÜÉúÃüÖµ
-    private float _vpetCurrentHealth;      //×À³èµ±Ç°ÉúÃüÖµ
+    private float vpetHealth = 30f;        //æ¡Œå® æ€»ç”Ÿå‘½å€¼
+    private float _vpetCurrentHealth;      //æ¡Œå® å½“å‰ç”Ÿå‘½å€¼
 
-    [SerializeField] private Slider _sliderHealthBar;       //ÑªÁ¿Ìõ
-    [SerializeField] private Image _sliderHealthFill;       //ÑªÁ¿ÌõÌî³äÍ¼
-    [SerializeField] private Image _stateAvatar;            //×´Ì¬Í·Ïñ
-    [SerializeField] private Sprite _healthy;               //½¡¿µ×´Ì¬¾«ÁéÍ¼
-    [SerializeField] private Sprite _normal;                //ÆÕÍ¨×´Ì¬¾«ÁéÍ¼
-    [SerializeField] private Sprite _bad;                   //Î£ÏÕ×´Ì¬¾«ÁéÍ¼
+    [Tooltip("è¡€é‡æ¡")]
+    [SerializeField] private Slider _sliderHealthBar;       //è¡€é‡æ¡
+    [Tooltip("è¡€é‡æ¡å¡«å……å›¾")]
+    [SerializeField] private Image _sliderHealthFill;       //è¡€é‡æ¡å¡«å……å›¾
+    [Tooltip("çŠ¶æ€å¤´åƒ")]
+    [SerializeField] private Image _stateAvatar;            //çŠ¶æ€å¤´åƒ
+    [Tooltip("å¥åº·çŠ¶æ€ç²¾çµå›¾")]
+    [SerializeField] private Sprite _healthy;               //å¥åº·çŠ¶æ€ç²¾çµå›¾
+    [Tooltip("æ™®é€šçŠ¶æ€ç²¾çµå›¾")]
+    [SerializeField] private Sprite _normal;                //æ™®é€šçŠ¶æ€ç²¾çµå›¾
+    [Tooltip("å±é™©çŠ¶æ€ç²¾çµå›¾")]
+    [SerializeField] private Sprite _bad;                   //å±é™©çŠ¶æ€ç²¾çµå›¾
 
-    private VpetAvatarState _currentAvatarState;            //µ±Ç°Í·Ïñ×´Ì¬
-    private VpetAvatarState _newAvatarState;                //ĞÂµÄÍ·Ïñ×´Ì¬
+    private VpetAvatarState _currentAvatarState;            //å½“å‰å¤´åƒçŠ¶æ€
+    private VpetAvatarState _newAvatarState;                //æ–°çš„å¤´åƒçŠ¶æ€
 
-    public bool isVpetDead = false;         //×À³èÊÇ·ñÒÑËÀÍö
+    public bool isVpetDead = false;         //æ¡Œå® æ˜¯å¦å·²æ­»äº¡
 
-    private Rigidbody2D rb;                 //×À³è¸ÕÌå
-    private VpetAction vpetAction;          //×À³èĞĞÎª½Å±¾
+    private Rigidbody2D rb;                 //æ¡Œå® åˆšä½“
+    private VpetAction vpetAction;          //æ¡Œå® è¡Œä¸ºè„šæœ¬
 
-    //ÉúÃüÖÜÆÚ-----------------------------------------------------------------------------------//
+    //ç”Ÿå‘½å‘¨æœŸ-----------------------------------------------------------------------------------//
 
     private void Start()
     {
-        InitValueBasedDifficulty();                                         //³õÊ¼»¯ÊıÖµ
-        vpetAction = GetComponent<VpetAction>();                            //»ñÈ¡×À³èĞĞÎª
-        rb = GetComponent<Rigidbody2D>();                                   //»ñÈ¡×À³è¸ÕÌå
-        figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");    //»ñÈ¡ÎÄ×ÖCanvas
+        InitValueBasedDifficulty();                                         //åˆå§‹åŒ–æ•°å€¼
+        vpetAction = GetComponent<VpetAction>();                            //è·å–æ¡Œå® è¡Œä¸º
+        rb = GetComponent<Rigidbody2D>();                                   //è·å–æ¡Œå® åˆšä½“
+        figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");    //è·å–æ–‡å­—Canvas
 
-        InitHealthBar();                    //³õÊ¼»¯ÑªÌõ
+        InitHealthBar();                    //åˆå§‹åŒ–è¡€æ¡
 
     }
 
     private void Update()
     {
-        UpdateHealthBar();         //¸üĞÂÑªÌõ
-        UpdateAvatarAndColor();    //¸üĞÂÍ·Ïñ×´Ì¬ÓëÑªÌõÑÕÉ«
+        UpdateHealthBar();         //æ›´æ–°è¡€æ¡
+        UpdateAvatarAndColor();    //æ›´æ–°å¤´åƒçŠ¶æ€ä¸è¡€æ¡é¢œè‰²
     }
 
-    //¹¦ÄÜº¯Êı-----------------------------------------------------------------------------------//
+    //åŠŸèƒ½å‡½æ•°-----------------------------------------------------------------------------------//
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä(×À³èÉúÃüÖµ|ÎŞµĞÊ±¼ä|ÉúÃü»Ö¸´±¶ÂÊ)
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…(æ¡Œå® ç”Ÿå‘½å€¼|æ— æ•Œæ—¶é—´|ç”Ÿå‘½æ¢å¤å€ç‡)
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 vpetHealth = 40f;
                 invincibleTime = 1.25f;
                 recoverMultiplier = 1.5f;
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 vpetHealth = 30f;
                 invincibleTime = 1f;
                 recoverMultiplier = 1f;
                 break;
 
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 vpetHealth = 20f;
                 invincibleTime = 0.85f;
@@ -81,86 +93,87 @@ public class VpetHealthSystem : MonoBehaviour
         }
     }
 
-    //ÑªÌõ³õÊ¼»¯(Start)
+    //è¡€æ¡åˆå§‹åŒ–(Start)
     private void InitHealthBar()
     {
-        _vpetCurrentHealth = vpetHealth;                //¸üĞÂµ±Ç°ÉúÃüÖµ
-        _sliderHealthBar.maxValue = vpetHealth;         //ÑªÌõValue×î´óÖµ¸ü¸ÄÎªVpetÉúÃüÖµ
-        _sliderHealthBar.value = _vpetCurrentHealth;    //½«Vpetµ±Ç°ÉúÃüÖµ¸üĞÂµ½ÑªÌõValue
-        _sliderHealthFill.color = SetColor("#83ff58");  //³õÊ¼»¯ÑªÌõÑÕÉ«
+        _vpetCurrentHealth = vpetHealth;                //æ›´æ–°å½“å‰ç”Ÿå‘½å€¼
+        _sliderHealthBar.maxValue = vpetHealth;         //è¡€æ¡Valueæœ€å¤§å€¼æ›´æ”¹ä¸ºVpetç”Ÿå‘½å€¼
+        _sliderHealthBar.value = _vpetCurrentHealth;    //å°†Vpetå½“å‰ç”Ÿå‘½å€¼æ›´æ–°åˆ°è¡€æ¡Value
+        _sliderHealthFill.color = SetColor("#83ff58");  //åˆå§‹åŒ–è¡€æ¡é¢œè‰²
 
 
-        //³õÊ¼»¯×À³èÍ·Ïñ×´Ì¬
-        _currentAvatarState = VpetAvatarState.healthy;  //³õÊ¼Îª½¡¿µ×´Ì¬
-        _newAvatarState = _currentAvatarState;          //±£³Ö³õÊ¼µÄ×´Ì¬Ò»ÖÂĞÔ
-        _stateAvatar.sprite = _healthy;                 //³õÊ¼»¯×´Ì¬Í·Ïñ
+        //åˆå§‹åŒ–æ¡Œå® å¤´åƒçŠ¶æ€
+        _currentAvatarState = VpetAvatarState.healthy;  //åˆå§‹ä¸ºå¥åº·çŠ¶æ€
+        _newAvatarState = _currentAvatarState;          //ä¿æŒåˆå§‹çš„çŠ¶æ€ä¸€è‡´æ€§
+        _stateAvatar.sprite = _healthy;                 //åˆå§‹åŒ–çŠ¶æ€å¤´åƒ
     }
 
-    //ÑªÌõÊµÊ±¸üĞÂ(Update)
+    //è¡€æ¡å®æ—¶æ›´æ–°(Update)
     private void UpdateHealthBar()
     {
-        //Îª¿Õ¼ì²é&&½öÔÚcurrentHealthÖµ·¢Éú¸Ä±äÊ±Ö´ĞĞ
+        //ä¸ºç©ºæ£€æŸ¥&&ä»…åœ¨currentHealthå€¼å‘ç”Ÿæ”¹å˜æ—¶æ‰§è¡Œ
         if (_sliderHealthBar && _vpetCurrentHealth != _sliderHealthBar.value)
         {
-            //ÑªÁ¿ÔÚ0¼°ÒÔÉÏÊ±Õı³£¸üĞÂUI
-            if (_vpetCurrentHealth >= 0)    
-                _sliderHealthBar.value = _vpetCurrentHealth;    //¸üĞÂÑªÌõµÄValue
-            //ÑªÁ¿ÔÚ0ÒÔÏÂÊ±Ä¬ÈÏÉèÖÃValueÎª0
+            //è¡€é‡åœ¨0åŠä»¥ä¸Šæ—¶æ­£å¸¸æ›´æ–°UI
+            if (_vpetCurrentHealth >= 0)
+                _sliderHealthBar.value = _vpetCurrentHealth;    //æ›´æ–°è¡€æ¡çš„Value
+            //è¡€é‡åœ¨0ä»¥ä¸‹æ—¶é»˜è®¤è®¾ç½®Valueä¸º0
             else
                 _sliderHealthBar.value = 0;
 
-            //¼ÆËãÑªÁ¿°Ù·Ö±ÈãĞÖµ(**[0%~30%),[30%~70%),[70%~N%)**)
-            float healthPercent = _vpetCurrentHealth / vpetHealth;  //µ±Ç°ÉúÃü°Ù·Ö±È
+            //è®¡ç®—è¡€é‡ç™¾åˆ†æ¯”é˜ˆå€¼(**[0%~30%),[30%~70%),[70%~N%)**)
+            float healthPercent = _vpetCurrentHealth / vpetHealth;  //å½“å‰ç”Ÿå‘½ç™¾åˆ†æ¯”
             if (healthPercent >= 0.7f)
-                _newAvatarState = VpetAvatarState.healthy;      //×´Ì¬Îª½¡¿µ
+                _newAvatarState = VpetAvatarState.healthy;      //çŠ¶æ€ä¸ºå¥åº·
             else if (healthPercent >= 0.3f)
-                _newAvatarState = VpetAvatarState.normal;       //×´Ì¬ÎªÆÕÍ¨
+                _newAvatarState = VpetAvatarState.normal;       //çŠ¶æ€ä¸ºæ™®é€š
             else
-                _newAvatarState = VpetAvatarState.bad;          //×´Ì¬ÎªÎ£ÏÕ
+                _newAvatarState = VpetAvatarState.bad;          //çŠ¶æ€ä¸ºå±é™©
         }
     }
 
-    //¸üĞÂ×´Ì¬Í·Ïñ&ÑªÌõÑÕÉ«(Update)
+    //æ›´æ–°çŠ¶æ€å¤´åƒ&è¡€æ¡é¢œè‰²(Update)
     private void UpdateAvatarAndColor()
     {
-        //×´Ì¬·¢Éú¸Ä±äÊ±Ö´ĞĞ
+        //çŠ¶æ€å‘ç”Ÿæ”¹å˜æ—¶æ‰§è¡Œ
         if(_currentAvatarState != _newAvatarState)
         {
-            _currentAvatarState = _newAvatarState;      //¸üĞÂ×´Ì¬
+            _currentAvatarState = _newAvatarState;      //æ›´æ–°çŠ¶æ€
 
             switch (_currentAvatarState)
             {
-                //½¡¿µ×´Ì¬Ê±
+                //å¥åº·çŠ¶æ€æ—¶
                 case VpetAvatarState.healthy:
                     _stateAvatar.sprite = _healthy;
-                    _sliderHealthFill.color = SetColor("#83ff58");   //ÂÌÉ«ÑªÌõ
+                    _sliderHealthFill.color = SetColor("#83ff58");   //ç»¿è‰²è¡€æ¡
                     break;
 
-                //ÆÕÍ¨×´Ì¬Ê±
+                //æ™®é€šçŠ¶æ€æ—¶
                 case VpetAvatarState.normal:
                     _stateAvatar.sprite = _normal;
-                    _sliderHealthFill.color = SetColor("#fff958");   //»ÆÉ«ÑªÌõ
+                    _sliderHealthFill.color = SetColor("#fff958");   //é»„è‰²è¡€æ¡
                     break;
 
-                //Î£ÏÕ×´Ì¬Ê±
+                //å±é™©çŠ¶æ€æ—¶
                 case VpetAvatarState.bad:
                     _stateAvatar.sprite = _bad;
-                    _sliderHealthFill.color = SetColor("#ff7058");   //ºìÉ«ÑªÌõ
+                    _sliderHealthFill.color = SetColor("#ff7058");   //çº¢è‰²è¡€æ¡
                     break;
 
                 default:
-                    Debug.Log("Î´Öª×´Ì¬");
+                    Debug.Log("æœªçŸ¥çŠ¶æ€");
                     break;
             }
         }
     }
 
-    [SerializeField] private SpriteRenderer vpetSpriteRenderer;   //°ó¶¨×À³èSpriteRenderer
+    [Tooltip("ç»‘å®šæ¡Œå® SpriteRenderer")]
+    [SerializeField] private SpriteRenderer vpetSpriteRenderer;   //ç»‘å®šæ¡Œå® SpriteRenderer
 
-    public bool isVpetInvincible = false;   //×À³èÊÇ·ñÎŞµĞ£¿
-    private float invincibleTime = 1f;      //×À³èÎŞµĞÊ±¼ä
+    public bool isVpetInvincible = false;   //æ¡Œå® æ˜¯å¦æ— æ•Œï¼Ÿ
+    private float invincibleTime = 1f;      //æ¡Œå® æ— æ•Œæ—¶é—´
 
-    //ÊÜÉËĞ§¹û
+    //å—ä¼¤æ•ˆæœ
     IEnumerator VpetHurtEffect()
     {
         vpetSpriteRenderer.color = new Color(1f, 0.5f, 0.5f, 1f);
@@ -168,17 +181,17 @@ public class VpetHealthSystem : MonoBehaviour
         vpetSpriteRenderer.color = new Color(1f, 1f, 1f, 1f);
     }
 
-    //ÎŞµĞ×´Ì¬ÉèÖÃ(Ğ­³Ì)
+    //æ— æ•ŒçŠ¶æ€è®¾ç½®(åç¨‹)
     IEnumerator VpetInvincibleSet()
     {
-        isVpetInvincible = true;    //¿ªÆôÎŞµĞ
-        yield return new WaitForSeconds(invincibleTime);    //ÎŞµĞÊ±¼äµÈ´ı
-        isVpetInvincible = false;   //¹Ø±ÕÎŞµĞ
+        isVpetInvincible = true;    //å¼€å¯æ— æ•Œ
+        yield return new WaitForSeconds(invincibleTime);    //æ— æ•Œæ—¶é—´ç­‰å¾…
+        isVpetInvincible = false;   //å…³é—­æ— æ•Œ
     }
 
-    //ÆäËû·½·¨-----------------------------------------------------------------------------------//
+    //å…¶ä»–æ–¹æ³•-----------------------------------------------------------------------------------//
 
-    //Ê¹ÓÃÊ®Áù½øÖÆÊı×ª»»ÑÕÉ«Öµ(ÄÚ²¿·½·¨µ÷ÓÃ)
+    //ä½¿ç”¨åå…­è¿›åˆ¶æ•°è½¬æ¢é¢œè‰²å€¼(å†…éƒ¨æ–¹æ³•è°ƒç”¨)
     private Color SetColor(string hexColor)
     {
         Color newColor;
@@ -186,9 +199,12 @@ public class VpetHealthSystem : MonoBehaviour
         return newColor;
     }
 
-    private float knockBackFactor = 1f; //»÷ÍËÏµÊı
+    private float knockBackFactor = 1f; //å‡»é€€ç³»æ•°
 
-    //ÉèÖÃÊÇ·ñ¿É»÷ÍË
+    //è®¾ç½®æ˜¯å¦å¯å‡»é€€
+    /// <summary>
+    /// è®¾ç½®æ¡Œå® æ˜¯å¦å—åˆ°å‡»é€€åŠ›å½±å“ã€‚
+    /// </summary>
     public void SetKnockBack(bool isAllowKnockBack)
     {
         if (isAllowKnockBack)
@@ -197,68 +213,75 @@ public class VpetHealthSystem : MonoBehaviour
             knockBackFactor = 0f;
     }
 
-    //ÊÜÉË·½·¨(Íâ²¿µ÷ÓÃ)
+    //å—ä¼¤æ–¹æ³•(å¤–éƒ¨è°ƒç”¨)
+    /// <summary>
+    /// å¯¹æ¡Œå® é€ æˆä¼¤å®³ï¼Œå¹¶å¤„ç†å‡»é€€ã€æ— æ•Œæ—¶é—´ã€å—å‡»ç‰¹æ•ˆå’Œæ­»äº¡é€šçŸ¥ã€‚
+    /// </summary>
     public void VpetGethurt(float damage,Vector2 force)
     {
         if (isVpetInvincible || isVpetDead) return;
 
-        float newHealth = _vpetCurrentHealth - damage;  //ÊÜÉËºóµÄÉúÃüÖµ
-        //ÈôÊÜÉËºóÉúÃüÖµµÍÓÚ0
+        float newHealth = _vpetCurrentHealth - damage;  //å—ä¼¤åçš„ç”Ÿå‘½å€¼
+        //è‹¥å—ä¼¤åç”Ÿå‘½å€¼ä½äº0
         if (newHealth <= 0)
         {
-            _vpetCurrentHealth = 0;     //ÉúÃüÖµ¹Ì¶¨Îª0
-            isVpetDead = true;          //×À³èËÀÍö
-            vpetAction.VpetDead();      //Ö´ĞĞËÀÍöĞĞÎª
+            _vpetCurrentHealth = 0;     //ç”Ÿå‘½å€¼å›ºå®šä¸º0
+            isVpetDead = true;          //æ¡Œå® æ­»äº¡
+            vpetAction.VpetDead();      //æ‰§è¡Œæ­»äº¡è¡Œä¸º
         }
 
-        //·ñÔòÕı³£ÊÜÉË
+        //å¦åˆ™æ­£å¸¸å—ä¼¤
         else
             _vpetCurrentHealth = newHealth;
 
         rb.velocity = Vector2.zero;
         rb.AddForce(force * knockBackFactor);
 
-        AudioManager.Instance.PlaySound("getHurt");  //²¥·ÅÒôĞ§
+        AudioManager.Instance.PlaySound("getHurt");  //æ’­æ”¾éŸ³æ•ˆ
 
-        StartCoroutine(VpetHurtEffect());       //ÊÜÉËĞ§¹û
-        StartCoroutine(VpetInvincibleSet());    //ÊÜÉËÎŞµĞ×´Ì¬ÉèÖÃ
+        StartCoroutine(VpetHurtEffect());       //å—ä¼¤æ•ˆæœ
+        StartCoroutine(VpetInvincibleSet());    //å—ä¼¤æ— æ•ŒçŠ¶æ€è®¾ç½®
         ShowFigure(damage, true);
     }
 
-    private float recoverMultiplier = 1f;       //ÉúÃü»Ö¸´±¶ÂÊ
+    private float recoverMultiplier = 1f;       //ç”Ÿå‘½æ¢å¤å€ç‡
 
-    //ÉúÃü»Ö¸´·½·¨(Íâ²¿µ÷ÓÃ)
+    //ç”Ÿå‘½æ¢å¤æ–¹æ³•(å¤–éƒ¨è°ƒç”¨)
+    /// <summary>
+    /// æŒ‰å½“å‰éš¾åº¦å€ç‡æ¢å¤æ¡Œå® ç”Ÿå‘½å€¼ã€‚
+    /// </summary>
     public void VpetRecover(float recoverHealth)
     {
-        float recover = Mathf.Ceil(recoverHealth * recoverMultiplier);  
+        float recover = Mathf.Ceil(recoverHealth * recoverMultiplier);
 
         if (isVpetDead) return;
 
-        float newHealth = _vpetCurrentHealth + recover;   //»Ö¸´ÉúÃüºóµÄÉúÃüÖµ
-        //Èô»Ö¸´ºóÉúÃüÖµ¸ßÓÚ×î´óÉúÃüÖµ
+        float newHealth = _vpetCurrentHealth + recover;   //æ¢å¤ç”Ÿå‘½åçš„ç”Ÿå‘½å€¼
+        //è‹¥æ¢å¤åç”Ÿå‘½å€¼é«˜äºæœ€å¤§ç”Ÿå‘½å€¼
         if (newHealth >= vpetHealth)
-            _vpetCurrentHealth = vpetHealth;    //½ö»Ö¸´µ½×î´óÉúÃü
-        //·ñÔòÕı³£»Ö¸´ÉúÃü
+            _vpetCurrentHealth = vpetHealth;    //ä»…æ¢å¤åˆ°æœ€å¤§ç”Ÿå‘½
+        //å¦åˆ™æ­£å¸¸æ¢å¤ç”Ÿå‘½
         else
-            _vpetCurrentHealth = newHealth;     //»Ö¸´ÉúÃü
+            _vpetCurrentHealth = newHealth;     //æ¢å¤ç”Ÿå‘½
 
-        ShowFigure(recover, false);   //»Ö¸´Êı×Ö
+        ShowFigure(recover, false);   //æ¢å¤æ•°å­—
     }
 
-    [SerializeField] private GameObject figureTextPrefab;   //Êı×ÖÎÄ±¾Ô¤ÖÆÌå
-    private GameObject figureCanvas;                        //FigureCanvas¸¸½Úµã
+    [Tooltip("æ•°å­—æ–‡æœ¬é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject figureTextPrefab;   //æ•°å­—æ–‡æœ¬é¢„åˆ¶ä½“
+    private GameObject figureCanvas;                        //FigureCanvasçˆ¶èŠ‚ç‚¹
 
-    //ÏÔÊ¾UIÊı×Ö
+    //æ˜¾ç¤ºUIæ•°å­—
     private void ShowFigure(float num,bool isRed)
     {
         Transform parent = figureCanvas.transform;
-        //´´½¨TMPÉËº¦Êı×ÖÊµÀı
+        //åˆ›å»ºTMPä¼¤å®³æ•°å­—å®ä¾‹
         GameObject figureText = Instantiate(figureTextPrefab, transform.position + Vector3.up, Quaternion.identity, parent);
-        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //»ñÈ¡TMP
+        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //è·å–TMP
 
         tmp.SetText(num.ToString());
 
-        //ÉèÖÃÎÄ±¾ÑÕÉ«
+        //è®¾ç½®æ–‡æœ¬é¢œè‰²
         if (isRed)
             tmp.color = new Color(1, 0.4f, 0.4f, 1);
         else

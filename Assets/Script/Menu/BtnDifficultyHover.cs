@@ -2,6 +2,9 @@ using UnityEngine.EventSystems;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// ä¸ºéš¾åº¦é€‰æ‹©æŒ‰é’®æä¾›æ‚¬åœè§†è§‰åé¦ˆå’Œæç¤ºæ–‡æ¡ˆåˆ‡æ¢ã€‚
+/// </summary>
 public class BtnDifficultyHover : MonoBehaviour , IPointerEnterHandler, IPointerExitHandler
 {
     [SerializeField] private TextMeshProUGUI text;
@@ -12,26 +15,26 @@ public class BtnDifficultyHover : MonoBehaviour , IPointerEnterHandler, IPointer
         AudioManager.Instance.PlaySound("button_hover");
         switch (level)
         {
-            //¼òµ¥°´Å¥ÎÄ±¾ÉèÖÃ
+            //ç®€å•æŒ‰é’®æ–‡æœ¬è®¾ç½®
             case 1:
-                text.SetText("*¸ü¿ìµÄÎïÆ·Ë¢ĞÂ\n*×À³èÉúÃü/»Ö¸´ÄÜÁ¦/¹¥»÷ÄÜÁ¦ÌáÉı\n*ÏİÚåÉËº¦¼õÉÙ\n*¹ÖÎïÊôĞÔÈõ»¯");
+                text.SetText("*æ›´å¿«çš„ç‰©å“åˆ·æ–°\n*æ¡Œå® ç”Ÿå‘½/æ¢å¤èƒ½åŠ›/æ”»å‡»èƒ½åŠ›æå‡\n*é™·é˜±ä¼¤å®³å‡å°‘\n*æ€ªç‰©å±æ€§å¼±åŒ–");
                 text.color = new Color(0.1f, 0.92f, 0.25f, 1);
                 break;
 
-            //ÆÕÍ¨°´Å¥ÎÄ±¾ÉèÖÃ
+            //æ™®é€šæŒ‰é’®æ–‡æœ¬è®¾ç½®
             case 2:
-                text.SetText("\n*³£¹æµÄÓÎÏ·ÄÑ¶È£¬¸÷·½Ãæ¾ùºâ");
+                text.SetText("\n*å¸¸è§„çš„æ¸¸æˆéš¾åº¦ï¼Œå„æ–¹é¢å‡è¡¡");
                 text.color = new Color(0.25f, 0.72f, 0.72f, 1);
                 break;
 
-            //À§ÄÑ°´Å¥ÎÄ±¾ÉèÖÃ
+            //å›°éš¾æŒ‰é’®æ–‡æœ¬è®¾ç½®
             case 3:
-                text.SetText("*ÎïÆ·Ë¢ĞÂËÙ¶È±äÂı\n*×À³èÉúÃüÓëÕ½¶·ÄÜÁ¦Ï÷Èõ\n*ÏİÚå±äµÃ¸ü¾ßÍşĞ²\n*¹ÖÎïÊôĞÔÌáÉı");
+                text.SetText("*ç‰©å“åˆ·æ–°é€Ÿåº¦å˜æ…¢\n*æ¡Œå® ç”Ÿå‘½ä¸æˆ˜æ–—èƒ½åŠ›å‰Šå¼±\n*é™·é˜±å˜å¾—æ›´å…·å¨èƒ\n*æ€ªç‰©å±æ€§æå‡");
                 text.color = new Color(0.54f, 0, 0, 1);
                 break;
 
             default:
-                Debug.Log("ÄÑ¶ÈµÈ¼¶ĞòÁĞºÅÎ´Öª");
+                Debug.Log("éš¾åº¦ç­‰çº§åºåˆ—å·æœªçŸ¥");
                 break;
         }
     }

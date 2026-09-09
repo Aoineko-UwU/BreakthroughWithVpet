@@ -3,10 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+/// <summary>
+/// 根据桌宠的横向位置更新地图进度，并显示已到达的存档点。
+/// </summary>
 public class MapProgressBar : Singleton<MapProgressBar>
 {
+    [Tooltip("桌宠的Transform")]
     [SerializeField] private Transform vpet;        //桌宠的Transform
+    [Tooltip("存档点1的Image")]
     [SerializeField] private Image checkPoint01;    //存档点1的Image
+    [Tooltip("存档点2的Image")]
     [SerializeField] private Image checkPoint02;    //存档点2的Image
 
     private Slider slider;                 //滑动条
@@ -40,6 +46,9 @@ public class MapProgressBar : Singleton<MapProgressBar>
     }
 
     //设置到达情况
+    /// <summary>
+    /// 标记指定序号的重生点已经到达。
+    /// </summary>
     public void SetArrive(int index)
     {
         switch (index)

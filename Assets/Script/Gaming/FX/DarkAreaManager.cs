@@ -2,26 +2,29 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+/// <summary>
+/// æ ¹æ®æ¡Œå® æ˜¯å¦è¿›å…¥æš—åŒºï¼Œæ¸å˜è°ƒæ•´ç›®æ ‡ SpriteRenderer çš„äº®åº¦ã€‚
+/// </summary>
 public class DarkAreaManager : MonoBehaviour
 {
     [SerializeField] private List<Tilemap> tilemaps;
 
-    private float darkestColor = 0.55f;    // ×îµÍÁÁ¶È
-    private float lightSpeed = 0.2f;       // ±äÁÁËÙ¶È
-    private float darkSpeed = 0.2f;        // ±ä°µËÙ¶È
+    private float darkestColor = 0.55f;    // æœ€ä½äº®åº¦
+    private float lightSpeed = 0.2f;       // å˜äº®é€Ÿåº¦
+    private float darkSpeed = 0.2f;        // å˜æš—é€Ÿåº¦
 
     private int vpetTriggerCount = 0;
 
-    private bool colorNeedsUpdate = false;  // ÊÇ·ñÑÕÉ«ĞèÒª¸Ä±ä£¿
+    private bool colorNeedsUpdate = false;  // æ˜¯å¦é¢œè‰²éœ€è¦æ”¹å˜ï¼Ÿ
 
-    //×¢²á×À³è½øÈë
+    /// <summary>è®°å½•æ¡Œå® è¿›å…¥æš—åŒºã€‚</summary>
     public void RegisterVpetEnter()
     {
         vpetTriggerCount++;
         colorNeedsUpdate = true;
     }
 
-    //×¢²á×À³èÍË³ö
+    /// <summary>è®°å½•æ¡Œå® ç¦»å¼€æš—åŒºã€‚</summary>
     public void RegisterVpetExit()
     {
         vpetTriggerCount = Mathf.Max(0, vpetTriggerCount - 1);
@@ -30,10 +33,10 @@ public class DarkAreaManager : MonoBehaviour
 
     private void Update()
     {
-        if (!colorNeedsUpdate) return;      //ÑÕÉ«ÎŞĞè¸Ä±äÔò²»Ö´ĞĞ
+        if (!colorNeedsUpdate) return;      //é¢œè‰²æ— éœ€æ”¹å˜åˆ™ä¸æ‰§è¡Œ
 
-        bool vpetInsideAny = vpetTriggerCount > 0;  //´æÔÚvpetÊ±ÎªÕæ
-        bool stillChanging = false;                 //ÑÕÉ«ÊÇ·ñÈÔÈ»ÔÚ¸ü±ä£¿
+        bool vpetInsideAny = vpetTriggerCount > 0;  //å­˜åœ¨vpetæ—¶ä¸ºçœŸ
+        bool stillChanging = false;                 //é¢œè‰²æ˜¯å¦ä»ç„¶åœ¨æ›´å˜ï¼Ÿ
 
         foreach (Tilemap tile in tilemaps)
         {
@@ -45,11 +48,11 @@ public class DarkAreaManager : MonoBehaviour
                 stillChanging = true;
         }
 
-        // Èç¹ûËùÓĞÑÕÉ«¶¼ÒÑµ½´ïÄ¿±êÖµ£¬Í£Ö¹ºóĞø¸üĞÂ
+        // å¦‚æœæ‰€æœ‰é¢œè‰²éƒ½å·²åˆ°è¾¾ç›®æ ‡å€¼ï¼Œåœæ­¢åç»­æ›´æ–°
         colorNeedsUpdate = stillChanging;
     }
 
-    //¹«¹²ÁÁ¶ÈÑÕÉ«¸Ä±ä·½·¨
+    //å…¬å…±äº®åº¦é¢œè‰²æ”¹å˜æ–¹æ³•
     private Color AdjustColor(Color original, bool isDarkening)
     {
         float speed = isDarkening ? darkSpeed : lightSpeed;

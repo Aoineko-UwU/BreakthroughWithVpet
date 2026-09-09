@@ -2,38 +2,47 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ç›‘å¬æ¡Œå® åˆ°è¾¾é‡ç”Ÿç‚¹çš„çŠ¶æ€ï¼Œå¹¶æ›´æ–°é‡ç”Ÿä½ç½®ã€è¿›åº¦æ¡å’Œç‰¹æ•ˆã€‚
+/// </summary>
 public class VpetRespawnPointObserver : MonoBehaviour
 {
-    public int respawnOrder = 0;    //¸´»îµãÓÅÏÈ¼¶£ºÔ½´óÔ½ÓÅÏÈ
-    public float offsetX = 0f;      //¼à²â·¶Î§Ïò×óÆ«ÒÆÖµ
-    public Transform respawnPoint;  //ÖØÉúµãÎ»ÖÃ
+    [Tooltip("é‡ç”Ÿç‚¹ä¼˜å…ˆçº§ï¼Œæ•°å€¼è¶Šå¤§è¶Šæ™šè¦†ç›–ä½ä¼˜å…ˆçº§é‡ç”Ÿç‚¹ã€‚")]
+    public int respawnOrder = 0;
 
-    private SpriteRenderer sprite;  //¾«ÁéäÖÈ¾Æ÷
-    private GameObject vpet;        //×À³èÓÎÏ·¶ÔÏó
+    [Tooltip("é‡ç”Ÿç‚¹è§¦å‘æ£€æµ‹åŒºåŸŸå‘å·¦çš„åç§»é‡ã€‚")]
+    public float offsetX = 0f;
 
-    [SerializeField] private GameObject particle;   //Á£×ÓĞ§¹û
+    [Tooltip("è¯¥é‡ç”Ÿç‚¹å¯¹åº”çš„ç›®æ ‡ä½ç½®ã€‚")]
+    public Transform respawnPoint;
+
+    private SpriteRenderer sprite;  //ç²¾çµæ¸²æŸ“å™¨
+    private GameObject vpet;        //æ¡Œå® æ¸¸æˆå¯¹è±¡
+
+    [Tooltip("ç²’å­æ•ˆæœ")]
+    [SerializeField] private GameObject particle;   //ç²’å­æ•ˆæœ
 
     private bool isSetThisPoint = false;
 
     private void Awake()
     {
-        sprite = GetComponent<SpriteRenderer>();            //»ñÈ¡¾«ÁéäÖÈ¾Æ÷
-        vpet = GameObject.FindGameObjectWithTag("Vpet");    //»ñÈ¡×À³èÓÎÏ·¶ÔÏó
+        sprite = GetComponent<SpriteRenderer>();            //è·å–ç²¾çµæ¸²æŸ“å™¨
+        vpet = GameObject.FindGameObjectWithTag("Vpet");    //è·å–æ¡Œå® æ¸¸æˆå¯¹è±¡
     }
 
     private void Start()
     {
-        Invoke("CheckSpawnPoint", 0.2f);    //ÑÓ³Ùµ÷ÓÃ¼ì²é£¬·ÀÖ¹GameManager»¹Î´³õÊ¼»¯Íê±Ï
+        Invoke("CheckSpawnPoint", 0.2f);    //å»¶è¿Ÿè°ƒç”¨æ£€æŸ¥ï¼Œé˜²æ­¢GameManagerè¿˜æœªåˆå§‹åŒ–å®Œæ¯•
     }
 
     private void Update()
     {
         if (!GameManager.Instance) return;
 
-        //Èô»¹Î´ÉèÖÃ¸Ãµã
+        //è‹¥è¿˜æœªè®¾ç½®è¯¥ç‚¹
         if (!isSetThisPoint)
         {
-           //½øĞĞ¼à²â
+           //è¿›è¡Œç›‘æµ‹
             if (vpet.transform.position.x >= transform.position.x + offsetX)
                 TrySetAsRespawnPoint();
 
@@ -42,7 +51,7 @@ public class VpetRespawnPointObserver : MonoBehaviour
 
     private void CheckSpawnPoint()
     {
-        //ÈôÓĞÓÅÏÈ¼¶¸ü¸ßµÄÖØÉúµã±»¼¤»î
+        //è‹¥æœ‰ä¼˜å…ˆçº§æ›´é«˜çš„é‡ç”Ÿç‚¹è¢«æ¿€æ´»
         if(GameManager.Instance.GetCurrentRespawnOrder() >= respawnOrder)
         {
             isSetThisPoint = true;
@@ -50,27 +59,27 @@ public class VpetRespawnPointObserver : MonoBehaviour
         }
     }
 
-    //³¢ÊÔÉèÖÃĞÂÖØÉúµã
+    //å°è¯•è®¾ç½®æ–°é‡ç”Ÿç‚¹
     private void TrySetAsRespawnPoint()
     {
         Vector2 _newRespawnPos = respawnPoint.position;
 
-        // ÈôÓÅÏÈ¼¶¸ü¸ß
+        // è‹¥ä¼˜å…ˆçº§æ›´é«˜
         if (respawnOrder > GameManager.Instance.GetCurrentRespawnOrder() && !isSetThisPoint)
         {
             isSetThisPoint = true;
-            GameManager.Instance.respawnPosition.position = _newRespawnPos;     //ÉèÖÃµ±Ç°ÖØÉúµãÎª±¾ÖØÉúµã
-            GameManager.Instance.SetCurrentRespawnOrder(respawnOrder);          //ÉèÖÃĞÂµÄÖØÉúµãÓÅÏÈ¼¶
+            GameManager.Instance.respawnPosition.position = _newRespawnPos;     //è®¾ç½®å½“å‰é‡ç”Ÿç‚¹ä¸ºæœ¬é‡ç”Ÿç‚¹
+            GameManager.Instance.SetCurrentRespawnOrder(respawnOrder);          //è®¾ç½®æ–°çš„é‡ç”Ÿç‚¹ä¼˜å…ˆçº§
             SetEffect();
         }
     }
 
     private void SetEffect()
     {
-        sprite.color = Color.white;     //¸ü¸ÄÑÕÉ«
-        AudioManager.Instance.PlaySound3D("setRespawnPoint", transform.position);   //ÒôĞ§²¥·Å
-        Instantiate(particle, transform.position, Quaternion.identity);             //Á£×ÓĞ§¹û
-        MapProgressBar.Instance.SetArrive(respawnOrder);                            //½ø¶ÈÌõĞ§¹û
+        sprite.color = Color.white;     //æ›´æ”¹é¢œè‰²
+        AudioManager.Instance.PlaySound3D("setRespawnPoint", transform.position);   //éŸ³æ•ˆæ’­æ”¾
+        Instantiate(particle, transform.position, Quaternion.identity);             //ç²’å­æ•ˆæœ
+        MapProgressBar.Instance.SetArrive(respawnOrder);                            //è¿›åº¦æ¡æ•ˆæœ
     }
 
 }

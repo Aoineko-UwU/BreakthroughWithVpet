@@ -4,7 +4,10 @@ using TMPro;
 using UnityEngine;
 
 
-public enum VpetState       //×À³è×´Ì¬
+/// <summary>
+/// å®šä¹‰æ¡Œå® åœ¨ç§»åŠ¨ã€è¿›é£Ÿã€å è½å’Œç»“ç®—æµç¨‹ä¸­çš„è¡Œä¸ºçŠ¶æ€ã€‚
+/// </summary>
+public enum VpetState       //æ¡Œå® çŠ¶æ€
 {
     Idle,           //0
     Walking,        //1
@@ -17,88 +20,96 @@ public enum VpetState       //×À³è×´Ì¬
     Win             //8
 }
 
+/// <summary>
+/// æ§åˆ¶æ¡Œå® çš„ç§»åŠ¨ã€äº¤äº’ã€å¢ç›Šã€å è½ã€æ­»äº¡å’Œèƒœåˆ©è¡Œä¸ºã€‚
+/// </summary>
 public class VpetAction : MonoBehaviour
 {
-    //»ñÈ¡×À³èµÄ¶¯»­Æ÷
+    //è·å–æ¡Œå® çš„åŠ¨ç”»å™¨
     [SerializeField] private Animator _animatorVpet;
     [SerializeField] private Animator _animatorVpetHand;
     [SerializeField] private Animator _animatorEatenItem;
 
-    [SerializeField] private GameObject bombPrefab;         //Õ¨µ¯Ô¤ÖÆÌå
-    [SerializeField] private GameObject winParticle;        //Ê¤Àû´¥·¢Á£×Ó
-    [SerializeField] private GameObject speedUpParticle;    //¼ÓËÙBuffÁ£×Ó
-    [SerializeField] private GameObject attackUpParticle;   //ÉËº¦BuffÁ£×Ó
+    [Tooltip("ç‚¸å¼¹é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject bombPrefab;         //ç‚¸å¼¹é¢„åˆ¶ä½“
+    [Tooltip("èƒœåˆ©è§¦å‘ç²’å­")]
+    [SerializeField] private GameObject winParticle;        //èƒœåˆ©è§¦å‘ç²’å­
+    [Tooltip("åŠ é€ŸBuffç²’å­")]
+    [SerializeField] private GameObject speedUpParticle;    //åŠ é€ŸBuffç²’å­
+    [Tooltip("ä¼¤å®³Buffç²’å­")]
+    [SerializeField] private GameObject attackUpParticle;   //ä¼¤å®³Buffç²’å­
 
-    [SerializeField] private GameObject onePunchState;      //Ò»È­×´Ì¬
+    [Tooltip("ä¸€æ‹³çŠ¶æ€")]
+    [SerializeField] private GameObject onePunchState;      //ä¸€æ‹³çŠ¶æ€
 
-    private Rigidbody2D rb;             //×À³è¸ÕÌå
-    private ConstantForce2D force2D;    //×À³è2D³ÖĞøÁ¦
-    private VpetHealthSystem health;    //×À³èÉúÃüÏµÍ³
+    private Rigidbody2D rb;             //æ¡Œå® åˆšä½“
+    private ConstantForce2D force2D;    //æ¡Œå® 2DæŒç»­åŠ›
+    private VpetHealthSystem health;    //æ¡Œå® ç”Ÿå‘½ç³»ç»Ÿ
 
-    private VpetState currentState;  //×À³è×´Ì¬
+    private VpetState currentState;  //æ¡Œå® çŠ¶æ€
 
-    //ÉúÃüÖÜÆÚ--------------------------------------------------------------------------------------------//
+    //ç”Ÿå‘½å‘¨æœŸ--------------------------------------------------------------------------------------------//
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();           //»ñÈ¡¸ÕÌå
-        health = GetComponent<VpetHealthSystem>();  //»ñÈ¡ÉúÃüÏµÍ³
-        force2D = GetComponent<ConstantForce2D>();  //»ñÈ¡³ÖĞø2DÁ¦   
-        currentState = VpetState.Idle;      //³õÊ¼»¯×´Ì¬
-        capsuleCollider = GetComponent<CapsuleCollider2D>();    //»ñÈ¡½ºÄÒÅö×²Ïä
+        rb = GetComponent<Rigidbody2D>();           //è·å–åˆšä½“
+        health = GetComponent<VpetHealthSystem>();  //è·å–ç”Ÿå‘½ç³»ç»Ÿ
+        force2D = GetComponent<ConstantForce2D>();  //è·å–æŒç»­2DåŠ›
+        currentState = VpetState.Idle;      //åˆå§‹åŒ–çŠ¶æ€
+        capsuleCollider = GetComponent<CapsuleCollider2D>();    //è·å–èƒ¶å›Šç¢°æ’ç®±
         figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
     }
 
     private void Start()
     {
-        VpetColliderChange();               //³õÊ¼»¯Åö×²Ïä
-        InitGroundContactFilter();          //³õÊ¼»¯µØÃæ½Ó´¥¹ıÂËÆ÷
-        InitAllGroundContactFilter();       //³õÊ¼»¯È«µØÃæ½Ó´¥¹ıÂËÆ÷
-        InitValueBasedDifficulty();         //³õÊ¼»¯ÄÑ¶ÈÏà¹ØÊıÖµ
+        VpetColliderChange();               //åˆå§‹åŒ–ç¢°æ’ç®±
+        InitGroundContactFilter();          //åˆå§‹åŒ–åœ°é¢æ¥è§¦è¿‡æ»¤å™¨
+        InitAllGroundContactFilter();       //åˆå§‹åŒ–å…¨åœ°é¢æ¥è§¦è¿‡æ»¤å™¨
+        InitValueBasedDifficulty();         //åˆå§‹åŒ–éš¾åº¦ç›¸å…³æ•°å€¼
     }
 
     private void FixedUpdate()
     {
 
-        if (health.isVpetDead) return;      //×À³èËÀÍöÔò²»Ö´ĞĞ
-        VpetWalk();     //×À³èÒÆ¶¯ĞĞÎª
-        VpetClimb();    //×À³èÅÊÅÀĞĞÎª
-        VpetFallHorSpeedSet();  //×À³èÆ®·ÉË®Æ½Á¦
+        if (health.isVpetDead) return;      //æ¡Œå® æ­»äº¡åˆ™ä¸æ‰§è¡Œ
+        VpetWalk();     //æ¡Œå® ç§»åŠ¨è¡Œä¸º
+        VpetClimb();    //æ¡Œå® æ”€çˆ¬è¡Œä¸º
+        VpetFallHorSpeedSet();  //æ¡Œå® é£˜é£æ°´å¹³åŠ›
     }
 
     private void Update()
     {
-        if (health.isVpetDead) return;      //×À³èËÀÍöÔò²»Ö´ĞĞ
+        if (health.isVpetDead) return;      //æ¡Œå® æ­»äº¡åˆ™ä¸æ‰§è¡Œ
 
-        VpetFall();         //×À³èÆ®·ÉĞĞÎª
-        VpetFallCheck();    //×À³èÆ®·ÉĞĞÎª¼à²â
-        VpetDance();        //×À³èÌøÎèĞĞÎª
-        TimerWork();        //¼ÆÊ±Æ÷¹¤×÷
+        VpetFall();         //æ¡Œå® é£˜é£è¡Œä¸º
+        VpetFallCheck();    //æ¡Œå® é£˜é£è¡Œä¸ºç›‘æµ‹
+        VpetDance();        //æ¡Œå® è·³èˆè¡Œä¸º
+        TimerWork();        //è®¡æ—¶å™¨å·¥ä½œ
     }
 
-    //×ß¶¯ĞĞÎª--------------------------------------------------------------------------------------- -----//
+    //èµ°åŠ¨è¡Œä¸º--------------------------------------------------------------------------------------- -----//
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ(¹¥»÷ÉËº¦ | ¹¥»÷ÆµÂÊ | ¼â´ÌÉËº¦
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼(æ”»å‡»ä¼¤å®³ | æ”»å‡»é¢‘ç‡ | å°–åˆºä¼¤å®³
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 vpetAttackDamage = 4f;
                 vpetAttackCD = 1.2f;
                 spikeDamage = 2f;
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 vpetAttackDamage = 3f;
                 vpetAttackCD = 1.3f;
                 spikeDamage = 3f;
                 break;
 
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 vpetAttackDamage = 2f;
                 vpetAttackCD = 1.4f;
@@ -107,20 +118,20 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    //×ß¶¯ĞĞÎª--------------------------------------------------------------------------------------- -----//
+    //èµ°åŠ¨è¡Œä¸º--------------------------------------------------------------------------------------- -----//
 
-    private float speedUpBuffFix = 1f;      //¼ÓËÙBuffÒÆËÙĞŞÕı
-    private float _vpetWalkSpeed = 5.5f;    //ĞĞ×ßËÙ¶È
-    private float forceMultiplier = 2f;     //ĞĞ×ßÁ¦·Å´ó±¶ÂÊ
+    private float speedUpBuffFix = 1f;      //åŠ é€ŸBuffç§»é€Ÿä¿®æ­£
+    private float _vpetWalkSpeed = 5.5f;    //è¡Œèµ°é€Ÿåº¦
+    private float forceMultiplier = 2f;     //è¡Œèµ°åŠ›æ”¾å¤§å€ç‡
     private float walkAudioTimer;
     private float walkAudioCD = 0.62f;
 
     private void VpetWalk()
     {
-        //×À³è×´Ì¬ÎªĞĞ×ßÊ±Ö´ĞĞÒÆ¶¯
+        //æ¡Œå® çŠ¶æ€ä¸ºè¡Œèµ°æ—¶æ‰§è¡Œç§»åŠ¨
         if (currentState == VpetState.Walking)
         {
-            //×ßÂ·ÒôĞ§²¥·Å
+            //èµ°è·¯éŸ³æ•ˆæ’­æ”¾
             if (walkAudioTimer <= 0)
             {
                 walkAudioTimer = walkAudioCD;
@@ -132,34 +143,34 @@ public class VpetAction : MonoBehaviour
 
             _animatorVpet.SetBool("isWalk", true);
 
-            Vector2 avgNormal = GetAverageGroundNormal();                           //È¡Æ½¾ù·¨Ïß
-            Vector2 tangent = new Vector2(avgNormal.y, -avgNormal.x).normalized;    //¼ÆËãÇĞÏß·½Ïò
+            Vector2 avgNormal = GetAverageGroundNormal();                           //å–å¹³å‡æ³•çº¿
+            Vector2 tangent = new Vector2(avgNormal.y, -avgNormal.x).normalized;    //è®¡ç®—åˆ‡çº¿æ–¹å‘
 
-            // Èç¹û avgNormal ±íÊ¾¡°´¹Ö±Ç½Ãæ¡±£¨·¨Ïß¼¸ºõË®Æ½£©£¬¾ÍÇ¿ÖÆÍùÓÒ×ß
+            // å¦‚æœ avgNormal è¡¨ç¤ºâ€œå‚ç›´å¢™é¢â€ï¼ˆæ³•çº¿å‡ ä¹æ°´å¹³ï¼‰ï¼Œå°±å¼ºåˆ¶å¾€å³èµ°
             if (Mathf.Abs(avgNormal.x) > 0.9f && Mathf.Abs(avgNormal.y) < 0.1f)
             {
                 tangent = Vector2.right;
             }
 
-            //ÖØÁ¦²¹³¥
-            Vector2 gravityForce = rb.mass * Physics2D.gravity;     //¼ÆËãÖØÁ¦ G=mg           
-            float gAlong = Vector2.Dot(gravityForce, tangent);      //ÖØÁ¦ÔÚÇĞÏß·½ÏòÉÏµÄ·ÖÁ¿            
-            Vector2 compensationForce = -gAlong * tangent;          //²¹³¥Á¦£º·´·½ÏòµÖÏû
+            //é‡åŠ›è¡¥å¿
+            Vector2 gravityForce = rb.mass * Physics2D.gravity;     //è®¡ç®—é‡åŠ› G=mg
+            float gAlong = Vector2.Dot(gravityForce, tangent);      //é‡åŠ›åœ¨åˆ‡çº¿æ–¹å‘ä¸Šçš„åˆ†é‡
+            Vector2 compensationForce = -gAlong * tangent;          //è¡¥å¿åŠ›ï¼šåæ–¹å‘æŠµæ¶ˆ
 
-            //ÈôVpetÉÏÆÂ
-            if (avgNormal.y > 0) 
-                rb.AddForce(compensationForce * 0.6f, ForceMode2D.Force);  //±£ÁôÒ»²¿·ÖÖØÁ¦¸øVpet´øÀ´µÄÓ°Ïì
-            //ÈôVpetÏÂÆÂ
+            //è‹¥Vpetä¸Šå¡
+            if (avgNormal.y > 0)
+                rb.AddForce(compensationForce * 0.6f, ForceMode2D.Force);  //ä¿ç•™ä¸€éƒ¨åˆ†é‡åŠ›ç»™Vpetå¸¦æ¥çš„å½±å“
+            //è‹¥Vpetä¸‹å¡
             else if(avgNormal.y < 0)
-                rb.AddForce(compensationForce, ForceMode2D.Force);         //Ê©¼ÓÈ«Á¦µÖÏûÖØÁ¦¼ÓËÙ¶È
+                rb.AddForce(compensationForce, ForceMode2D.Force);         //æ–½åŠ å…¨åŠ›æŠµæ¶ˆé‡åŠ›åŠ é€Ÿåº¦
 
 
             forceMultiplier = isInWater ? 0.8f : isTouchGround() ? 2f :
-                          isGrounded ? 0.6f : 0f;                    //ÒÆ¶¯Á¦±¶ÂÊ
+                          isGrounded ? 0.6f : 0f;                    //ç§»åŠ¨åŠ›å€ç‡
 
 
-            Vector2 desiredVel = tangent * _vpetWalkSpeed;                                   //ÍÆ¶¯ÑØÇĞÏßÔÈËÙ
-            Vector2 force = (desiredVel - rb.velocity) * forceMultiplier * speedUpBuffFix;   //ÒÆ¶¯Á¦×îÖÕ¼ÆËã
+            Vector2 desiredVel = tangent * _vpetWalkSpeed;                                   //æ¨åŠ¨æ²¿åˆ‡çº¿åŒ€é€Ÿ
+            Vector2 force = (desiredVel - rb.velocity) * forceMultiplier * speedUpBuffFix;   //ç§»åŠ¨åŠ›æœ€ç»ˆè®¡ç®—
             rb.AddForce(force, ForceMode2D.Force);
         }
         else
@@ -168,21 +179,23 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    [SerializeField] LayerMask groundLayer;                             //½öµØÃæ²ã¼¶
-    private ContactFilter2D groundContactFilter;                        //µØÃæ½Ó´¥¹ıÂËÆ÷
-    private ContactPoint2D[] contactPoints = new ContactPoint2D[10];    //½Ó´¥µãÊı×é
+    [Tooltip("ä»…åœ°é¢å±‚çº§")]
+    [SerializeField] LayerMask groundLayer;                             //ä»…åœ°é¢å±‚çº§
+    private ContactFilter2D groundContactFilter;                        //åœ°é¢æ¥è§¦è¿‡æ»¤å™¨
+    private ContactPoint2D[] contactPoints = new ContactPoint2D[10];    //æ¥è§¦ç‚¹æ•°ç»„
 
-    [SerializeField] LayerMask allGroundLayer;                          //ËùÓĞµØÃæÓĞ¹Ø²ã¼¶
-    private ContactFilter2D allGroundContactFilter;                     //È«µØÃæ½Ó´¥¹ıÂËÆ÷
-    private ContactPoint2D[] allContactPoints = new ContactPoint2D[1];  //½Ó´¥µãÊı×é
+    [Tooltip("æ‰€æœ‰åœ°é¢æœ‰å…³å±‚çº§")]
+    [SerializeField] LayerMask allGroundLayer;                          //æ‰€æœ‰åœ°é¢æœ‰å…³å±‚çº§
+    private ContactFilter2D allGroundContactFilter;                     //å…¨åœ°é¢æ¥è§¦è¿‡æ»¤å™¨
+    private ContactPoint2D[] allContactPoints = new ContactPoint2D[1];  //æ¥è§¦ç‚¹æ•°ç»„
 
-    // »ñÈ¡Æ½¾ù·¨Ïß
+    // è·å–å¹³å‡æ³•çº¿
     private Vector2 GetAverageGroundNormal()
     {
-        // »ñÈ¡ËùÓĞ½Ó´¥µã
+        // è·å–æ‰€æœ‰æ¥è§¦ç‚¹
         int count = rb.GetContacts(groundContactFilter, contactPoints);
         if (count == 0)
-            return Vector2.up; 
+            return Vector2.up;
 
         Vector2 sum = Vector2.zero;
         for (int i = 0; i < count; i++)
@@ -190,10 +203,10 @@ public class VpetAction : MonoBehaviour
         return (sum / count).normalized;
     }
 
-    //ÊÇ·ñÓëµØÃæÅö×²Ïä½Ó´¥
+    //æ˜¯å¦ä¸åœ°é¢ç¢°æ’ç®±æ¥è§¦
     private bool isTouchGround()
     {
-        // »ñÈ¡ËùÓĞ½Ó´¥µã
+        // è·å–æ‰€æœ‰æ¥è§¦ç‚¹
         int count = rb.GetContacts(allGroundContactFilter, allContactPoints);
         if (count > 0)
             return true;
@@ -201,7 +214,7 @@ public class VpetAction : MonoBehaviour
             return false;
     }
 
-    //³õÊ¼»¯µØÃæ½Ó´¥¹ıÂËÆ÷
+    //åˆå§‹åŒ–åœ°é¢æ¥è§¦è¿‡æ»¤å™¨
     private void InitGroundContactFilter()
     {
         groundContactFilter = new ContactFilter2D();
@@ -209,7 +222,7 @@ public class VpetAction : MonoBehaviour
         groundContactFilter.useTriggers = false;
     }
 
-    //³õÊ¼»¯È«µØÃæ½Ó´¥¹ıÂËÆ÷
+    //åˆå§‹åŒ–å…¨åœ°é¢æ¥è§¦è¿‡æ»¤å™¨
     private void InitAllGroundContactFilter()
     {
         allGroundContactFilter = new ContactFilter2D();
@@ -217,23 +230,23 @@ public class VpetAction : MonoBehaviour
         allGroundContactFilter.useTriggers = false;
     }
 
-    //ÅÊÅÀĞĞÎª--------------------------------------------------------------------------------------------//
+    //æ”€çˆ¬è¡Œä¸º--------------------------------------------------------------------------------------------//
 
-    private float _vpetClimbSpeed = 7f;                     //ÅÊÅÀËÙ¶È
-    private float climbForceMultiplier = 2f;                //ÅÊÅÀÁ¦·Å´ó±¶ÂÊ
-    private bool isClimbing = false;                        //ÊÇ·ñÕıÔÚÅÊÅÀ£¿
+    private float _vpetClimbSpeed = 7f;                     //æ”€çˆ¬é€Ÿåº¦
+    private float climbForceMultiplier = 2f;                //æ”€çˆ¬åŠ›æ”¾å¤§å€ç‡
+    private bool isClimbing = false;                        //æ˜¯å¦æ­£åœ¨æ”€çˆ¬ï¼Ÿ
 
-    private float climbAudioTimer;                          //ÅÊÅÀÒôĞ§¼ÆÊ±Æ÷
-    private float climbAudioCD = 0.62f;                     //ÅÊÅÀÒôĞ§¼ä¸ô
+    private float climbAudioTimer;                          //æ”€çˆ¬éŸ³æ•ˆè®¡æ—¶å™¨
+    private float climbAudioCD = 0.62f;                     //æ”€çˆ¬éŸ³æ•ˆé—´éš”
     private void VpetClimb()
     {
-        _animatorVpet.SetBool("isClimbing", isClimbing);    //¶¯»­»ú×´Ì¬Í¬²½
-        //×À³è×´Ì¬ÎªÅÊÅÀÊ±Ö´ĞĞ
+        _animatorVpet.SetBool("isClimbing", isClimbing);    //åŠ¨ç”»æœºçŠ¶æ€åŒæ­¥
+        //æ¡Œå® çŠ¶æ€ä¸ºæ”€çˆ¬æ—¶æ‰§è¡Œ
         if (currentState == VpetState.Climb)
         {
-            _animatorVpet.ResetTrigger("ClimbEnd");         //ÖØÖÃClimbEnd Trigger
+            _animatorVpet.ResetTrigger("ClimbEnd");         //é‡ç½®ClimbEnd Trigger
 
-            //Èô´ËÊ±²»ÊÇÕıÔÚÅÊÅÀ£¬ÔòÖ´ĞĞÒ»´Î¶¯»­
+            //è‹¥æ­¤æ—¶ä¸æ˜¯æ­£åœ¨æ”€çˆ¬ï¼Œåˆ™æ‰§è¡Œä¸€æ¬¡åŠ¨ç”»
             if (!isClimbing)
             {
                 isClimbing = true;
@@ -241,11 +254,11 @@ public class VpetAction : MonoBehaviour
                 _animatorVpet.SetTrigger("ClimbStart");
             }
 
-            Vector2 desiredVel = Vector2.up * _vpetClimbSpeed;  //ÆÚÍûËÙ¶È£ºÏòÉÏÔÈËÙ            
-            Vector2 climbForce = (desiredVel - rb.velocity) * climbForceMultiplier; //¼ÆËãÇı¶¯Á¦
-            rb.AddForce(climbForce, ForceMode2D.Force);         //Ê©¼ÓÁ¦
+            Vector2 desiredVel = Vector2.up * _vpetClimbSpeed;  //æœŸæœ›é€Ÿåº¦ï¼šå‘ä¸ŠåŒ€é€Ÿ
+            Vector2 climbForce = (desiredVel - rb.velocity) * climbForceMultiplier; //è®¡ç®—é©±åŠ¨åŠ›
+            rb.AddForce(climbForce, ForceMode2D.Force);         //æ–½åŠ åŠ›
 
-            //ÅÊÅÀÒôĞ§²¥·Å(Ëæ»ú)
+            //æ”€çˆ¬éŸ³æ•ˆæ’­æ”¾(éšæœº)
             if (climbAudioTimer <= 0)
             {
                 climbAudioTimer = climbAudioCD;
@@ -263,40 +276,44 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    //½øÊ³ĞĞÎª---------------------------------------------------------------------------------------//
-    [SerializeField] SpriteRenderer eatenItemSprite;    //½øÊ³µÀ¾ßSpriteäÖÈ¾Æ÷°ó¶¨
-    [SerializeField] GameObject onePunchEffect;         //Ò»È­×´Ì¬Á£×Ó
-    public bool isAllowEat = true;                      //ÊÇ·ñÔÊĞí½øÊ³£¿
+    //è¿›é£Ÿè¡Œä¸º---------------------------------------------------------------------------------------//
+    [Tooltip("è¿›é£Ÿé“å…·Spriteæ¸²æŸ“å™¨ç»‘å®š")]
+    [SerializeField] SpriteRenderer eatenItemSprite;    //è¿›é£Ÿé“å…·Spriteæ¸²æŸ“å™¨ç»‘å®š
+    [Tooltip("ä¸€æ‹³çŠ¶æ€ç²’å­")]
+    [SerializeField] GameObject onePunchEffect;         //ä¸€æ‹³çŠ¶æ€ç²’å­
+    public bool isAllowEat = true;                      //æ˜¯å¦å…è®¸è¿›é£Ÿï¼Ÿ
 
-    //×À³è½øÊ³
+    /// <summary>
+    /// å¯åŠ¨æ¡Œå® è¿›é£Ÿæµç¨‹ï¼Œå¹¶æ ¹æ®ç‰©å“æ•°æ®è§¦å‘å¯¹åº”äº‹ä»¶ã€‚
+    /// </summary>
     public void VpetEat(ItemData item)
     {
-        if (health.isVpetDead) return;      //×À³èËÀÍöÔò²»Ö´ĞĞ
+        if (health.isVpetDead) return;      //æ¡Œå® æ­»äº¡åˆ™ä¸æ‰§è¡Œ
 
-        //·Ç¿Õ¼ì²é
+        //éç©ºæ£€æŸ¥
         if (item != null && isAllowEat)
         {
-            if (isFalling) StopFallingLogic();      //Èô´¦ÓÚ×¹Âä×´Ì¬£¬ÔòÍ£Ö¹×¹ÂäÂß¼­
+            if (isFalling) StopFallingLogic();      //è‹¥å¤„äºå è½çŠ¶æ€ï¼Œåˆ™åœæ­¢å è½é€»è¾‘
 
-            isAllowEat = false;                     //¸ü¸ÄÎª²»ÔÊĞíÔÙ½øÊ³
-            eatenItemSprite.sprite = item.icon;     //¸Ä±äÊ³Îï¾«ÁéÍ¼
-            currentState = VpetState.Eat;           //¸Ä±ä×À³èµ±Ç°×´Ì¬
+            isAllowEat = false;                     //æ›´æ”¹ä¸ºä¸å…è®¸å†è¿›é£Ÿ
+            eatenItemSprite.sprite = item.icon;     //æ”¹å˜é£Ÿç‰©ç²¾çµå›¾
+            currentState = VpetState.Eat;           //æ”¹å˜æ¡Œå® å½“å‰çŠ¶æ€
 
-            //²¥·Å½øÊ³¶¯»­
-            _animatorVpet.SetTrigger("Eat");    
+            //æ’­æ”¾è¿›é£ŸåŠ¨ç”»
+            _animatorVpet.SetTrigger("Eat");
             _animatorVpetHand.SetTrigger("Eat");
             _animatorEatenItem.SetTrigger("Eat");
 
-            AudioManager.Instance.PlaySound("pickItem");    //²¥·ÅÒôĞ§
+            AudioManager.Instance.PlaySound("pickItem");    //æ’­æ”¾éŸ³æ•ˆ
 
-            //ÆôÓÃĞ­³ÌÑÓ³ÙÊ±¼äºóÅĞ¶ÏÊ³ÎïÀàĞÍ
+            //å¯ç”¨åç¨‹å»¶è¿Ÿæ—¶é—´ååˆ¤æ–­é£Ÿç‰©ç±»å‹
             StartCoroutine(StartFoodJudge(item));
 
-            //ÖØÖÃÅÊÅÀ×´Ì¬
+            //é‡ç½®æ”€çˆ¬çŠ¶æ€
             if (isClimbing)
                 isClimbing = false;
 
-            //ÖØÖÃÆ®·É×´Ì¬
+            //é‡ç½®é£˜é£çŠ¶æ€
             if (isFalling)
                 isFalling = false;
 
@@ -305,52 +322,52 @@ public class VpetAction : MonoBehaviour
     IEnumerator StartFoodJudge(ItemData item)
     {
         yield return new WaitForSeconds(0.8f);
-        AudioManager.Instance.PlaySound("eating");  //²¥·Å³Ô¶«Î÷ÒôĞ§
+        AudioManager.Instance.PlaySound("eating");  //æ’­æ”¾åƒä¸œè¥¿éŸ³æ•ˆ
         yield return new WaitForSeconds(1.6f);
 
-        int index = item.itemID;    //»ñÈ¡ÎïÆ·ID
+        int index = item.itemID;    //è·å–ç‰©å“ID
 
-        //¸ù¾İÎïÆ·IDÅĞ¶ÏÖ´ĞĞ²»Í¬Ğ§¹û
+        //æ ¹æ®ç‰©å“IDåˆ¤æ–­æ‰§è¡Œä¸åŒæ•ˆæœ
         switch (index)
         {
-            //½ğÆ»¹û
+            //é‡‘è‹¹æœ
             case 0:
-                health.VpetRecover(10f);   //»Ø¸´ÉúÃü
-                currentState = VpetState.Walking;                   //¸üĞÂ×À³è×´Ì¬
+                health.VpetRecover(10f);   //å›å¤ç”Ÿå‘½
+                currentState = VpetState.Walking;                   //æ›´æ–°æ¡Œå® çŠ¶æ€
                 isAllowEat = true;
                 break;
-            
-            //»èË¯ºì²è
+
+            //æ˜ç¡çº¢èŒ¶
             case 1:
-                StartCoroutine(VpetSleep());    //×À³èË¯Ãß
+                StartCoroutine(VpetSleep());    //æ¡Œå® ç¡çœ 
                 break;
 
-            //Éö±¦
+            //è‚¾å®
             case 2:
-                isOnePunch = true;              //Ç¿»¯ÏÂÒ»´Î¹¥»÷
-                onePunchState.SetActive(true);  //ÉèÖÃEffect×´Ì¬Í¼
+                isOnePunch = true;              //å¼ºåŒ–ä¸‹ä¸€æ¬¡æ”»å‡»
+                onePunchState.SetActive(true);  //è®¾ç½®EffectçŠ¶æ€å›¾
                 Instantiate(onePunchEffect, transform.position, Quaternion.identity);
                 AudioManager.Instance.PlaySound("OnePunchState");
                 currentState = VpetState.Walking;
                 isAllowEat = true;
                 break;
 
-            //µØÇò
+            //åœ°çƒ
             case 3:
-                int eventIndex = RandomSelector.Instance.EventRandomSelector(1);    //»ñÈ¡Ëæ»úµÄÊÂ¼ş
+                int eventIndex = RandomSelector.Instance.EventRandomSelector(1);    //è·å–éšæœºçš„äº‹ä»¶
                 switch(eventIndex)
                 {
-                    //ÉúÃü»Ö¸´ÊÂ¼ş
+                    //ç”Ÿå‘½æ¢å¤äº‹ä»¶
                     case 1:
                         health.VpetRecover(20f);
                         currentState = VpetState.Walking;
                         break;
-                    //Ë²¼äËÀÍö
+                    //ç¬é—´æ­»äº¡
                     case 2:
                         health.VpetGethurt(999f, Vector2.up * 100f);
                         currentState = VpetState.Die;
                         break;
-                    //ÒÆ¶¯¼ÓËÙ
+                    //ç§»åŠ¨åŠ é€Ÿ
                     case 3:
                         if(speedUpBuffCoroutine != null)
                         {
@@ -362,7 +379,7 @@ public class VpetAction : MonoBehaviour
 
                         currentState = VpetState.Walking;
                         break;
-                    //ÆÕÍ¨¹¥»÷ÉËº¦Ôö¼Ó£¬¹¥»÷ÆµÂÊ¼Ó¿ì
+                    //æ™®é€šæ”»å‡»ä¼¤å®³å¢åŠ ï¼Œæ”»å‡»é¢‘ç‡åŠ å¿«
                     case 4:
                         if(AttackUpBuffCoroutine != null)
                         {
@@ -374,17 +391,17 @@ public class VpetAction : MonoBehaviour
 
                         currentState = VpetState.Walking;
                         break;
-                    //¿Û³ıÉúÃü
+                    //æ‰£é™¤ç”Ÿå‘½
                     case 5:
                         health.VpetGethurt(10f, Vector2.up * 100f);
                         currentState = VpetState.Walking;
                         break;
-                    //Ë²ÒÆ
+                    //ç¬ç§»
                     case 6:
                         Teleport();
                         currentState = VpetState.Walking;
                         break;
-                    //Ë²¼ä±¬Õ¨
+                    //ç¬é—´çˆ†ç‚¸
                     case 7:
                         var bomb = Instantiate(bombPrefab, transform.position, Quaternion.identity);
                         bomb.GetComponent<Item_Block_bomb>().isInstanctlyExplode = true;
@@ -395,7 +412,7 @@ public class VpetAction : MonoBehaviour
                 isAllowEat = true;
                 break;
 
-            //¿ÉÀÖ(¼ÓÉËº¦)
+            //å¯ä¹(åŠ ä¼¤å®³)
             case 4:
                 if (AttackUpBuffCoroutine != null)
                 {
@@ -409,7 +426,7 @@ public class VpetAction : MonoBehaviour
                 isAllowEat = true;
                 break;
 
-            //Ñ©±Ì(¼ÓËÙ)
+            //é›ªç¢§(åŠ é€Ÿ)
             case 5:
                 if (speedUpBuffCoroutine != null)
                 {
@@ -424,80 +441,80 @@ public class VpetAction : MonoBehaviour
 
 
             default:
-                Debug.Log("Î´ÖªÊ³ÎïÀàĞÍ");
+                Debug.Log("æœªçŸ¥é£Ÿç‰©ç±»å‹");
                 break;
         }
 
     }
 
-    float speedUpBuffMultiplier = 1.7f;         //¼ÓËÙBuff¸øÓèµÄ¼ÓËÙ±¶ÂÊ
-    float speedUpBuffDuration = 12f;            //¼ÓËÙ³ÖĞøÊ±¼ä
-    private Coroutine speedUpBuffCoroutine;     //¼ÓËÙBuffĞ­³Ì
+    float speedUpBuffMultiplier = 1.7f;         //åŠ é€ŸBuffç»™äºˆçš„åŠ é€Ÿå€ç‡
+    float speedUpBuffDuration = 12f;            //åŠ é€ŸæŒç»­æ—¶é—´
+    private Coroutine speedUpBuffCoroutine;     //åŠ é€ŸBuffåç¨‹
 
     IEnumerator Eat_SpeedUp()
     {
-        ShowText("ËÙ¶ÈÌáÉı¡ü¡ü");
+        ShowText("é€Ÿåº¦æå‡â†‘â†‘");
         AudioManager.Instance.PlaySound("getBuff");
-        speedUpBuffFix = speedUpBuffMultiplier; //¸ü¸Ä¼ÓËÙ±¶ÂÊ
-        var par = Instantiate(speedUpParticle, transform.position, Quaternion.identity, transform); //Á£×ÓÉú³É
-        Destroy(par, speedUpBuffDuration);  
-        //µÈ´ıĞ§¹û³ÖĞøÊ±¼ä
+        speedUpBuffFix = speedUpBuffMultiplier; //æ›´æ”¹åŠ é€Ÿå€ç‡
+        var par = Instantiate(speedUpParticle, transform.position, Quaternion.identity, transform); //ç²’å­ç”Ÿæˆ
+        Destroy(par, speedUpBuffDuration);
+        //ç­‰å¾…æ•ˆæœæŒç»­æ—¶é—´
         yield return new WaitForSeconds(speedUpBuffDuration);
 
-        speedUpBuffFix = 1f;            //»Ö¸´Ä¬ÈÏ±¶ÂÊ
-        speedUpBuffCoroutine = null;    //ÇåÀí±¾Ğ­³Ì
+        speedUpBuffFix = 1f;            //æ¢å¤é»˜è®¤å€ç‡
+        speedUpBuffCoroutine = null;    //æ¸…ç†æœ¬åç¨‹
     }
 
-    float attackBuffDamageMultiplier = 2f;      //¹¥»÷Buff¸øÓèµÄ¹¥»÷±¶ÂÊ
-    float attackBuffTimeMultiplier = 0.5f;      //¹¥»÷Buff¸øÓèµÄ¹¥»÷¼ä¸ô±¶ÂÊ
-    float attackBuffDuration = 12f;             //¹¥»÷BuffµÄ³ÖĞøÊ±¼ä
-    private Coroutine AttackUpBuffCoroutine;    //¹¥»÷BuffĞ­³Ì
+    float attackBuffDamageMultiplier = 2f;      //æ”»å‡»Buffç»™äºˆçš„æ”»å‡»å€ç‡
+    float attackBuffTimeMultiplier = 0.5f;      //æ”»å‡»Buffç»™äºˆçš„æ”»å‡»é—´éš”å€ç‡
+    float attackBuffDuration = 12f;             //æ”»å‡»Buffçš„æŒç»­æ—¶é—´
+    private Coroutine AttackUpBuffCoroutine;    //æ”»å‡»Buffåç¨‹
 
     IEnumerator Eat_AttackUp()
     {
         AudioManager.Instance.PlaySound("getBuff");
-        ShowText("¹¥»÷ÌáÉı¡ü¡ü");
-        health.SetKnockBack(false);     //²»¿É»÷ÍË×´Ì¬
-        var par = Instantiate(attackUpParticle, transform.position, Quaternion.identity, transform); //Á£×ÓÉú³É
+        ShowText("æ”»å‡»æå‡â†‘â†‘");
+        health.SetKnockBack(false);     //ä¸å¯å‡»é€€çŠ¶æ€
+        var par = Instantiate(attackUpParticle, transform.position, Quaternion.identity, transform); //ç²’å­ç”Ÿæˆ
         Destroy(par, speedUpBuffDuration);
-        //¸ü¸Ä±¶ÂÊ
+        //æ›´æ”¹å€ç‡
         attackBuffDamageFix = attackBuffDamageMultiplier;
         attackBuffTimeFix = attackBuffTimeMultiplier;
-        //µÈ´ıĞ§¹û³ÖĞøÊ±¼ä
+        //ç­‰å¾…æ•ˆæœæŒç»­æ—¶é—´
         yield return new WaitForSeconds(attackBuffDuration);
-        //»Ö¸´Ä¬ÈÏ±¶ÂÊ
+        //æ¢å¤é»˜è®¤å€ç‡
         attackBuffDamageFix = 1f;
         attackBuffTimeFix = 1f;
-        health.SetKnockBack(true);      //¿É»÷ÍË×´Ì¬
+        health.SetKnockBack(true);      //å¯å‡»é€€çŠ¶æ€
 
-        AttackUpBuffCoroutine = null;   //ÇåÀí±¾Ğ­³Ì
+        AttackUpBuffCoroutine = null;   //æ¸…ç†æœ¬åç¨‹
     }
 
 
-    private float teleportRange = 12f;     // ×î´óË²ÒÆ·¶Î§
-    private int maxSearchAttempts = 10;    // ×î´ó²éÕÒ´ÎÊı
+    private float teleportRange = 12f;     // æœ€å¤§ç¬ç§»èŒƒå›´
+    private int maxSearchAttempts = 10;    // æœ€å¤§æŸ¥æ‰¾æ¬¡æ•°
 
-    //Ë²ÒÆ·½·¨Ğ§¹û
+    //ç¬ç§»æ–¹æ³•æ•ˆæœ
     private void Teleport()
     {
         Vector2 targetPosition = Vector2.zero;
         bool foundValidPosition = false;
 
-        // ³¢ÊÔ²éÕÒ×î¶à maxSearchAttempts ´Î
+        // å°è¯•æŸ¥æ‰¾æœ€å¤š maxSearchAttempts æ¬¡
         for (int i = 0; i < maxSearchAttempts; i++)
         {
-            // Ëæ»úÑ¡ÔñÒ»¸öÄ¿±êÎ»ÖÃ£¨ÔÚÖ¸¶¨·¶Î§ÄÚ£©
-            Vector2 randomDirection = Random.insideUnitCircle * teleportRange;  // ÔÚÒ»¸öÔ²ĞÎ·¶Î§ÄÚËæ»ú
+            // éšæœºé€‰æ‹©ä¸€ä¸ªç›®æ ‡ä½ç½®ï¼ˆåœ¨æŒ‡å®šèŒƒå›´å†…ï¼‰
+            Vector2 randomDirection = Random.insideUnitCircle * teleportRange;  // åœ¨ä¸€ä¸ªåœ†å½¢èŒƒå›´å†…éšæœº
             targetPosition = (Vector2)transform.position + randomDirection;
 
-            // ¼ì²éÄ¿±êÎ»ÖÃÊÇ·ñÓĞĞ§
+            // æ£€æŸ¥ç›®æ ‡ä½ç½®æ˜¯å¦æœ‰æ•ˆ
             if (CanTeleportTo(targetPosition))
             {
-                foundValidPosition = true;  // ÕÒµ½ÁËÓĞĞ§µÄÄ¿±êÎ»ÖÃ
-                break;  // ÍË³ö²éÕÒ
+                foundValidPosition = true;  // æ‰¾åˆ°äº†æœ‰æ•ˆçš„ç›®æ ‡ä½ç½®
+                break;  // é€€å‡ºæŸ¥æ‰¾
             }
         }
-        // Èç¹ûÕÒµ½ÓĞĞ§Î»ÖÃ£¬ÔòË²ÒÆ£¬·ñÔòÔ­µØË²ÒÆ
+        // å¦‚æœæ‰¾åˆ°æœ‰æ•ˆä½ç½®ï¼Œåˆ™ç¬ç§»ï¼Œå¦åˆ™åŸåœ°ç¬ç§»
         if (foundValidPosition)
             transform.position = targetPosition;
         else
@@ -506,46 +523,46 @@ public class VpetAction : MonoBehaviour
         AudioManager.Instance.PlaySound("teleport");
     }
 
-    // ¼ì²éÄ¿±êÎ»ÖÃÊÇ·ñÓĞĞ§
+    // æ£€æŸ¥ç›®æ ‡ä½ç½®æ˜¯å¦æœ‰æ•ˆ
     private bool CanTeleportTo(Vector2 targetPosition)
     {
         Collider2D hit = Physics2D.OverlapCapsule(targetPosition,capsuleCollider.size*0.2f,capsuleCollider.direction,0f);
-        // Èç¹ûÄ¿±êÎ»ÖÃÓĞÅö×²Ìå£¬Ôò²»ÄÜË²ÒÆ
-        if (hit != null && !hit.CompareTag("Ignore"))         
+        // å¦‚æœç›®æ ‡ä½ç½®æœ‰ç¢°æ’ä½“ï¼Œåˆ™ä¸èƒ½ç¬ç§»
+        if (hit != null && !hit.CompareTag("Ignore"))
             return false;
 
         return true;
     }
 
-    //// Ê¹ÓÃGizmo»æÖÆ³öÄ¿±êµØµãµÄ¼à²â°ë¾¶
+    //// ä½¿ç”¨Gizmoç»˜åˆ¶å‡ºç›®æ ‡åœ°ç‚¹çš„ç›‘æµ‹åŠå¾„
     //private void OnDrawGizmos()
     //{
-    //    Gizmos.color = Color.red; // ¼à²â·¶Î§µÄÑÕÉ«
-    //    Gizmos.DrawWireSphere(transform.position, teleportRange);  // »æÖÆÂÌÉ«µÄÔ²ĞÎÇøÓò
+    //    Gizmos.color = Color.red; // ç›‘æµ‹èŒƒå›´çš„é¢œè‰²
+    //    Gizmos.DrawWireSphere(transform.position, teleportRange);  // ç»˜åˆ¶ç»¿è‰²çš„åœ†å½¢åŒºåŸŸ
     //}
 
 
-    //Ë¯¾õĞĞÎª---------------------------------------------------------------------------------------//
+    //ç¡è§‰è¡Œä¸º---------------------------------------------------------------------------------------//
 
-    private float sleepTime = 7.5f;  //Êµ¼ÊË¯ÃßÊ±¼ä(+2.5s)
+    private float sleepTime = 7.5f;  //å®é™…ç¡çœ æ—¶é—´(+2.5s)
     private float sleepAudioTimer;
     private float sleepAudioTimerCD = 2.3f;
 
-    private float sleepRecoverTimer;        //Ë¯Ãß»Ö¸´¼ÆÊ±Æ÷
-    private float sleepRecoverCD = 1f;      //Ë¯Ãß»Ö¸´¼ä¸ô
-    private float sleepRecoverRate = 1f;    //Ã¿´ÎÉúÃü»Ö¸´Á¿
+    private float sleepRecoverTimer;        //ç¡çœ æ¢å¤è®¡æ—¶å™¨
+    private float sleepRecoverCD = 1f;      //ç¡çœ æ¢å¤é—´éš”
+    private float sleepRecoverRate = 1f;    //æ¯æ¬¡ç”Ÿå‘½æ¢å¤é‡
 
     IEnumerator VpetSleep()
     {
         currentState = VpetState.Sleep;
-        AudioManager.Instance.PlaySound("startSleep");  //ÒôĞ§²¥·Å
-        _animatorVpet.SetTrigger("SleepStart");         //Ë¯Ãß¶¯×÷²¥·Å
+        AudioManager.Instance.PlaySound("startSleep");  //éŸ³æ•ˆæ’­æ”¾
+        _animatorVpet.SetTrigger("SleepStart");         //ç¡çœ åŠ¨ä½œæ’­æ”¾
 
-        yield return new WaitForSeconds(2.5f);          //µÈ´ı¶¯×÷²¥·Å
+        yield return new WaitForSeconds(2.5f);          //ç­‰å¾…åŠ¨ä½œæ’­æ”¾
 
-        VpetColliderChange();                           //¸Ä±äÅö×²Ïä
+        VpetColliderChange();                           //æ”¹å˜ç¢°æ’ç®±
 
-        float elapsedTime = 0f;     //¾­¹ıÊ±¼ä
+        float elapsedTime = 0f;     //ç»è¿‡æ—¶é—´
         while (elapsedTime < sleepTime)
         {
             elapsedTime += Time.deltaTime;
@@ -561,47 +578,47 @@ public class VpetAction : MonoBehaviour
                 health.VpetRecover(sleepRecoverRate);
             }
 
-            yield return null; // µÈ´ıÏÂÒ»Ö¡£¬±£³ÖÑ­»·»îÔ¾
+            yield return null; // ç­‰å¾…ä¸‹ä¸€å¸§ï¼Œä¿æŒå¾ªç¯æ´»è·ƒ
         }
 
         AudioManager.Instance.StopSound("sleeping");
-        _animatorVpet.SetTrigger("SleepEnd");           //ÆğÉí¶¯×÷²¥·Å
-        yield return new WaitForSeconds(0.9f);          //µÈ´ı¶¯×÷²¥·Å
+        _animatorVpet.SetTrigger("SleepEnd");           //èµ·èº«åŠ¨ä½œæ’­æ”¾
+        yield return new WaitForSeconds(0.9f);          //ç­‰å¾…åŠ¨ä½œæ’­æ”¾
 
-        currentState = VpetState.Walking;               //¸ü¸ÄÎªĞĞ×ß×´Ì¬
-        VpetColliderChange();                           //¸ü¸ÄÅö×²Ïä
-        isAllowEat = true;                              //ÔÊĞí½øÊ³
+        currentState = VpetState.Walking;               //æ›´æ”¹ä¸ºè¡Œèµ°çŠ¶æ€
+        VpetColliderChange();                           //æ›´æ”¹ç¢°æ’ç®±
+        isAllowEat = true;                              //å…è®¸è¿›é£Ÿ
     }
 
-    //Æ®·ÉĞĞÎª---------------------------------------------------------------------------------------//
+    //é£˜é£è¡Œä¸º---------------------------------------------------------------------------------------//
 
-    private bool isGrounded = false;    //ÊÇ·ñÂäµØ
-    private bool isInWater = false;     //ÊÇ·ñ´¦ÓÚË®ÖĞ
+    private bool isGrounded = false;    //æ˜¯å¦è½åœ°
+    private bool isInWater = false;     //æ˜¯å¦å¤„äºæ°´ä¸­
 
-    private bool isAllowFallCheckTimer = false; //ÊÇ·ñÔÊĞí×¹Âä¼à²â¼ÆÊ±Æ÷¹¤×÷
+    private bool isAllowFallCheckTimer = false; //æ˜¯å¦å…è®¸å è½ç›‘æµ‹è®¡æ—¶å™¨å·¥ä½œ
     private float fallConfirmTimer;
-    private float fallConfirmInterval = 0.2f;   //×¹Âä¼à²â¼ä¸ô(³¬¹ıÕâ¸öÊ±¼ä²»´¦ÓÚµØÃæÔòÅĞ¶¨Îª×¹ÂäÖĞ)
-    private float rayLength = 1.6f;             //ÉäÏß³¤¶È
-    private float halfWidth = 0.38f;            //ÉäÏß°ë¿í¼ä¸ô
+    private float fallConfirmInterval = 0.2f;   //å è½ç›‘æµ‹é—´éš”(è¶…è¿‡è¿™ä¸ªæ—¶é—´ä¸å¤„äºåœ°é¢åˆ™åˆ¤å®šä¸ºå è½ä¸­)
+    private float rayLength = 1.6f;             //å°„çº¿é•¿åº¦
+    private float halfWidth = 0.38f;            //å°„çº¿åŠå®½é—´éš”
 
-    //×À³è×¹ÂäĞĞÎª¼à²â(Update)
+    //æ¡Œå® å è½è¡Œä¸ºç›‘æµ‹(Update)
     private void VpetFallCheck()
     {
-        // Èı¸öÉäÏßÆğµã£ºÖĞ¡¢×ó¡¢ÓÒ
+        // ä¸‰ä¸ªå°„çº¿èµ·ç‚¹ï¼šä¸­ã€å·¦ã€å³
         Vector2 centerOrigin = transform.position;
         Vector2 leftOrigin = centerOrigin + Vector2.left * halfWidth;
         Vector2 rightOrigin = centerOrigin + Vector2.right * halfWidth;
         isGrounded = false;
-        isInWater = false; 
+        isInWater = false;
 
-        // ÒÀ´Î·¢ÉäÈıÌõÏòÏÂÉäÏß£¬Ê¹ÓÃ allGroundLayer ¹ıÂË
+        // ä¾æ¬¡å‘å°„ä¸‰æ¡å‘ä¸‹å°„çº¿ï¼Œä½¿ç”¨ allGroundLayer è¿‡æ»¤
         foreach (Vector2 origin in new[] { centerOrigin, leftOrigin, rightOrigin })
         {
             RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayLength, allGroundLayer);
             if (hit.collider != null)
             {
                 isGrounded = true;
-                // ¼ì²éÅö×²ÌåÊÇ·ñÊÇË®
+                // æ£€æŸ¥ç¢°æ’ä½“æ˜¯å¦æ˜¯æ°´
                 if (hit.collider.CompareTag("Water"))
                     isInWater = true;
 
@@ -613,53 +630,53 @@ public class VpetAction : MonoBehaviour
         //Debug.DrawRay(leftOrigin, Vector2.down * rayLength, isGrounded ? Color.green : Color.red);
         //Debug.DrawRay(rightOrigin, Vector2.down * rayLength, isGrounded ? Color.green : Color.red);
 
-        // ´ÓĞĞ×ßÇĞµ½×¹Âä
+        // ä»è¡Œèµ°åˆ‡åˆ°å è½
         if (currentState == VpetState.Walking || currentState == VpetState.Idle)
         {
-            //ÆôÓÃµôÂä×´Ì¬¼à²â
+            //å¯ç”¨æ‰è½çŠ¶æ€ç›‘æµ‹
             if (!isAllowFallCheckTimer && !isGrounded)
             {
-                fallConfirmTimer = fallConfirmInterval; //¸³ÓèÊ±¼ä
-                isAllowFallCheckTimer = true;           //¿ªÊ¼½øĞĞ¼à²â
+                fallConfirmTimer = fallConfirmInterval; //èµ‹äºˆæ—¶é—´
+                isAllowFallCheckTimer = true;           //å¼€å§‹è¿›è¡Œç›‘æµ‹
             }
         }
-        //ÈôÆôÓÃÁËµôÂä×´Ì¬¼à²â¼ÆÊ±Æ÷&&¼ÆÊ±Íê³É
+        //è‹¥å¯ç”¨äº†æ‰è½çŠ¶æ€ç›‘æµ‹è®¡æ—¶å™¨&&è®¡æ—¶å®Œæˆ
         if (isAllowFallCheckTimer && fallConfirmTimer <= 0)
         {
-            //¼ÆÊ±½áÊøÊ±Èô»¹´¦ÔÚ¿ÕÖĞ
+            //è®¡æ—¶ç»“æŸæ—¶è‹¥è¿˜å¤„åœ¨ç©ºä¸­
             if (!isGrounded)
             {
-                currentState = VpetState.Fall;      //È·ÈÏ×ª»»ÎªÆ®·É×´Ì¬
-                isAllowFallCheckTimer = false;      //Í£Ö¹¼ÆÊ±Æ÷Ê¹ÓÃ
+                currentState = VpetState.Fall;      //ç¡®è®¤è½¬æ¢ä¸ºé£˜é£çŠ¶æ€
+                isAllowFallCheckTimer = false;      //åœæ­¢è®¡æ—¶å™¨ä½¿ç”¨
             }
             else
-                isAllowFallCheckTimer = false;      //Í£Ö¹¼ÆÊ±Æ÷Ê¹ÓÃ
-        }        
+                isAllowFallCheckTimer = false;      //åœæ­¢è®¡æ—¶å™¨ä½¿ç”¨
+        }
     }
-        
-    private float flyingForceVer = 7.4f;  //´¹Ö±Æ®·ÉÁ¦
-    private bool isFalling = false;     //ÊÇ·ñÕıÔÚ×¹Âä
 
-    private float fallAudioTimer;       //Æ®·ÉÒôĞ§¼ÆÊ±Æ÷
-    private float fallAudioCD = 1f;     //Æ®·ÉÒôĞ§¼ä¸ô
+    private float flyingForceVer = 7.4f;  //å‚ç›´é£˜é£åŠ›
+    private bool isFalling = false;     //æ˜¯å¦æ­£åœ¨å è½
 
-    //×À³è×¹Âä(Update)
+    private float fallAudioTimer;       //é£˜é£éŸ³æ•ˆè®¡æ—¶å™¨
+    private float fallAudioCD = 1f;     //é£˜é£éŸ³æ•ˆé—´éš”
+
+    //æ¡Œå® å è½(Update)
     private void VpetFall()
     {
-        //×À³è×´Ì¬Îª×¹ÂäÊ±´¥·¢
+        //æ¡Œå® çŠ¶æ€ä¸ºå è½æ—¶è§¦å‘
         if(currentState == VpetState.Fall && !isGrounded && !isGetUpCoroutineWork)
         {
-            //Ö´ĞĞÒ»´Î
+            //æ‰§è¡Œä¸€æ¬¡
             if (!isFalling)
             {
-                isFalling = true;                               //ÉèÖÃÎªÕıÔÚÏÂÂä
-                _animatorVpet.SetBool("isFalling", isFalling);  //¸üĞÂ¶¯»­Æ÷²ÎÊı
-                _animatorVpet.SetTrigger("FallStart");          //²¥·ÅÒ»´Î¶¯»­
-                AudioManager.Instance.PlaySound("startFall");   //²¥·ÅÒ»´ÎÒôĞ§
-                force2D.force = Vector2.up * flyingForceVer;    //ÉèÖÃĞü¸¡Á¦
+                isFalling = true;                               //è®¾ç½®ä¸ºæ­£åœ¨ä¸‹è½
+                _animatorVpet.SetBool("isFalling", isFalling);  //æ›´æ–°åŠ¨ç”»å™¨å‚æ•°
+                _animatorVpet.SetTrigger("FallStart");          //æ’­æ”¾ä¸€æ¬¡åŠ¨ç”»
+                AudioManager.Instance.PlaySound("startFall");   //æ’­æ”¾ä¸€æ¬¡éŸ³æ•ˆ
+                force2D.force = Vector2.up * flyingForceVer;    //è®¾ç½®æ‚¬æµ®åŠ›
             }
 
-            //Æ®·ÉÒôĞ§²¥·Å
+            //é£˜é£éŸ³æ•ˆæ’­æ”¾
             if (fallAudioTimer <= 0 && isFalling)
             {
                 fallAudioTimer = fallAudioCD;
@@ -667,35 +684,35 @@ public class VpetAction : MonoBehaviour
             }
         }
 
-        //ÈôÒÑÂäµØ
+        //è‹¥å·²è½åœ°
         if(isGrounded && isFalling && currentState == VpetState.Fall && !isGetUpCoroutineWork)
         {
-            isAllowEat = false;                         //½ûÖ¹½øÊ³
-            StopFallingLogic();                         //×¹ÂäÍ£Ö¹Âß¼­       
-            StartCoroutine(VpetGetUp());                //ÆğÉíÑÓ³Ù
-            AudioManager.Instance.PlaySound("fallen");  //ÒôĞ§²¥·Å
+            isAllowEat = false;                         //ç¦æ­¢è¿›é£Ÿ
+            StopFallingLogic();                         //å è½åœæ­¢é€»è¾‘
+            StartCoroutine(VpetGetUp());                //èµ·èº«å»¶è¿Ÿ
+            AudioManager.Instance.PlaySound("fallen");  //éŸ³æ•ˆæ’­æ”¾
         }
     }
 
-    private float flyingSpeedHor = 4f;             //Ë®Æ½Æ®·ÉËÙ¶È
-    private float fallHorForceMultiplier = 2f;     //Õı³£ÏòÓÒĞ£ÕıÏµÊı
-    private float negativeVelMultiplier = 0.08f;   //¸ºÏòËÙ¶ÈĞ£ÕıÏµÊı
+    private float flyingSpeedHor = 4f;             //æ°´å¹³é£˜é£é€Ÿåº¦
+    private float fallHorForceMultiplier = 2f;     //æ­£å¸¸å‘å³æ ¡æ­£ç³»æ•°
+    private float negativeVelMultiplier = 0.08f;   //è´Ÿå‘é€Ÿåº¦æ ¡æ­£ç³»æ•°
 
-    //×À³è×¹ÂäË®Æ½ËÙ¶ÈÉèÖÃ(FixUpdate)
+    //æ¡Œå® å è½æ°´å¹³é€Ÿåº¦è®¾ç½®(FixUpdate)
     private void VpetFallHorSpeedSet()
     {
         if (currentState == VpetState.Fall && !isGrounded && isFalling)
         {
-            float vx = rb.velocity.x;               //»ñÈ¡XÖáµ±Ç°ËÙ¶È          
-            float speedDiff = flyingSpeedHor - vx;  //ËÙ¶È²î
+            float vx = rb.velocity.x;               //è·å–Xè½´å½“å‰é€Ÿåº¦
+            float speedDiff = flyingSpeedHor - vx;  //é€Ÿåº¦å·®
 
-            //µ±ÒÆËÙ´¦ÓÚ²»Í¬·½ÏòÊ±£¬Ñ¡ÓÃ²»Í¬ÏµÊı
+            //å½“ç§»é€Ÿå¤„äºä¸åŒæ–¹å‘æ—¶ï¼Œé€‰ç”¨ä¸åŒç³»æ•°
             float k = vx < 0
                 ? fallHorForceMultiplier * negativeVelMultiplier
                 : fallHorForceMultiplier;
 
-            // Ê©¼ÓÁ¦
-            float forceX = speedDiff * k * speedUpBuffFix;          
+            // æ–½åŠ åŠ›
+            float forceX = speedDiff * k * speedUpBuffFix;
             rb.AddForce(Vector2.right * forceX, ForceMode2D.Force);
 
         }
@@ -703,7 +720,7 @@ public class VpetAction : MonoBehaviour
 
     bool isGetUpCoroutineWork = false;
 
-    //×À³èÆğÉíÑÓ³Ù
+    //æ¡Œå® èµ·èº«å»¶è¿Ÿ
     IEnumerator VpetGetUp()
     {
         isGetUpCoroutineWork = true;
@@ -713,50 +730,51 @@ public class VpetAction : MonoBehaviour
         isGetUpCoroutineWork = false;
     }
 
-    //×¹ÂäÍ£Ö¹Âß¼­
+    //å è½åœæ­¢é€»è¾‘
     private void StopFallingLogic()
     {
-        isFalling = false;                              //±ä¸üÎª²»ÔÚµôÂäÖĞ
-        _animatorVpet.SetBool("isFalling", isFalling);  //¸üĞÂ¶¯»­Æ÷²ÎÊı
+        isFalling = false;                              //å˜æ›´ä¸ºä¸åœ¨æ‰è½ä¸­
+        _animatorVpet.SetBool("isFalling", isFalling);  //æ›´æ–°åŠ¨ç”»å™¨å‚æ•°
         isAllowFallCheckTimer = false;
-        force2D.force = Vector2.zero;                 //ÖÕÖ¹Á¦µÄÊ©¼Ó
-        AudioManager.Instance.StopSound("fall");      //ÖÕÖ¹ÒôĞ§²¥·Å
+        force2D.force = Vector2.zero;                 //ç»ˆæ­¢åŠ›çš„æ–½åŠ 
+        AudioManager.Instance.StopSound("fall");      //ç»ˆæ­¢éŸ³æ•ˆæ’­æ”¾
     }
 
-    //ÌøÎèĞĞÎª---------------------------------------------------------------------------------------//
-    private bool isVpetDancing = false;     //ÊÇ·ñÕıÔÚÌøÎè
-    private float vpetDanceRecoverTimer;    //ÌøÎèÉúÃü»Ø¸´¼ÆÊ±Æ÷
-    private float vpetDanceRecoverCD = 1f;  //¼ÆÊ±Æ÷CD
-    private float recoverPerDance = 1f;     //Ã¿´Î»Ö¸´Á¿
+    //è·³èˆè¡Œä¸º---------------------------------------------------------------------------------------//
+    private bool isVpetDancing = false;     //æ˜¯å¦æ­£åœ¨è·³èˆ
+    private float vpetDanceRecoverTimer;    //è·³èˆç”Ÿå‘½å›å¤è®¡æ—¶å™¨
+    private float vpetDanceRecoverCD = 1f;  //è®¡æ—¶å™¨CD
+    private float recoverPerDance = 1f;     //æ¯æ¬¡æ¢å¤é‡
 
-    private float vpetDanceAttackTimer;     //ÌøÎèÉËº¦¼ÆÊ±Æ÷
-    private float vpetDanceAttackCD = 0.5f; //¼ÆÊ±Æ÷CD
-    private float damagePerDance = 3f;      //Ã¿´ÎÉËº¦Á¿
-    private float damagePerDanceRadius = 2f;//ÉËº¦°ë¾¶
-    [SerializeField] private LayerMask enemyLayer;  //µĞÈË²ã
+    private float vpetDanceAttackTimer;     //è·³èˆä¼¤å®³è®¡æ—¶å™¨
+    private float vpetDanceAttackCD = 0.5f; //è®¡æ—¶å™¨CD
+    private float damagePerDance = 3f;      //æ¯æ¬¡ä¼¤å®³é‡
+    private float damagePerDanceRadius = 2f;//ä¼¤å®³åŠå¾„
+    [Tooltip("æ•Œäººå±‚")]
+    [SerializeField] private LayerMask enemyLayer;  //æ•Œäººå±‚
 
     private void VpetDance()
     {
         if(currentState == VpetState.Dance)
         {
-            isAllowEat = false;                 //½ûÖ¹½øÊ³
-            health.isVpetInvincible = true;     //ÎŞµĞĞ§¹û
+            isAllowEat = false;                 //ç¦æ­¢è¿›é£Ÿ
+            health.isVpetInvincible = true;     //æ— æ•Œæ•ˆæœ
 
             if (!isVpetDancing)
             {
                 isVpetDancing = true;
-                _animatorVpet.SetTrigger("Dance");                  //´¥·¢¶¯×÷
-                AudioManager.Instance.PlayBGM("DanceMusic");        //²¥·ÅÒôÀÖ
+                _animatorVpet.SetTrigger("Dance");                  //è§¦å‘åŠ¨ä½œ
+                AudioManager.Instance.PlayBGM("DanceMusic");        //æ’­æ”¾éŸ³ä¹
                 StartCoroutine(DanceTime());
             }
 
-            //ÉúÃü»Ö¸´
+            //ç”Ÿå‘½æ¢å¤
             if (vpetDanceRecoverTimer <= 0)
             {
-                vpetDanceRecoverTimer = vpetDanceRecoverCD;         
-                health.VpetRecover(recoverPerDance);                
+                vpetDanceRecoverTimer = vpetDanceRecoverCD;
+                health.VpetRecover(recoverPerDance);
             }
-            //Ôì³ÉÉËº¦
+            //é€ æˆä¼¤å®³
             if(vpetDanceAttackTimer <= 0)
             {
                 bool isHurt = false;
@@ -766,17 +784,17 @@ public class VpetAction : MonoBehaviour
                 {
                     if (col != null)
                     {
-                        col.gameObject.GetComponent<EnemyHealthSystem>().GetHurt(damagePerDance,transform.position,3f);   //Ôì³ÉÉËº¦
+                        col.gameObject.GetComponent<EnemyHealthSystem>().GetHurt(damagePerDance,transform.position,3f);   //é€ æˆä¼¤å®³
                         isHurt = true;
                     }
                 }
                 if (isHurt)
-                    vpetDanceAttackTimer = vpetDanceAttackCD;   //Ôì³ÉÉËº¦ÔòË¢ĞÂCD
+                    vpetDanceAttackTimer = vpetDanceAttackCD;   //é€ æˆä¼¤å®³åˆ™åˆ·æ–°CD
 
             }
         }
     }
-    
+
     IEnumerator DanceTime()
     {
         yield return new WaitForSeconds(13f);
@@ -792,21 +810,21 @@ public class VpetAction : MonoBehaviour
             AudioManager.Instance.AdjustBGMVolume(currentVolume);
             yield return null;
         }
-        AudioManager.Instance.PauseOrContinueBGM(true); //ÔİÍ£BGM
-        currentState = VpetState.Walking;               //×´Ì¬×ª±ä
-        _animatorVpet.SetTrigger("DanceEnd");           //²¥·Å¶¯»­
-        yield return new WaitForSeconds(0.5f);          //¶ÌÔİµÈ´ı
-        AudioManager.Instance.AdjustBGMVolume(1);       //»Ö¸´BGMÒôÔ´ÒôÁ¿
-        AudioManager.Instance.PlayBGM("GameMusic");     //²¥·ÅÓÎÏ·BGM
-        isAllowEat = true;                              //ÔÊĞí½øÊ³
-        isVpetDancing = false;                          //¹Ø±ÕÌøÎè×´Ì¬
-        health.isVpetInvincible = false;                //¹Ø±ÕÎŞµĞ×´Ì¬
+        AudioManager.Instance.PauseOrContinueBGM(true); //æš‚åœBGM
+        currentState = VpetState.Walking;               //çŠ¶æ€è½¬å˜
+        _animatorVpet.SetTrigger("DanceEnd");           //æ’­æ”¾åŠ¨ç”»
+        yield return new WaitForSeconds(0.5f);          //çŸ­æš‚ç­‰å¾…
+        AudioManager.Instance.AdjustBGMVolume(1);       //æ¢å¤BGMéŸ³æºéŸ³é‡
+        AudioManager.Instance.PlayBGM("GameMusic");     //æ’­æ”¾æ¸¸æˆBGM
+        isAllowEat = true;                              //å…è®¸è¿›é£Ÿ
+        isVpetDancing = false;                          //å…³é—­è·³èˆçŠ¶æ€
+        health.isVpetInvincible = false;                //å…³é—­æ— æ•ŒçŠ¶æ€
     }
 
 
-    //¼ÆÊ±Æ÷-----------------------------------------------------------------------------------------//
+    //è®¡æ—¶å™¨-----------------------------------------------------------------------------------------//
 
-    //¼ÆÊ±Æ÷¹¤×÷(Update)
+    //è®¡æ—¶å™¨å·¥ä½œ(Update)
     private void TimerWork()
     {
         walkAudioTimer -= Time.deltaTime;
@@ -820,7 +838,9 @@ public class VpetAction : MonoBehaviour
         if (isAllowFallCheckTimer) fallConfirmTimer -= Time.deltaTime;
     }
 
-    //ÉèÖÃ×´Ì¬-----------------------------------------------------------------------------------------//
+    //è®¾ç½®çŠ¶æ€-----------------------------------------------------------------------------------------//
+
+    /// <summary>æ ¹æ®çŠ¶æ€ç¼–å·åˆ‡æ¢æ¡Œå® å½“å‰è¡Œä¸ºã€‚</summary>
 
     public void VpetStateSet(int state)
     {
@@ -854,105 +874,110 @@ public class VpetAction : MonoBehaviour
                 currentState = VpetState.Win;
                 break;
             default:
-                Debug.Log("Î´Öª×´Ì¬ÉèÖÃ");
+                Debug.Log("æœªçŸ¥çŠ¶æ€è®¾ç½®");
                 break;
         }
     }
 
-    //×À³èËÀÍö´¦Àí---------------------------------------------------------------------------------------//
+    //æ¡Œå® æ­»äº¡å¤„ç†---------------------------------------------------------------------------------------//
+
+    /// <summary>è¿›å…¥æ¡Œå® æ­»äº¡çŠ¶æ€å¹¶é€šçŸ¥æ¸¸æˆç®¡ç†å™¨ã€‚</summary>
 
     public void VpetDead()
     {
-        currentState = VpetState.Die;   //¸ü¸Ä×´Ì¬
-        StopAllCoroutines();            //Í£Ö¹ÆäËûËùÓĞĞ­³Ì
-        VpetColliderChange();           //¸Ä±äÅö×²Ïä
-        StopFallingLogic();             //½øĞĞÒ»´Î×¹ÂäÍ£Ö¹Âß¼­
+        currentState = VpetState.Die;   //æ›´æ”¹çŠ¶æ€
+        StopAllCoroutines();            //åœæ­¢å…¶ä»–æ‰€æœ‰åç¨‹
+        VpetColliderChange();           //æ”¹å˜ç¢°æ’ç®±
+        StopFallingLogic();             //è¿›è¡Œä¸€æ¬¡å è½åœæ­¢é€»è¾‘
 
-        _animatorVpet.SetBool("isClimbing", false);         //Í£Ö¹ÅÊÅÀ×´Ì¬
-        AudioManager.Instance.PlaySound("die");             //²¥·ÅËÀÍöÒôĞ§
-        _animatorVpet.SetTrigger("Die");                    //ÉèÖÃ¶¯»­
-        GameManager.Instance.VpetDeadHandle();              //Í¨Öª½øĞĞËÀÍö´¦Àí
+        _animatorVpet.SetBool("isClimbing", false);         //åœæ­¢æ”€çˆ¬çŠ¶æ€
+        AudioManager.Instance.PlaySound("die");             //æ’­æ”¾æ­»äº¡éŸ³æ•ˆ
+        _animatorVpet.SetTrigger("Die");                    //è®¾ç½®åŠ¨ç”»
+        GameManager.Instance.VpetDeadHandle();              //é€šçŸ¥è¿›è¡Œæ­»äº¡å¤„ç†
 
     }
 
-    //×À³èÊ¤Àû´¦Àí---------------------------------------------------------------------------------------//
+    //æ¡Œå® èƒœåˆ©å¤„ç†---------------------------------------------------------------------------------------//
+
+    /// <summary>è¿›å…¥æ¡Œå® èƒœåˆ©çŠ¶æ€å¹¶é€šçŸ¥æ¸¸æˆç®¡ç†å™¨ã€‚</summary>
     public void VpetWin()
     {
-        currentState = VpetState.Win;   //¸ü¸Ä×´Ì¬
-        health.isVpetDead = true;       //·ÀÖ¹Ö´ĞĞÆäËû²Ù×÷
-        StopAllCoroutines();            //Í£Ö¹ÆäËûËùÓĞĞ­³Ì
-        VpetColliderChange();           //¸üĞÂÅö×²Ïä
-        StopFallingLogic();             //½øĞĞÒ»´Î×¹ÂäÍ£Ö¹Âß¼­
+        currentState = VpetState.Win;   //æ›´æ”¹çŠ¶æ€
+        health.isVpetDead = true;       //é˜²æ­¢æ‰§è¡Œå…¶ä»–æ“ä½œ
+        StopAllCoroutines();            //åœæ­¢å…¶ä»–æ‰€æœ‰åç¨‹
+        VpetColliderChange();           //æ›´æ–°ç¢°æ’ç®±
+        StopFallingLogic();             //è¿›è¡Œä¸€æ¬¡å è½åœæ­¢é€»è¾‘
 
-        _animatorVpet.SetBool("isClimbing", false);         //Í£Ö¹ÅÊÅÀ×´Ì¬
-        AudioManager.Instance.PlaySound("win");             //²¥·Åµ½´ïÖÕµãÒôĞ§
-        AudioManager.Instance.PlaySound3D("setRespawnPoint", transform.position);   //ÒôĞ§²¥·Å
-        Instantiate(winParticle, transform.position, Quaternion.identity);          //Á£×ÓĞ§¹û
-        _animatorVpet.SetTrigger("Win");                    //ÉèÖÃ¶¯»­
-        GameManager.Instance.VpetWinHandle();               //Í¨Öª½øĞĞËÀÍö´¦Àí
+        _animatorVpet.SetBool("isClimbing", false);         //åœæ­¢æ”€çˆ¬çŠ¶æ€
+        AudioManager.Instance.PlaySound("win");             //æ’­æ”¾åˆ°è¾¾ç»ˆç‚¹éŸ³æ•ˆ
+        AudioManager.Instance.PlaySound3D("setRespawnPoint", transform.position);   //éŸ³æ•ˆæ’­æ”¾
+        Instantiate(winParticle, transform.position, Quaternion.identity);          //ç²’å­æ•ˆæœ
+        _animatorVpet.SetTrigger("Win");                    //è®¾ç½®åŠ¨ç”»
+        GameManager.Instance.VpetWinHandle();               //é€šçŸ¥è¿›è¡Œæ­»äº¡å¤„ç†
 
     }
 
-    //×À³èÅö×²Ïä¸Ä±ä---------------------------------------------------------------------------------------//
+    //æ¡Œå® ç¢°æ’ç®±æ”¹å˜---------------------------------------------------------------------------------------//
 
     private CapsuleCollider2D capsuleCollider;
 
     private void VpetColliderChange()
     {
-        //Ë¯ÃßºÍËÀÍö×´Ì¬µÄÅö×²Ïä
+        //ç¡çœ å’Œæ­»äº¡çŠ¶æ€çš„ç¢°æ’ç®±
         if(currentState == VpetState.Sleep || currentState == VpetState.Die)
         {
-            capsuleCollider.offset = new Vector2(0, -2.67f);            //Åö×²ÏäÆ«ÒÆÁ¿ 
-            capsuleCollider.size = new Vector2(9f, 3.6f);               //Åö×²Ïä³ß´ç
-            capsuleCollider.direction = CapsuleDirection2D.Horizontal;  //Åö×²Ïä·½Ïò
+            capsuleCollider.offset = new Vector2(0, -2.67f);            //ç¢°æ’ç®±åç§»é‡
+            capsuleCollider.size = new Vector2(9f, 3.6f);               //ç¢°æ’ç®±å°ºå¯¸
+            capsuleCollider.direction = CapsuleDirection2D.Horizontal;  //ç¢°æ’ç®±æ–¹å‘
         }
-        //³£¹æÅö×²Ïä
+        //å¸¸è§„ç¢°æ’ç®±
         else
         {
-            capsuleCollider.offset = Vector2.zero;                      //Åö×²ÏäÆ«ÒÆÁ¿
-            capsuleCollider.size = new Vector2(3.67f, 9.2f);            //Åö×²Ïä³ß´ç
-            capsuleCollider.direction = CapsuleDirection2D.Vertical;    //Åö×²Ïä·½Ïò
+            capsuleCollider.offset = Vector2.zero;                      //ç¢°æ’ç®±åç§»é‡
+            capsuleCollider.size = new Vector2(3.67f, 9.2f);            //ç¢°æ’ç®±å°ºå¯¸
+            capsuleCollider.direction = CapsuleDirection2D.Vertical;    //ç¢°æ’ç®±æ–¹å‘
         }
 
     }
 
-    //ÎÄ×ÖĞ§¹û---------------------------------------------------------------------------------------//
+    //æ–‡å­—æ•ˆæœ---------------------------------------------------------------------------------------//
 
-    [SerializeField] private GameObject TextPrefab;   //ÎÄ±¾Ô¤ÖÆÌå
-    private GameObject figureCanvas;                  //FigureCanvas¸¸½Úµã
+    [Tooltip("æ–‡æœ¬é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject TextPrefab;   //æ–‡æœ¬é¢„åˆ¶ä½“
+    private GameObject figureCanvas;                  //FigureCanvasçˆ¶èŠ‚ç‚¹
 
-    //ÏÔÊ¾UIÊı×Ö
+    //æ˜¾ç¤ºUIæ•°å­—
     private void ShowText(string text)
     {
         Transform parent = figureCanvas.transform;
-        //´´½¨TMPÉËº¦Êı×ÖÊµÀı
+        //åˆ›å»ºTMPä¼¤å®³æ•°å­—å®ä¾‹
         GameObject figureText = Instantiate(TextPrefab, transform.position + Vector3.up, Quaternion.identity, parent);
-        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //»ñÈ¡TMP
+        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //è·å–TMP
 
         tmp.SetText(text);
         tmp.color = new Color(1f, 1f, 0.4f, 1f);
     }
 
-    //Åö×²ÊÂ¼ş---------------------------------------------------------------------------------------//
+    //ç¢°æ’äº‹ä»¶---------------------------------------------------------------------------------------//
 
-    private float spikeDamage = 3f;     //¼â´ÌÉËº¦
+    private float spikeDamage = 3f;     //å°–åˆºä¼¤å®³
 
     private void OnTriggerStay2D(Collider2D other)
     {
-        if (health.isVpetDead) return;      //×À³èËÀÍöÔò²»Ö´ĞĞ
+        if (health.isVpetDead) return;      //æ¡Œå® æ­»äº¡åˆ™ä¸æ‰§è¡Œ
 
-        //½Ó´¥µ½Ìİ×ÓÊ±
+        //æ¥è§¦åˆ°æ¢¯å­æ—¶
         if (other.CompareTag("Ladder"))
         {
             if (currentState == VpetState.Dance) return;
             if(currentState == VpetState.Idle || currentState == VpetState.Walking)
-                currentState = VpetState.Climb;     //¸ü¸Ä×´Ì¬
+                currentState = VpetState.Climb;     //æ›´æ”¹çŠ¶æ€
             if(currentState == VpetState.Fall)
             {
-                StopFallingLogic();                 //Í£Ö¹×¹Âä
-                isAllowEat = true;                  //ÔÊĞí½øÊ³
-                currentState = VpetState.Climb;     //¸ü¸Ä×´Ì¬
-     
+                StopFallingLogic();                 //åœæ­¢å è½
+                isAllowEat = true;                  //å…è®¸è¿›é£Ÿ
+                currentState = VpetState.Climb;     //æ›´æ”¹çŠ¶æ€
+
             }
         }
 
@@ -966,49 +991,49 @@ public class VpetAction : MonoBehaviour
 
     private void OnTriggerExit2D(Collider2D other)
     {
-        if (health.isVpetDead) return;      //×À³èËÀÍöÔò²»Ö´ĞĞ
+        if (health.isVpetDead) return;      //æ¡Œå® æ­»äº¡åˆ™ä¸æ‰§è¡Œ
 
-        //Àë¿ªÌİ×ÓÊ±
+        //ç¦»å¼€æ¢¯å­æ—¶
         if (other.CompareTag("Ladder") && isClimbing)
         {
-            rb.AddForce(Vector2.up * 200f,ForceMode2D.Force);       //Ê©¼ÓÒ»¸öÏòÉÏµÄÍÆÁ¦
-            currentState = VpetState.Walking;     //¸ü¸Ä×´Ì¬
+            rb.AddForce(Vector2.up * 200f,ForceMode2D.Force);       //æ–½åŠ ä¸€ä¸ªå‘ä¸Šçš„æ¨åŠ›
+            currentState = VpetState.Walking;     //æ›´æ”¹çŠ¶æ€
         }
     }
 
-    private float vpetAttackDamage = 3f;      //×À³è¹¥»÷ÉËº¦
-    private float vpetAttackTimer;            //×À³è¹¥»÷¼ÆÊ±Æ÷
-    private float vpetAttackCD = 1.5f;        //×À³è¹¥»÷ÆµÂÊ
+    private float vpetAttackDamage = 3f;      //æ¡Œå® æ”»å‡»ä¼¤å®³
+    private float vpetAttackTimer;            //æ¡Œå® æ”»å‡»è®¡æ—¶å™¨
+    private float vpetAttackCD = 1.5f;        //æ¡Œå® æ”»å‡»é¢‘ç‡
 
-    private float attackBuffDamageFix = 1f;   //¹¥»÷BuffÉËº¦ĞŞÕı
-    private float attackBuffTimeFix = 1f;     //¹¥»÷Buff¹¥»÷ÆµÂÊĞŞÕı
+    private float attackBuffDamageFix = 1f;   //æ”»å‡»Buffä¼¤å®³ä¿®æ­£
+    private float attackBuffTimeFix = 1f;     //æ”»å‡»Buffæ”»å‡»é¢‘ç‡ä¿®æ­£
 
-    private bool isOnePunch = false;          //ÊÇ·ñÒ»È­?
+    private bool isOnePunch = false;          //æ˜¯å¦ä¸€æ‹³?
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        if (health.isVpetDead) return;      //×À³èËÀÍöÔò²»Ö´ĞĞ
+        if (health.isVpetDead) return;      //æ¡Œå® æ­»äº¡åˆ™ä¸æ‰§è¡Œ
 
-        //ÈôÅöµ½¼â´Ì
+        //è‹¥ç¢°åˆ°å°–åˆº
         if (other.collider.CompareTag("Spike"))
         {
             Vector2 dir = transform.position.y > other.transform.position.y ? Vector2.up + Vector2.right * 0.5f : Vector2.down;
             health.VpetGethurt(spikeDamage, dir * 165f);
         }
 
-        //ÈôÅöµ½µĞÈË
+        //è‹¥ç¢°åˆ°æ•Œäºº
         if (other.collider.CompareTag("Enemy") && vpetAttackTimer <= 0 && currentState == VpetState.Walking)
         {
-            vpetAttackTimer = vpetAttackCD * attackBuffTimeFix;     //¹¥»÷CDÖØÖÃ
+            vpetAttackTimer = vpetAttackCD * attackBuffTimeFix;     //æ”»å‡»CDé‡ç½®
             var enemyHealth = other.gameObject.GetComponent<EnemyHealthSystem>();
 
             if (enemyHealth != null)
             {
-                //Èô´¦ÓÚÉö±¦×´Ì¬
+                //è‹¥å¤„äºè‚¾å®çŠ¶æ€
                 if (isOnePunch)
                 {
                     isOnePunch = false;
-                    onePunchState.SetActive(false);  //¹Ø±ÕEffect×´Ì¬Í¼
+                    onePunchState.SetActive(false);  //å…³é—­EffectçŠ¶æ€å›¾
                     AudioManager.Instance.PlaySound("OnePunch");
                     enemyHealth.GetHurt(vpetAttackDamage * 999 * attackBuffDamageFix, transform.position,25f);
                     CameraShake.Instance.ShakeScreen();

@@ -2,26 +2,32 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// æ§åˆ¶ç†Šæ•Œäººçš„å·¡é€»ã€è¿½å‡»ã€éšæœºåœé¡¿ä¸è¿‘èº«æ”»å‡»è¡Œä¸ºã€‚
+/// </summary>
 public class Enemy03_Bear : MonoBehaviour
 {
-    [SerializeField] private EnemyHealthSystem healthSystem;    //ÉúÃüÏµÍ³½Å±¾
-    [SerializeField] private float moveSpeed = 100f;            //ÒÆ¶¯ËÙ¶È
+    [Tooltip("ç”Ÿå‘½ç³»ç»Ÿè„šæœ¬")]
+    [SerializeField] private EnemyHealthSystem healthSystem;    //ç”Ÿå‘½ç³»ç»Ÿè„šæœ¬
+    [Tooltip("ç§»åŠ¨é€Ÿåº¦")]
+    [SerializeField] private float moveSpeed = 100f;            //ç§»åŠ¨é€Ÿåº¦
 
-    private Vector3 pointA;             //Ñ²ÂßµãA
-    private Vector3 pointB;             //Ñ²ÂßµãB
-    private float pointRange = 8f;      //Ñ²ÂßµãÉèÖÃ·¶Î§
+    private Vector3 pointA;             //å·¡é€»ç‚¹A
+    private Vector3 pointB;             //å·¡é€»ç‚¹B
+    private float pointRange = 8f;      //å·¡é€»ç‚¹è®¾ç½®èŒƒå›´
 
     private Rigidbody2D rb;
     private Animator animator;
     private GameObject vpet;
-    private float currentSpeed;     //µ±Ç°ÒÆËÙ
-    private int moveDir;            //ÒÆ¶¯·½Ïò(-1left| +1 right| 0 idle)
-    private float faceDir;          //³õÊ¼Ãæ³¯·½Ïò
+    private float currentSpeed;     //å½“å‰ç§»é€Ÿ
+    private int moveDir;            //ç§»åŠ¨æ–¹å‘(-1left| +1 right| 0 idle)
+    private float faceDir;          //åˆå§‹é¢æœæ–¹å‘
 
-    private bool isWalking = false;                 //ÊÇ·ñÔÚÒÆ¶¯ÖĞ
-    private bool isAllowAudioPlay = false;          //ÊÇ·ñÔÊĞíÒôĞ§²¥·Å
-    private float audioTimer;                       //ÒôĞ§¼ÆÊ±Æ÷
-    [SerializeField] private float audioCD = 0.8f;  //¼ÆÊ±Æ÷CD
+    private bool isWalking = false;                 //æ˜¯å¦åœ¨ç§»åŠ¨ä¸­
+    private bool isAllowAudioPlay = false;          //æ˜¯å¦å…è®¸éŸ³æ•ˆæ’­æ”¾
+    private float audioTimer;                       //éŸ³æ•ˆè®¡æ—¶å™¨
+    [Tooltip("è®¡æ—¶å™¨CD")]
+    [SerializeField] private float audioCD = 0.8f;  //è®¡æ—¶å™¨CD
 
     void Awake()
     {
@@ -32,36 +38,36 @@ public class Enemy03_Bear : MonoBehaviour
 
     void Start()
     {
-        InitValueBasedDifficulty();                 //ÊıÖµ³õÊ¼»¯
-        moveDir = (Random.value < 0.5f) ? -1 : 1;   //³õÊ¼»¯Ê±¸ø¸öËæ»ú·½Ïò
-        faceDir = transform.localScale.x;           //Ä¬ÈÏÃæÏò·½Ïò
+        InitValueBasedDifficulty();                 //æ•°å€¼åˆå§‹åŒ–
+        moveDir = (Random.value < 0.5f) ? -1 : 1;   //åˆå§‹åŒ–æ—¶ç»™ä¸ªéšæœºæ–¹å‘
+        faceDir = transform.localScale.x;           //é»˜è®¤é¢å‘æ–¹å‘
 
-        pointA = new Vector3(transform.position.x - pointRange, transform.position.y); //ÉèÖÃPointA
-        pointB = new Vector3(transform.position.x + pointRange, transform.position.y); //ÉèÖÃPointB
+        pointA = new Vector3(transform.position.x - pointRange, transform.position.y); //è®¾ç½®PointA
+        pointB = new Vector3(transform.position.x + pointRange, transform.position.y); //è®¾ç½®PointB
 
     }
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä(¹¥»÷ÉËº¦|ÒÆ¶¯ËÙ¶È|Í£ÖÍÊ±¼äĞŞÕı)
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…(æ”»å‡»ä¼¤å®³|ç§»åŠ¨é€Ÿåº¦|åœæ»æ—¶é—´ä¿®æ­£)
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 attackDamage = 2f;
                 moveSpeed = 75f;
-                stopTimeFix = 2f;   
+                stopTimeFix = 2f;
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 attackDamage = 3f;
                 moveSpeed = 100f;
                 stopTimeFix = 0f;
                 break;
 
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 attackDamage = 4f;
                 moveSpeed = 125f;
@@ -73,29 +79,29 @@ public class Enemy03_Bear : MonoBehaviour
 
     void Update()
     {
-        //Íæ¼Ò¾àÀë³¬¹ı20m²»²¥·ÅÒôĞ§
+        //ç©å®¶è·ç¦»è¶…è¿‡20mä¸æ’­æ”¾éŸ³æ•ˆ
         isAllowAudioPlay = vpet != null &&
             vpet.transform != null &&
             Vector2.Distance(vpet.transform.position, transform.position) <= 20f;
 
-        audioTimer -= Time.deltaTime;       //¼ÆÊ±Æ÷¹¤×÷
+        audioTimer -= Time.deltaTime;       //è®¡æ—¶å™¨å·¥ä½œ
         if(isAllowStopTimerWork)  randomStopTimer -= Time.deltaTime;
 
-        //´¦ÓÚÒÆ¶¯ÖĞÔò¸üĞÂ¾«ÁéÍ¼·­×ª
+        //å¤„äºç§»åŠ¨ä¸­åˆ™æ›´æ–°ç²¾çµå›¾ç¿»è½¬
         if (moveDir != 0)
             Flip();
 
-        RandomStopCheck();      //Ëæ»úÍ£Ö¹¼à²â
+        RandomStopCheck();      //éšæœºåœæ­¢ç›‘æµ‹
 
         float vpetPosX = vpet.transform.position.x;
         float AposX = pointA.x;
         float BposX = pointB.x;
 
-        //ÈôÍæ¼Ò½øÈëÑ²ÂßÇøÓò£¬Ôò×·Öğ
+        //è‹¥ç©å®¶è¿›å…¥å·¡é€»åŒºåŸŸï¼Œåˆ™è¿½é€
         if (vpetPosX > AposX && vpetPosX < BposX)
             ChaseVpet();
 
-        //·ñÔò½øĞĞÑ²Âß
+        //å¦åˆ™è¿›è¡Œå·¡é€»
         else
             Partrol();
 
@@ -109,14 +115,14 @@ public class Enemy03_Bear : MonoBehaviour
         }
     }
 
-    private float randomStopTimer;              //Ëæ»úÍ£Ö¹¼ÆÊ±Æ÷
-    private float randomStopInterval = 10f;     //Ëæ»úÍ£Ö¹¼ä¸ô
-    private float minStopTime = 3f;             //×îµÍÍ£Ö¹Ê±³¤
-    private float maxStopTime = 6f;             //×î¸ßÍ£Ö¹Ê±³¤
-    private float stopTimeFix = 0f;             //Í£ÖÍÊ±¼äĞŞÕı
+    private float randomStopTimer;              //éšæœºåœæ­¢è®¡æ—¶å™¨
+    private float randomStopInterval = 10f;     //éšæœºåœæ­¢é—´éš”
+    private float minStopTime = 3f;             //æœ€ä½åœæ­¢æ—¶é•¿
+    private float maxStopTime = 6f;             //æœ€é«˜åœæ­¢æ—¶é•¿
+    private float stopTimeFix = 0f;             //åœæ»æ—¶é—´ä¿®æ­£
 
-    private bool  isStop = false;               //ÊÇ·ñÔİÍ£ÖĞ
-    private bool isAllowStopTimerWork = true;   //ÊÇ·ñÔÊĞíÍ£Ö¹¼ÆÊ±Æ÷¹¤×÷
+    private bool  isStop = false;               //æ˜¯å¦æš‚åœä¸­
+    private bool isAllowStopTimerWork = true;   //æ˜¯å¦å…è®¸åœæ­¢è®¡æ—¶å™¨å·¥ä½œ
 
     private void RandomStopCheck()
     {
@@ -131,40 +137,40 @@ public class Enemy03_Bear : MonoBehaviour
 
     IEnumerator StopTime()
     {
-        //µÈ´ıËæ»úÊ±³¤
+        //ç­‰å¾…éšæœºæ—¶é•¿
         float rand = Random.Range(minStopTime + stopTimeFix, maxStopTime + stopTimeFix);
         yield return new WaitForSeconds(rand);
         isStop = false;
-        moveDir = (Random.value < 0.5f) ? -1 : 1;   //¸øËæ»ú·½Ïò
+        moveDir = (Random.value < 0.5f) ? -1 : 1;   //ç»™éšæœºæ–¹å‘
     }
 
-    //×·ÖğÂß¼­
+    //è¿½é€é€»è¾‘
     private void ChaseVpet()
     {
-        //Èô´¦ÓÚ¼ä¸ôÔİÍ£ÖĞÇÒ¾àÀëÍæ¼ÒÒ»¶¨¾àÀë£¬Ôò²»´¥·¢×·Öğ
+        //è‹¥å¤„äºé—´éš”æš‚åœä¸­ä¸”è·ç¦»ç©å®¶ä¸€å®šè·ç¦»ï¼Œåˆ™ä¸è§¦å‘è¿½é€
         if (isStop && Vector2.Distance(vpet.transform.position, transform.position) > 2f) return;
         else if (isStop)
         {
             isStop = false;
         }
         isAllowStopTimerWork = false;
-        moveDir = vpet.transform.position.x > transform.position.x ? 1 : -1;    //¸ù¾İvpetÎ»ÖÃÉèÖÃÒÆ¶¯·½Ïò
+        moveDir = vpet.transform.position.x > transform.position.x ? 1 : -1;    //æ ¹æ®vpetä½ç½®è®¾ç½®ç§»åŠ¨æ–¹å‘
 
     }
 
-    //Ñ²ÂßÂß¼­
+    //å·¡é€»é€»è¾‘
     private void Partrol()
     {
         if (isStop) return;
         isAllowStopTimerWork = true;
-        //±ß½ç¼à²â(³¬¹ıÑ²Âß·¶Î§Ôò»áÇ¿ÖÆ·´ÏòÒÆ¶¯)
+        //è¾¹ç•Œç›‘æµ‹(è¶…è¿‡å·¡é€»èŒƒå›´åˆ™ä¼šå¼ºåˆ¶åå‘ç§»åŠ¨)
         if (transform.position.x <= pointA.x && moveDir < 0)
         {
-            moveDir = 1;  // µ½´ï×ó±ß½ç£¬ÏòÓÒÒÆ¶¯
+            moveDir = 1;  // åˆ°è¾¾å·¦è¾¹ç•Œï¼Œå‘å³ç§»åŠ¨
         }
         else if (transform.position.x >= pointB.x && moveDir > 0)
         {
-            moveDir = -1; // µ½´ïÓÒ±ß½ç£¬Ïò×óÒÆ¶¯
+            moveDir = -1; // åˆ°è¾¾å³è¾¹ç•Œï¼Œå‘å·¦ç§»åŠ¨
         }
     }
 
@@ -172,9 +178,9 @@ public class Enemy03_Bear : MonoBehaviour
     {
         if (healthSystem.isDead) return;
 
-        currentSpeed = moveDir * moveSpeed;   //ÉèÖÃÒÆ¶¯ËÙ¶È    
+        currentSpeed = moveDir * moveSpeed;   //è®¾ç½®ç§»åŠ¨é€Ÿåº¦
 
-        //¹ÖÎïÒÆ¶¯
+        //æ€ªç‰©ç§»åŠ¨
         if (currentSpeed != 0f)
             rb.velocity = new Vector2(currentSpeed * Time.fixedDeltaTime, rb.velocity.y);
         else
@@ -182,7 +188,7 @@ public class Enemy03_Bear : MonoBehaviour
     }
 
 
-    // ·­×ª¾«ÁéÍ¼£¬¸ù¾İ moveDir ·½Ïò
+    // ç¿»è½¬ç²¾çµå›¾ï¼Œæ ¹æ® moveDir æ–¹å‘
     private void Flip()
     {
         if (moveDir > 0)
@@ -195,10 +201,10 @@ public class Enemy03_Bear : MonoBehaviour
 
     private void OnCollisionStay2D(Collision2D other)
     {
-        //¹¥»÷Íæ¼Ò
+        //æ”»å‡»ç©å®¶
         if (other.collider.CompareTag("Vpet") && !healthSystem.isDead)
         {
-            //¸ù¾İÏà¶ÔÎ»ÖÃ¼ÆËãÁ¦µÄ·½Ïò
+            //æ ¹æ®ç›¸å¯¹ä½ç½®è®¡ç®—åŠ›çš„æ–¹å‘
             Vector2 force = transform.position.x > vpet.transform.position.x ? Vector2.left : Vector2.right;
             other.gameObject.GetComponent<VpetHealthSystem>().VpetGethurt(attackDamage, force * 400f + Vector2.up * 100f);
         }

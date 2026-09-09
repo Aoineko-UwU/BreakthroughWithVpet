@@ -3,81 +3,87 @@ using TMPro;
 using DG.Tweening;
 using UnityEngine;
 
+/// <summary>
+/// ç®¡ç†æ•Œäººç”Ÿå‘½å€¼ã€å—å‡»åé¦ˆã€æ­»äº¡æµç¨‹ã€é£˜å­—å’Œè¿œè·ç¦»è‡ªåŠ¨é”€æ¯ã€‚
+/// </summary>
 public class EnemyHealthSystem : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer healthBar;  //ÑªÌõUI°ó¶¨
-    [SerializeField] public float health = 30;          //ÉúÃüÖµ
-    [SerializeField] private GameObject particlePrefab; //Á£×ÓÔ¤ÖÆÌå
+    [Tooltip("è¡€æ¡UIç»‘å®š")]
+    [SerializeField] private SpriteRenderer healthBar;  //è¡€æ¡UIç»‘å®š
+    [Tooltip("ç”Ÿå‘½å€¼")]
+    [SerializeField] public float health = 30;          //ç”Ÿå‘½å€¼
+    [Tooltip("ç²’å­é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject particlePrefab; //ç²’å­é¢„åˆ¶ä½“
 
-    private float currentHealth;    //µ±Ç°ÉúÃüÖµ
-    private float oringinWidth;     //ÑªÌõ³õÊ¼¿í¶È
-    private SpriteRenderer sprite;  //¹ÖÎï¾«ÁéäÖÈ¾Æ÷
+    private float currentHealth;    //å½“å‰ç”Ÿå‘½å€¼
+    private float oringinWidth;     //è¡€æ¡åˆå§‹å®½åº¦
+    private SpriteRenderer sprite;  //æ€ªç‰©ç²¾çµæ¸²æŸ“å™¨
     private Rigidbody2D rb;
 
-    public bool isDead = false;     //ÊÇ·ñÒÑ¾­ËÀÍö
+    public bool isDead = false;     //æ˜¯å¦å·²ç»æ­»äº¡
 
     private GameObject vpet;
 
     private void Start()
     {
-        vpet = GameObject.FindGameObjectWithTag("Vpet");                    //»ñÈ¡×À³èµÄÓÎÏ·¶ÔÏó
-        sprite = GetComponent<SpriteRenderer>();                            //»ñÈ¡¾«ÁéäÖÈ¾
-        rb = GetComponent<Rigidbody2D>();                                   //»ñÈ¡¸ÕÌå
-        figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");    //»ñÈ¡Êı×ÖCanvas²ã
+        vpet = GameObject.FindGameObjectWithTag("Vpet");                    //è·å–æ¡Œå® çš„æ¸¸æˆå¯¹è±¡
+        sprite = GetComponent<SpriteRenderer>();                            //è·å–ç²¾çµæ¸²æŸ“
+        rb = GetComponent<Rigidbody2D>();                                   //è·å–åˆšä½“
+        figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");    //è·å–æ•°å­—Canvaså±‚
 
-        InitValueBasedDifficulty();         //³õÊ¼»¯ÊıÖµ
+        InitValueBasedDifficulty();         //åˆå§‹åŒ–æ•°å€¼
 
-        InitHealth();   //³õÊ¼»¯ÉúÃü
+        InitHealth();   //åˆå§‹åŒ–ç”Ÿå‘½
 
     }
 
     private void Update()
     {
         if (isDead)
-            sprite.color = sprite.color = new Color(1f, 0, 0, 1f);      //¸ü¸Ä¾«ÁéÑÕÉ«
+            sprite.color = sprite.color = new Color(1f, 0, 0, 1f);      //æ›´æ”¹ç²¾çµé¢œè‰²
         else
         {
-            //ÑªÌõ¸üĞÂ
+            //è¡€æ¡æ›´æ–°
             healthBar.size = new Vector2(oringinWidth * (currentHealth / totalHealth), healthBar.size.y);
-            SelfDestroy();  //×Ô´İ»ÙÂß¼­
-            HealthCheck();  //ÉúÃü¼à²â
+            SelfDestroy();  //è‡ªæ‘§æ¯é€»è¾‘
+            HealthCheck();  //ç”Ÿå‘½ç›‘æµ‹
         }
     }
 
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä(¹ÖÎïÉúÃü±¶ÂÊ)
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…(æ€ªç‰©ç”Ÿå‘½å€ç‡)
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 healthMultiplier = 0.75f;
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 healthMultiplier = 1;
                 break;
 
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 healthMultiplier = 1.25f;
                 break;
         }
     }
 
-    private float healthMultiplier = 1f;    //ÉúÃü±¶ÂÊ
+    private float healthMultiplier = 1f;    //ç”Ÿå‘½å€ç‡
     private float totalHealth;
     private void InitHealth()
     {
-        oringinWidth = healthBar.size.x;  //¼ÇÂ¼³õÊ¼¿í¶È
-        totalHealth = Mathf.Ceil(health * healthMultiplier);//ÉúÃüÖµ³õÊ¼»¯
+        oringinWidth = healthBar.size.x;  //è®°å½•åˆå§‹å®½åº¦
+        totalHealth = Mathf.Ceil(health * healthMultiplier);//ç”Ÿå‘½å€¼åˆå§‹åŒ–
         currentHealth = totalHealth;
     }
 
-    //ÉúÃü¼à²â
+    //ç”Ÿå‘½ç›‘æµ‹
     private void HealthCheck()
     {
         if (currentHealth <= 0 && !isDead)
@@ -90,29 +96,32 @@ public class EnemyHealthSystem : MonoBehaviour
     }
 
 
-    //ÊÜÉËº¯Êı(Íâ²¿µ÷ÓÃ)
+    //å—ä¼¤å‡½æ•°(å¤–éƒ¨è°ƒç”¨)
+    /// <summary>
+    /// å¯¹æ•Œäººé€ æˆä¼¤å®³å¹¶æ–½åŠ å‡»é€€åŠ›ã€‚
+    /// </summary>
     public void GetHurt(float damage , Vector3 pos, float force)
     {
         if (isDead) return;
 
-        float newHealth = currentHealth - damage;  //ÊÜÉËºóµÄÉúÃüÖµ
-        //ÈôÊÜÉËºóÉúÃüÖµµÍÓÚ0
+        float newHealth = currentHealth - damage;  //å—ä¼¤åçš„ç”Ÿå‘½å€¼
+        //è‹¥å—ä¼¤åç”Ÿå‘½å€¼ä½äº0
         if (newHealth <= 0)
-            currentHealth = 0;     //ÉúÃüÖµ¹Ì¶¨Îª0
-        //·ñÔòÕı³£ÊÜÉË
+            currentHealth = 0;     //ç”Ÿå‘½å€¼å›ºå®šä¸º0
+        //å¦åˆ™æ­£å¸¸å—ä¼¤
         else
             currentHealth = newHealth;
 
-        ShowFigure(damage, true);       //ÊÜÉËÊı×Ö
-        StartCoroutine(HurtEffect());   //ÊÜÉËĞ§¹û
+        ShowFigure(damage, true);       //å—ä¼¤æ•°å­—
+        StartCoroutine(HurtEffect());   //å—ä¼¤æ•ˆæœ
         AudioManager.Instance.PlaySound3D("Enemy_getHurt", transform.position);
 
-        Vector3 dir = (transform.position - pos).normalized;  //¼ÆËã·½ÏòÏòÁ¿
-        Vector2 pushForce = dir * force;                      //½«·½ÏòÏòÁ¿ÓëÁ¦Ïà³Ë£¬µÃµ½ÍÆÁ¦
-        rb.AddForce(pushForce, ForceMode2D.Impulse);          //½«ÍÆÁ¦Ê©¼Óµ½¸ÕÌåÉÏ
+        Vector3 dir = (transform.position - pos).normalized;  //è®¡ç®—æ–¹å‘å‘é‡
+        Vector2 pushForce = dir * force;                      //å°†æ–¹å‘å‘é‡ä¸åŠ›ç›¸ä¹˜ï¼Œå¾—åˆ°æ¨åŠ›
+        rb.AddForce(pushForce, ForceMode2D.Impulse);          //å°†æ¨åŠ›æ–½åŠ åˆ°åˆšä½“ä¸Š
     }
 
-    //ÊÜÉËĞ§¹û
+    //å—ä¼¤æ•ˆæœ
     IEnumerator HurtEffect()
     {
         sprite.color = new Color(1f, 0.5f, 0.5f, 1f);
@@ -120,69 +129,73 @@ public class EnemyHealthSystem : MonoBehaviour
         sprite.color = new Color(1f, 1f, 1f, 1f);
     }
 
-    //ËÀÍöĞ§¹û
+    //æ­»äº¡æ•ˆæœ
     IEnumerator Dead()
     {
         GameObject vpet = GameObject.FindGameObjectWithTag("Vpet");
         if(vpet.transform.position.x>transform.position.x)
-            transform.DORotate(Vector3.forward * 180, 0.5f);              //Ğı×ª¶¯»­
+            transform.DORotate(Vector3.forward * 180, 0.5f);              //æ—‹è½¬åŠ¨ç”»
         else
-            transform.DORotate(Vector3.forward * -180, 0.5f);              //Ğı×ª¶¯»­
+            transform.DORotate(Vector3.forward * -180, 0.5f);              //æ—‹è½¬åŠ¨ç”»
 
-        yield return new WaitForSeconds(1f);                        //1sºóÏú»Ù
+        yield return new WaitForSeconds(1f);                        //1såé”€æ¯
         Destroy(gameObject);
         if (particlePrefab != null)
-            Instantiate(particlePrefab, transform.position, Quaternion.identity);   //Éú³ÉÁ£×Ó
+            Instantiate(particlePrefab, transform.position, Quaternion.identity);   //ç”Ÿæˆç²’å­
     }
 
-    [SerializeField] private GameObject figureTextPrefab;   //Êı×ÖÎÄ±¾Ô¤ÖÆÌå
-    private GameObject figureCanvas;                        //FigureCanvas¸¸½Úµã
+    [Tooltip("æ•°å­—æ–‡æœ¬é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject figureTextPrefab;   //æ•°å­—æ–‡æœ¬é¢„åˆ¶ä½“
+    private GameObject figureCanvas;                        //FigureCanvasçˆ¶èŠ‚ç‚¹
 
-    //ÏÔÊ¾UIÊı×Ö
+    //æ˜¾ç¤ºUIæ•°å­—
     private void ShowFigure(float num, bool isRed)
     {
         Transform parent = figureCanvas.transform;
-        //´´½¨TMPÉËº¦Êı×ÖÊµÀı
+        //åˆ›å»ºTMPä¼¤å®³æ•°å­—å®ä¾‹
         GameObject figureText = Instantiate(figureTextPrefab, transform.position + Vector3.up, Quaternion.identity, parent);
-        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //»ñÈ¡TMP
+        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //è·å–TMP
 
         tmp.SetText(num.ToString());
 
-        //ÉèÖÃÎÄ±¾ÑÕÉ«
+        //è®¾ç½®æ–‡æœ¬é¢œè‰²
         if (isRed)
             tmp.color = new Color(1, 0.4f, 0.4f, 1);
         else
             tmp.color = new Color(0.4f, 1, 0.5f, 1);
     }
 
-    //Íæ¼Ò¾àÀë¹ıÔ¶×ÔÏú»Ù(Update)
-    bool isAllowStartDestroyTimer = false;      //ÊÇ·ñÔÊĞí¼¤»î×Ô´İ»Ù¼ÆÊ±Æ÷
-    float destroyTimer;                         //×Ô´İ»Ù¼ÆÊ±Æ÷
-    float destroyInterval = 5f;                 //×Ô´İ»Ù¼ä¸ô
+    //ç©å®¶è·ç¦»è¿‡è¿œè‡ªé”€æ¯(Update)
+    bool isAllowStartDestroyTimer = false;      //æ˜¯å¦å…è®¸æ¿€æ´»è‡ªæ‘§æ¯è®¡æ—¶å™¨
+    float destroyTimer;                         //è‡ªæ‘§æ¯è®¡æ—¶å™¨
+    float destroyInterval = 5f;                 //è‡ªæ‘§æ¯é—´éš”
 
-    float destroyDistance = 30f;                //ÓëÍæ¼Ò¾àÀë¶àÔ¶ÒÔºóÔÊĞí½øĞĞ×Ô´İ»Ù£¿
-    private SpawnPoint parentSpawnPoint;        //¸¸ÖØÉú½Å±¾
+    float destroyDistance = 30f;                //ä¸ç©å®¶è·ç¦»å¤šè¿œä»¥åå…è®¸è¿›è¡Œè‡ªæ‘§æ¯ï¼Ÿ
+    private SpawnPoint parentSpawnPoint;        //çˆ¶é‡ç”Ÿè„šæœ¬
     private void SelfDestroy()
     {
-        //×Ô»ÙÔÊĞíÌõ¼ş
+        //è‡ªæ¯å…è®¸æ¡ä»¶
         isAllowStartDestroyTimer = Vector2.Distance(vpet.transform.position, transform.position) > destroyDistance ? true : false;
 
         if (isAllowStartDestroyTimer)
-            destroyTimer -= Time.deltaTime;     //ÈôÌõ¼şÔÊĞíÔò¿ªÊ¼¼ÆÊ±
+            destroyTimer -= Time.deltaTime;     //è‹¥æ¡ä»¶å…è®¸åˆ™å¼€å§‹è®¡æ—¶
         else
-            destroyTimer = destroyInterval;     //·ñÔòÖØÖÃ´İ»ÙÊ±¼ä
+            destroyTimer = destroyInterval;     //å¦åˆ™é‡ç½®æ‘§æ¯æ—¶é—´
 
-        //´İ»Ù¼ÆÊ±½áÊøºó´İ»Ù±¾ÓÎÏ·¶ÔÏó
+        //æ‘§æ¯è®¡æ—¶ç»“æŸåæ‘§æ¯æœ¬æ¸¸æˆå¯¹è±¡
         if (destroyTimer <= 0)
         {
             if (parentSpawnPoint != null)
-                parentSpawnPoint.DelayResetRespawnState();    //ÖØÖÃÖØÉú×´Ì¬
+                parentSpawnPoint.DelayResetRespawnState();    //é‡ç½®é‡ç”ŸçŠ¶æ€
 
             Destroy(gameObject);
         }
-            
+
     }
 
+    /// <summary>
+    /// è®°å½•ç”Ÿæˆè¯¥æ•Œäººçš„å‡ºç”Ÿç‚¹ï¼Œç”¨äºæ•Œäººç¦»åœºåçš„å¤æ´»è°ƒåº¦ã€‚
+    /// </summary>
     public void SetParentSpawnPoint(SpawnPoint spawnPoint)
     {
         parentSpawnPoint = spawnPoint;

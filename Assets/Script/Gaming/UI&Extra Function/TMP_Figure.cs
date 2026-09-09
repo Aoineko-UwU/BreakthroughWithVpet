@@ -2,11 +2,14 @@ using System.Collections;
 using UnityEngine;
 using TMPro;
 
+/// <summary>
+/// ç®¡ç† TextMeshPro é£˜å­—çš„ç§»åŠ¨ã€æ˜¾ç¤ºæ—¶é•¿å’Œè‡ªåŠ¨é”€æ¯ã€‚
+/// </summary>
 public class TMP_Figure : MonoBehaviour
 {
-    private float floatSpeed = 1f; // ÉÏÉıËÙ¶È
-    private float fadeSpeed = 1f;  // µ­³öËÙ¶È
-    private TextMeshProUGUI tmp;   //TMP×é¼ş
+    private float floatSpeed = 1f; // ä¸Šå‡é€Ÿåº¦
+    private float fadeSpeed = 1f;  // æ·¡å‡ºé€Ÿåº¦
+    private TextMeshProUGUI tmp;   //TMPç»„ä»¶
 
     private void Start()
     {
@@ -16,7 +19,7 @@ public class TMP_Figure : MonoBehaviour
 
     private void Update()
     {
-        gameObject.transform.Translate(Vector3.up * floatSpeed * Time.deltaTime);   //ÉÏÉı
-        tmp.color = new Color(tmp.color.r, tmp.color.g, tmp.color.b, tmp.color.a - fadeSpeed * Time.deltaTime); //µ­³ö
+        gameObject.transform.Translate(Vector3.up * floatSpeed * Time.deltaTime);   //ä¸Šå‡
+        tmp.color = new Color(tmp.color.r, tmp.color.g, tmp.color.b, tmp.color.a - fadeSpeed * Time.deltaTime); //æ·¡å‡º
     }
 }

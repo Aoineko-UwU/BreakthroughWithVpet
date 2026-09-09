@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 为可拾取物品提供与桌宠接触时的拾取触发入口。
+/// </summary>
 public class CanPickItem_Pick : MonoBehaviour
 {
     [SerializeField] private CanPickItem pickItem;

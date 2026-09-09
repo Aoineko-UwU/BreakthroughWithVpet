@@ -2,26 +2,30 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ç®¡ç†é£Ÿç‰©é“å…·çš„ç”Ÿå‘½å‘¨æœŸï¼Œå¹¶åœ¨æ¡Œå® æ¥è§¦æ—¶è§¦å‘è¿›é£Ÿè¡Œä¸ºã€‚
+/// </summary>
 public class Item_Food : MonoBehaviour
 {
     [SerializeField] private ItemData itemData;
-    [SerializeField] private float liftTime = 8f;   //´æÔÚÊ±¼ä
+    [Tooltip("å­˜åœ¨æ—¶é—´")]
+    [SerializeField] private float liftTime = 8f;   //å­˜åœ¨æ—¶é—´
     private void Start()
     {
-        Destroy(gameObject, liftTime);    //´æÔÚÒ»¶¨Ê±¼äºóÏú»Ù
+        Destroy(gameObject, liftTime);    //å­˜åœ¨ä¸€å®šæ—¶é—´åé”€æ¯
     }
-    
 
-    //±»Íæ¼Ò½Ó´¥ºóĞĞÎª
+
+    //è¢«ç©å®¶æ¥è§¦åè¡Œä¸º
     private void OnCollisionStay2D(Collision2D other)
     {
-        if (other.collider.CompareTag("Vpet")) 
+        if (other.collider.CompareTag("Vpet"))
         {
             VpetAction vpet = other.gameObject.GetComponent<VpetAction>();
             if (vpet.isAllowEat)
             {
-                Destroy(gameObject);     //Ïú»Ù×ÔÉí
-                vpet.VpetEat(itemData);  //µ÷ÓÃÍæ¼Ò½øÊ³ĞĞÎª
+                Destroy(gameObject);     //é”€æ¯è‡ªèº«
+                vpet.VpetEat(itemData);  //è°ƒç”¨ç©å®¶è¿›é£Ÿè¡Œä¸º
             }
         }
     }
@@ -33,8 +37,8 @@ public class Item_Food : MonoBehaviour
             VpetAction vpet = other.gameObject.GetComponent<VpetAction>();
             if (vpet.isAllowEat)
             {
-                Destroy(gameObject);     //Ïú»Ù×ÔÉí
-                vpet.VpetEat(itemData);  //µ÷ÓÃÍæ¼Ò½øÊ³ĞĞÎª
+                Destroy(gameObject);     //é”€æ¯è‡ªèº«
+                vpet.VpetEat(itemData);  //è°ƒç”¨ç©å®¶è¿›é£Ÿè¡Œä¸º
             }
         }
     }

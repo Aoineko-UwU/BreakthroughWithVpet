@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 按预设权重抽取进食和扭蛋事件。
+/// </summary>
 public class RandomSelector : Singleton<RandomSelector>
 {
     // 定义一个结构体来存储效果名称和它的概率
@@ -47,7 +50,11 @@ public class RandomSelector : Singleton<RandomSelector>
         new RandomEvent() { eventIndex = 5, probability = 20f },
     };
 
-    //概率抽取方法
+    /// <summary>
+    /// 根据事件组编号和各事件权重抽取一个事件。
+    /// </summary>
+    /// <param name="eventGroupIndex">事件组编号：1 为进食，2 为扭蛋。</param>
+    /// <returns>抽取到的事件编号；事件组不存在时返回 0。</returns>
     public int EventRandomSelector(int eventGroupIndex)
     {
         List<RandomEvent> eventGroups = new List<RandomEvent>();

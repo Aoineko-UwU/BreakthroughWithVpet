@@ -4,51 +4,68 @@ using UnityEngine.UI;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// ç®¡ç†ä¸»èœå•çš„å…¥åœºåŠ¨ç”»ã€é¢æ¿åˆ‡æ¢ã€éš¾åº¦é€‰æ‹©ä¸å¼€å§‹æ¸¸æˆæµç¨‹ã€‚
+/// </summary>
 public class MenuManager : MonoBehaviour
 {
-    [SerializeField] private Transform cameraTransform;     //ÉãÏñ»úTransform
-    [SerializeField] private Image fadeBackgroundImage;     //¹ı¶É±³¾°Í¼
-    [SerializeField] private Image titleImage;              //±êÌâImage
-    [SerializeField] private TextMeshProUGUI versionText;   //°æ±¾ÎÄ×Ö          
+    [Tooltip("æ‘„åƒæœºTransform")]
+    [SerializeField] private Transform cameraTransform;     //æ‘„åƒæœºTransform
+    [Tooltip("è¿‡æ¸¡èƒŒæ™¯å›¾")]
+    [SerializeField] private Image fadeBackgroundImage;     //è¿‡æ¸¡èƒŒæ™¯å›¾
+    [Tooltip("æ ‡é¢˜Image")]
+    [SerializeField] private Image titleImage;              //æ ‡é¢˜Image
+    [Tooltip("ç‰ˆæœ¬æ–‡å­—")]
+    [SerializeField] private TextMeshProUGUI versionText;   //ç‰ˆæœ¬æ–‡å­—
 
-    [SerializeField] private Button _startBtn01;            //¿ªÊ¼°´Å¥
-    [SerializeField] private Button _settingBtn02;          //ÉèÖÃ°´Å¥
-    [SerializeField] private Button _aboutBtn03;            //¹ØÓÚ°´Å¥
-    [SerializeField] private Button _quitBtn04;             //ÍË³ö°´Å¥
-    [SerializeField] private Button _guideBtn05;            //½Ì³Ì°´Å¥
-        
-    [SerializeField] private GameObject aboutPanel;         //¹ØÓÚÃæ°å
-    [SerializeField] private GameObject settingPanel;       //ÉèÖÃÃæ°å
-    [SerializeField] private GameObject guidePanel01;       //½Ì³ÌÃæ°å01
-    [SerializeField] private GameObject guidePanel02;       //½Ì³ÌÃæ°å02
-    [SerializeField] private GameObject difficultyPanel;    //ÄÑ¶ÈÑ¡ÔñÃæ°å
+    [Tooltip("å¼€å§‹æŒ‰é’®")]
+    [SerializeField] private Button _startBtn01;            //å¼€å§‹æŒ‰é’®
+    [Tooltip("è®¾ç½®æŒ‰é’®")]
+    [SerializeField] private Button _settingBtn02;          //è®¾ç½®æŒ‰é’®
+    [Tooltip("å…³äºæŒ‰é’®")]
+    [SerializeField] private Button _aboutBtn03;            //å…³äºæŒ‰é’®
+    [Tooltip("é€€å‡ºæŒ‰é’®")]
+    [SerializeField] private Button _quitBtn04;             //é€€å‡ºæŒ‰é’®
+    [Tooltip("æ•™ç¨‹æŒ‰é’®")]
+    [SerializeField] private Button _guideBtn05;            //æ•™ç¨‹æŒ‰é’®
+
+    [Tooltip("å…³äºé¢æ¿")]
+    [SerializeField] private GameObject aboutPanel;         //å…³äºé¢æ¿
+    [Tooltip("è®¾ç½®é¢æ¿")]
+    [SerializeField] private GameObject settingPanel;       //è®¾ç½®é¢æ¿
+    [Tooltip("æ•™ç¨‹é¢æ¿01")]
+    [SerializeField] private GameObject guidePanel01;       //æ•™ç¨‹é¢æ¿01
+    [Tooltip("æ•™ç¨‹é¢æ¿02")]
+    [SerializeField] private GameObject guidePanel02;       //æ•™ç¨‹é¢æ¿02
+    [Tooltip("éš¾åº¦é€‰æ‹©é¢æ¿")]
+    [SerializeField] private GameObject difficultyPanel;    //éš¾åº¦é€‰æ‹©é¢æ¿
 
     [SerializeField] private GameObject vpet;
 
     private void Start()
     {
         Time.timeScale = 1f;
-        InitButton();   //°´Å¥³õÊ¼»¯
-        InitUI();       //UI³õÊ¼»¯
+        InitButton();   //æŒ‰é’®åˆå§‹åŒ–
+        InitUI();       //UIåˆå§‹åŒ–
 
-        //ÆôÓÃ¶¯»­Ğ­³Ì
+        //å¯ç”¨åŠ¨ç”»åç¨‹
         StartCoroutine(InitAnimation());
     }
 
-    //°´Å¥³õÊ¼»¯
+    //æŒ‰é’®åˆå§‹åŒ–
     private void InitButton()
     {
-        //³õÊ¼»¯°´Å¥Í¸Ã÷¶È
+        //åˆå§‹åŒ–æŒ‰é’®é€æ˜åº¦
         _startBtn01.GetComponent<CanvasGroup>().alpha = 0;
         _settingBtn02.GetComponent<CanvasGroup>().alpha = 0;
         _aboutBtn03.GetComponent<CanvasGroup>().alpha = 0;
         _quitBtn04.GetComponent<CanvasGroup>().alpha = 0;
         _guideBtn05.GetComponent<CanvasGroup>().alpha = 0;
 
-        SetBtnInteractable(false);   //½ûÖ¹°´Å¥½»»¥
+        SetBtnInteractable(false);   //ç¦æ­¢æŒ‰é’®äº¤äº’
     }
 
-    //ÉèÖÃ°´Å¥µÄ¿É½»»¥ĞÔ
+    //è®¾ç½®æŒ‰é’®çš„å¯äº¤äº’æ€§
     private void SetBtnInteractable(bool isAllow)
     {
         _startBtn01.interactable = isAllow;
@@ -58,7 +75,7 @@ public class MenuManager : MonoBehaviour
         _guideBtn05.interactable = isAllow;
     }
 
-    //ÉèÖÃ°´Å¥µÄÊó±êĞü¸¡¿É½»»¥ĞÔ
+    //è®¾ç½®æŒ‰é’®çš„é¼ æ ‡æ‚¬æµ®å¯äº¤äº’æ€§
     private void SetBtnHoverActable(bool isAllow)
     {
         _startBtn01.gameObject.GetComponent<ButtonHover>().isAllowUse = isAllow;
@@ -68,7 +85,7 @@ public class MenuManager : MonoBehaviour
         _guideBtn05.gameObject.GetComponent<ButtonHover>().isAllowUse = isAllow;
     }
 
-    //³õÊ¼»¯Ïà¹ØUI
+    //åˆå§‹åŒ–ç›¸å…³UI
     private void InitUI()
     {
         aboutPanel.SetActive(false);
@@ -79,23 +96,23 @@ public class MenuManager : MonoBehaviour
         versionText.alpha = 0f;
     }
 
-    //³õÊ¼¶¯»­
+    //åˆå§‹åŠ¨ç”»
     IEnumerator InitAnimation()
     {
-        //³õÊ¼»¯¹ı¶É±³¾°
+        //åˆå§‹åŒ–è¿‡æ¸¡èƒŒæ™¯
         fadeBackgroundImage.gameObject.SetActive(true);
         fadeBackgroundImage.color = Color.white;
-        fadeBackgroundImage.DOFade(0, 1.5f);            //¹ı¶ÉĞ§¹û
-        //³õÊ¼»¯ÉãÏñ»ú
-        cameraTransform.position = new Vector3(cameraTransform.position.x, 7f, cameraTransform.position.z); 
-        cameraTransform.DOMove(new Vector3(cameraTransform.position.x, 0f, cameraTransform.position.z),5f);     //ÉãÏñ»úÒÆ¶¯Ğ§¹û
-        //³õÊ¼»¯±êÌâUI
+        fadeBackgroundImage.DOFade(0, 1.5f);            //è¿‡æ¸¡æ•ˆæœ
+        //åˆå§‹åŒ–æ‘„åƒæœº
+        cameraTransform.position = new Vector3(cameraTransform.position.x, 7f, cameraTransform.position.z);
+        cameraTransform.DOMove(new Vector3(cameraTransform.position.x, 0f, cameraTransform.position.z),5f);     //æ‘„åƒæœºç§»åŠ¨æ•ˆæœ
+        //åˆå§‹åŒ–æ ‡é¢˜UI
         titleImage.color = new Color(1f, 1f, 1f, 0f);
         titleImage.fillAmount = 0f;
 
-        AudioManager.Instance.AdjustBGMVolume(1);       //ÉèÖÃBGMÒôÔ´ÒôÁ¿
+        AudioManager.Instance.AdjustBGMVolume(1);       //è®¾ç½®BGMéŸ³æºéŸ³é‡
         AudioManager.Instance.ClearBGM();
-        AudioManager.Instance.PlayBGM("MenuMusic");     //²¥·ÅÒôÀÖ
+        AudioManager.Instance.PlayBGM("MenuMusic");     //æ’­æ”¾éŸ³ä¹
         yield return new WaitForSeconds(3f);
         titleImage.DOFade(1f, 2f);
         yield return new WaitForSeconds(0.5f);
@@ -105,7 +122,7 @@ public class MenuManager : MonoBehaviour
               .SetEase(Ease.InOutSine)
               .SetLoops(-1, LoopType.Yoyo);
 
-        //°´Å¥½¥ÈëĞ§¹û
+        //æŒ‰é’®æ¸å…¥æ•ˆæœ
         _startBtn01.GetComponent<CanvasGroup>().DOFade(1, 2f);
         _settingBtn02.GetComponent<CanvasGroup>().DOFade(1, 2f);
         _aboutBtn03.GetComponent<CanvasGroup>().DOFade(1, 2f);
@@ -115,23 +132,23 @@ public class MenuManager : MonoBehaviour
         versionText.DOFade(1, 2f);
 
         yield return new WaitForSeconds(1.4f);
-        //ÉèÖÃ°´Å¥µÄ¿É½»»¥ĞÔ
+        //è®¾ç½®æŒ‰é’®çš„å¯äº¤äº’æ€§
         SetBtnInteractable(true);
         SetBtnHoverActable(true);
     }
 
 
-    //¿ªÊ¼°´Å¥µã»÷ÊÂ¼ş(Íâ²¿°ó¶¨)
+    /// <summary>æ‰“å¼€éš¾åº¦é€‰æ‹©é¢æ¿ã€‚</summary>
     public void OnClickBtn_Start()
     {
-        AudioManager.Instance.PlaySound("button_click");        //°´Å¥ÒôĞ§
+        AudioManager.Instance.PlaySound("button_click");        //æŒ‰é’®éŸ³æ•ˆ
         difficultyPanel.SetActive(true);
     }
 
-    //¿ªÊ¼¶¯»­
+    //å¼€å§‹åŠ¨ç”»
     IEnumerator StartAnimation()
     {
-        //½ûÖ¹°´Å¥½»»¥&°´Å¥½¥Òş
+        //ç¦æ­¢æŒ‰é’®äº¤äº’&æŒ‰é’®æ¸éš
         SetBtnInteractable(false);
         SetBtnHoverActable(false);
         _startBtn01.GetComponent<CanvasGroup>().DOFade(0, 1f);
@@ -139,14 +156,14 @@ public class MenuManager : MonoBehaviour
         _aboutBtn03.GetComponent<CanvasGroup>().DOFade(0, 1f);
         _quitBtn04.GetComponent<CanvasGroup>().DOFade(0, 1f);
         _guideBtn05.GetComponent<CanvasGroup>().DOFade(0, 1f);
-        //±êÌâImage½¥Òş
+        //æ ‡é¢˜Imageæ¸éš
         titleImage.DOFade(0, 1f);
         versionText.DOFade(0, 1f);
 
         yield return new WaitForSeconds(1.2f);
 
-        fadeBackgroundImage.DOFade(1f, 4f);     //°×³¡¹ı¶É
-        vpet.transform.DOLocalMoveX(vpet.transform.position.x + 15f, 7f);  //×À³èÒÆ¶¯
+        fadeBackgroundImage.DOFade(1f, 4f);     //ç™½åœºè¿‡æ¸¡
+        vpet.transform.DOLocalMoveX(vpet.transform.position.x + 15f, 7f);  //æ¡Œå® ç§»åŠ¨
 
         yield return new WaitForSeconds(2f);
 
@@ -162,120 +179,120 @@ public class MenuManager : MonoBehaviour
             AudioManager.Instance.AdjustBGMVolume(currentVolume);
             yield return null;
         }
-        AudioManager.Instance.PauseOrContinueBGM(true); //ÔİÍ£BGM
-        AudioManager.Instance.AdjustBGMVolume(1);       //»Ö¸´BGMÒôÔ´ÒôÁ¿
+        AudioManager.Instance.PauseOrContinueBGM(true); //æš‚åœBGM
+        AudioManager.Instance.AdjustBGMVolume(1);       //æ¢å¤BGMéŸ³æºéŸ³é‡
 
-        // µÈ´ıµ­³ö¶¯»­Íê³É
+        // ç­‰å¾…æ·¡å‡ºåŠ¨ç”»å®Œæˆ
         yield return new WaitForSeconds(2.2f);
 
-        DOTween.KillAll();          //ÇåÀíËùÓĞTween¶¯»­
-        // ¿ªÊ¼¼ÓÔØÏÂÒ»³¡¾°£¨Òì²½£©
+        DOTween.KillAll();          //æ¸…ç†æ‰€æœ‰TweenåŠ¨ç”»
+        // å¼€å§‹åŠ è½½ä¸‹ä¸€åœºæ™¯ï¼ˆå¼‚æ­¥ï¼‰
         AsyncOperation asyncLoad = UnityEngine.SceneManagement.SceneManager.LoadSceneAsync("1_GameScene");
         asyncLoad.allowSceneActivation = true;
     }
 
-    //Ñ¡Ôñ¼òµ¥ÄÑ¶È°´Å¥
+    /// <summary>é€‰æ‹©ç®€å•éš¾åº¦å¹¶å¼€å§‹æ¸¸æˆã€‚</summary>
     public void OnClickBtn_SelectDif_Eazy()
     {
         AudioManager.Instance.PlaySound("button_click");
-        GameDifficultySystem.Instance.SetDifficulty(GameDifficultyLevel.Easy);  //ÄÑ¶ÈÉèÖÃÎª¼òµ¥
-        GameStart();    //¿ªÊ¼ÓÎÏ·
+        GameDifficultySystem.Instance.SetDifficulty(GameDifficultyLevel.Easy);  //éš¾åº¦è®¾ç½®ä¸ºç®€å•
+        GameStart();    //å¼€å§‹æ¸¸æˆ
     }
 
-    //Ñ¡ÔñÆÕÍ¨ÄÑ¶È°´Å¥
+    /// <summary>é€‰æ‹©æ™®é€šéš¾åº¦å¹¶å¼€å§‹æ¸¸æˆã€‚</summary>
     public void OnClickBtn_SelectDif_Normal()
     {
         AudioManager.Instance.PlaySound("button_click");
-        GameDifficultySystem.Instance.SetDifficulty(GameDifficultyLevel.Normal);  //ÄÑ¶ÈÉèÖÃÎªÆÕÍ¨
-        GameStart();    //¿ªÊ¼ÓÎÏ·
+        GameDifficultySystem.Instance.SetDifficulty(GameDifficultyLevel.Normal);  //éš¾åº¦è®¾ç½®ä¸ºæ™®é€š
+        GameStart();    //å¼€å§‹æ¸¸æˆ
     }
 
-    //Ñ¡ÔñÀ§ÄÑÄÑ¶È°´Å¥
+    /// <summary>é€‰æ‹©å›°éš¾éš¾åº¦å¹¶å¼€å§‹æ¸¸æˆã€‚</summary>
     public void OnClickBtn_SelectDif_Hard()
     {
         AudioManager.Instance.PlaySound("button_click");
-        GameDifficultySystem.Instance.SetDifficulty(GameDifficultyLevel.Hard);  //ÄÑ¶ÈÉèÖÃÎªÀ§ÄÑ
-        GameStart();    //¿ªÊ¼ÓÎÏ·
+        GameDifficultySystem.Instance.SetDifficulty(GameDifficultyLevel.Hard);  //éš¾åº¦è®¾ç½®ä¸ºå›°éš¾
+        GameStart();    //å¼€å§‹æ¸¸æˆ
     }
 
-    //¹Ø±ÕÄÑ¶ÈÃæ°å
+    /// <summary>å…³é—­éš¾åº¦é€‰æ‹©é¢æ¿ã€‚</summary>
     public void OnClickBtn_SelectDif_Close()
     {
         AudioManager.Instance.PlaySound("button_click");
         difficultyPanel.SetActive(false);
     }
 
-    //¿ªÊ¼ÓÎÏ·Âß¼­(·½·¨µ÷ÓÃ)
+    //å¼€å§‹æ¸¸æˆé€»è¾‘(æ–¹æ³•è°ƒç”¨)
     private void GameStart()
     {
         difficultyPanel.SetActive(false);
-        vpet.GetComponent<Animator>().SetTrigger("start");      //×À³è¶¯»­
-        StartCoroutine(StartAnimation());   //¿ªÊ¼¶¯»­(Ğ­³Ì)
+        vpet.GetComponent<Animator>().SetTrigger("start");      //æ¡Œå® åŠ¨ç”»
+        StartCoroutine(StartAnimation());   //å¼€å§‹åŠ¨ç”»(åç¨‹)
     }
 
 
-    //ÉèÖÃ°´Å¥µã»÷ÊÂ¼ş(Íâ²¿°ó¶¨)
+    /// <summary>æ‰“å¼€è®¾ç½®é¢æ¿ã€‚</summary>
     public void OnClickBtn_OpenSettingPanel()
     {
         settingPanel.SetActive(true);
         AudioManager.Instance.PlaySound("button_click");
     }
 
-    //¹Ø±ÕÉèÖÃÃæ°å
+    /// <summary>å…³é—­è®¾ç½®é¢æ¿ã€‚</summary>
     public void OnClickBtn_CloseSettingPanel()
     {
         settingPanel.SetActive(false);
         AudioManager.Instance.PlaySound("button_click");
     }
 
-    //¹ØÓÚ°´Å¥µã»÷ÊÂ¼ş(Íâ²¿°ó¶¨)
+    /// <summary>æ‰“å¼€å…³äºé¢æ¿ã€‚</summary>
     public void OnClickBtn_OpenAboutPanel()
     {
         AudioManager.Instance.PlaySound("button_click");
         aboutPanel.SetActive(true);
     }
 
-    //¹Ø±Õ¹ØÓÚÃæ°å
+    /// <summary>å…³é—­å…³äºé¢æ¿ã€‚</summary>
     public void OnClickBtn_CloseAboutPanel()
     {
         AudioManager.Instance.PlaySound("button_click");
         aboutPanel.SetActive(false);
     }
 
-    //´ò¿ª½Ì³ÌÃæ°å(2Ìø×ª1)
+    /// <summary>æ‰“å¼€æ•™ç¨‹ç¬¬ä¸€é¡µã€‚</summary>
     public void OnClickBtn_OpenGuidePanel()
     {
         AudioManager.Instance.PlaySound("button_click");
-        guidePanel01.SetActive(true);   //´ò¿ªguide1
-        guidePanel02.SetActive(false);  //½ûÓÃguide2
+        guidePanel01.SetActive(true);   //æ‰“å¼€guide1
+        guidePanel02.SetActive(false);  //ç¦ç”¨guide2
         _guideBtn05.gameObject.SetActive(false);
     }
 
-    //½Ì³ÌÃæ°å1Ìø×ª2
+    /// <summary>ä»æ•™ç¨‹ç¬¬ä¸€é¡µåˆ‡æ¢åˆ°ç¬¬äºŒé¡µã€‚</summary>
     public void OnClickBtn_Guide1To2()
     {
         AudioManager.Instance.PlaySound("button_click");
-        guidePanel02.SetActive(true);   //´ò¿ªguide2
-        guidePanel01.SetActive(false);  //½ûÓÃguide1
+        guidePanel02.SetActive(true);   //æ‰“å¼€guide2
+        guidePanel01.SetActive(false);  //ç¦ç”¨guide1
         _guideBtn05.gameObject.SetActive(false);
     }
 
-    //¹Ø±Õ½Ì³ÌÃæ°å
+    /// <summary>å…³é—­æ•™ç¨‹é¢æ¿å¹¶æ¢å¤èœå•æŒ‰é’®ã€‚</summary>
     public void OnClickBtn_CloseGuidePanel()
     {
         AudioManager.Instance.PlaySound("button_click");
-        guidePanel01.SetActive(false);   //½ûÓÃguide1
-        guidePanel02.SetActive(false);   //½ûÓÃguide2
+        guidePanel01.SetActive(false);   //ç¦ç”¨guide1
+        guidePanel02.SetActive(false);   //ç¦ç”¨guide2
         _guideBtn05.gameObject.SetActive(true);
     }
 
 
 
-    //ÍË³ö°´Å¥µã»÷ÊÂ¼ş(Íâ²¿°ó¶¨)
+    /// <summary>é€€å‡ºåº”ç”¨ç¨‹åºã€‚</summary>
     public void OnClickBtn_Quit()
     {
         AudioManager.Instance.PlaySound("button_click");
-        Application.Quit();     //¹Ø±ÕÓ¦ÓÃ
+        Application.Quit();     //å…³é—­åº”ç”¨
     }
 
 }

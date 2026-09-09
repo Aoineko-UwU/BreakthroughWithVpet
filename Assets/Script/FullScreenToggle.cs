@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.UI;
 
 [RequireComponent(typeof(Toggle))]
+/// <summary>
+/// å°†å…¨å±å¼€å…³æ§ä»¶ä¸ Unity çš„å±å¹•æ˜¾ç¤ºæ¨¡å¼å…³è”ã€‚
+/// </summary>
 public class FullscreenToggle : MonoBehaviour
 {
     private const string PREF_KEY = "IsFullScreen";
@@ -10,26 +13,26 @@ public class FullscreenToggle : MonoBehaviour
     private void Awake()
     {
         _toggle = GetComponent<Toggle>();
-        // °Ñ×Ô¼º°ó¶¨µ½ÇĞ»»ÊÂ¼ş
+        // æŠŠè‡ªå·±ç»‘å®šåˆ°åˆ‡æ¢äº‹ä»¶
         _toggle.onValueChanged.AddListener(OnToggleValueChanged);
     }
 
     private void Start()
     {
-        // ¶ÁÈ¡ÉÏ´Î±£´æµÄÖµ£¨Ä¬ÈÏ false£©
+        // è¯»å–ä¸Šæ¬¡ä¿å­˜çš„å€¼ï¼ˆé»˜è®¤ falseï¼‰
         bool isFull = PlayerPrefs.GetInt(PREF_KEY, 0) == 1;
-        // Ó¦ÓÃµ½ÏµÍ³
+        // åº”ç”¨åˆ°ç³»ç»Ÿ
         Screen.fullScreen = isFull;
-        // ¸üĞÂ Toggle UI
+        // æ›´æ–° Toggle UI
         _toggle.isOn = isFull;
     }
 
     private void OnToggleValueChanged(bool isOn)
     {
-        // ÇĞ»»È«ÆÁ
+        // åˆ‡æ¢å…¨å±
         Screen.fullScreen = isOn;
         AudioManager.Instance.PlaySound("button_click");
-        // ±£´æµ½ PlayerPrefs
+        // ä¿å­˜åˆ° PlayerPrefs
         PlayerPrefs.SetInt(PREF_KEY, isOn ? 1 : 0);
         PlayerPrefs.Save();
     }

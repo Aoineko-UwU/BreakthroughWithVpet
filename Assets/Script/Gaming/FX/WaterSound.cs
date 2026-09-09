@@ -1,5 +1,8 @@
 using UnityEngine;
 
+/// <summary>
+/// 在对象进出水体触发器时播放对应的空间音效。
+/// </summary>
 public class WaterSound : MonoBehaviour
 {
 

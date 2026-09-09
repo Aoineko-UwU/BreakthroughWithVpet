@@ -2,95 +2,101 @@ using System.Collections;
 using TMPro;
 using UnityEngine;
 
+/// <summary>
+/// ç®¡ç†ç‚¸å¼¹æ–¹å—çš„å€’è®¡æ—¶ã€è‡ªä¼¤ã€çˆ†ç‚¸èŒƒå›´ä¼¤å®³å’Œè§†è§‰åé¦ˆã€‚
+/// </summary>
 public class Item_Block_bomb : MonoBehaviour
 {
-    [SerializeField] private SpriteRenderer healthBar;  //ÑªÌõUI°ó¶¨
-    [SerializeField] private float health = 5;          //ÉúÃüÖµ
-    [SerializeField] private GameObject particlePrefab; //Á£×ÓÔ¤ÖÆÌå
+    [Tooltip("è¡€æ¡UIç»‘å®š")]
+    [SerializeField] private SpriteRenderer healthBar;  //è¡€æ¡UIç»‘å®š
+    [Tooltip("ç”Ÿå‘½å€¼")]
+    [SerializeField] private float health = 5;          //ç”Ÿå‘½å€¼
+    [Tooltip("ç²’å­é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject particlePrefab; //ç²’å­é¢„åˆ¶ä½“
 
-    private float currentHealth; //µ±Ç°ÉúÃüÖµ
-    private float oringinWidth;  //ÑªÌõ³õÊ¼¿í¶È
+    private float currentHealth; //å½“å‰ç”Ÿå‘½å€¼
+    private float oringinWidth;  //è¡€æ¡åˆå§‹å®½åº¦
 
-    private float hurtTimer;    //×ÔËğ¼ÆÊ±Æ÷
-    private float hurtCD = 1f;  //×ÔËğ¼ä¸ôÊ±³¤(s)
-    private int damage = 1;     //µ¥´Î×ÔËğÉËº¦
+    private float hurtTimer;    //è‡ªæŸè®¡æ—¶å™¨
+    private float hurtCD = 1f;  //è‡ªæŸé—´éš”æ—¶é•¿(s)
+    private int damage = 1;     //å•æ¬¡è‡ªæŸä¼¤å®³
 
 
     private void Start()
     {
-        figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");    //»ñÈ¡ÉËº¦Êı×ÖCanvas
-        currentHealth = health;           //ÉúÃüÖµ³õÊ¼»¯
-        hurtTimer = hurtCD;               //¼ÆÊ±Æ÷³õÊ¼»¯
-        oringinWidth = healthBar.size.x;  //¼ÇÂ¼³õÊ¼¿í¶È
-        StartCoroutine(SelfHurtEffect()); //¿ªÆô×ÔËğ
+        figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");    //è·å–ä¼¤å®³æ•°å­—Canvas
+        currentHealth = health;           //ç”Ÿå‘½å€¼åˆå§‹åŒ–
+        hurtTimer = hurtCD;               //è®¡æ—¶å™¨åˆå§‹åŒ–
+        oringinWidth = healthBar.size.x;  //è®°å½•åˆå§‹å®½åº¦
+        StartCoroutine(SelfHurtEffect()); //å¼€å¯è‡ªæŸ
 
         AudioManager.Instance.PlaySound("bomb_fuse");
     }
 
     private void Update()
     {
-        hurtTimer -= Time.deltaTime;    //¼ÆÊ±Æ÷¹¤×÷
+        hurtTimer -= Time.deltaTime;    //è®¡æ—¶å™¨å·¥ä½œ
         if (isInstanctlyExplode)
         {
             isInstanctlyExplode = false;
             Explode();
         }
 
-        //ÑªÌõ¸üĞÂ
+        //è¡€æ¡æ›´æ–°
         healthBar.size = new Vector2(oringinWidth * (currentHealth / health), healthBar.size.y);
 
-        BlockHurtSelf();    //·½¿é×ÔËğÓëÉúÃü¼à²â
+        BlockHurtSelf();    //æ–¹å—è‡ªæŸä¸ç”Ÿå‘½ç›‘æµ‹
 
     }
 
-    //×ÔËğ&ÉúÃü¼à²â
+    //è‡ªæŸ&ç”Ÿå‘½ç›‘æµ‹
     private void BlockHurtSelf()
     {
         if (hurtTimer <= 0)
         {
-            currentHealth -= damage;    //ÉúÃüÖµ¼õÉÙ
+            currentHealth -= damage;    //ç”Ÿå‘½å€¼å‡å°‘
             StartCoroutine(SelfHurtEffect());
-            hurtTimer = hurtCD;         //CDÖØÖÃ
+            hurtTimer = hurtCD;         //CDé‡ç½®
         }
 
-        //ÉúÃü¹éÁãºóÏú»Ù
+        //ç”Ÿå‘½å½’é›¶åé”€æ¯
         if (currentHealth <= 0)
-        {            
-            Explode();      //±¬Õ¨
+        {
+            Explode();      //çˆ†ç‚¸
         }
     }
 
-    public bool isInstanctlyExplode = false;    //ÊÇ·ñË²¼ä±¬Õ¨
-    private float explosionRadius = 2.5f;       //±¬Õ¨°ë¾¶
-    private float explosionForce = 11f;         //±¬Õ¨Á¦
-    private float explosionDamageToBlock = 999f;     //¶Ô½¨Öş±¬Õ¨ÉËº¦
-    private float explosionDamageToEnemy = 40f;      //¶ÔµĞÈË±¬Õ¨ÉËº¦
+    public bool isInstanctlyExplode = false;    //æ˜¯å¦ç¬é—´çˆ†ç‚¸
+    private float explosionRadius = 2.5f;       //çˆ†ç‚¸åŠå¾„
+    private float explosionForce = 11f;         //çˆ†ç‚¸åŠ›
+    private float explosionDamageToBlock = 999f;     //å¯¹å»ºç­‘çˆ†ç‚¸ä¼¤å®³
+    private float explosionDamageToEnemy = 40f;      //å¯¹æ•Œäººçˆ†ç‚¸ä¼¤å®³
 
     private void Explode()
     {
-        CameraShake.Instance.ShakeScreen();     //ÆÁÄ»»Î¶¯
-        AudioManager.Instance.PlaySound("bomb_explode");                        //²¥·ÅÒôĞ§
-        Instantiate(particlePrefab, transform.position, Quaternion.identity);   //Éú³ÉÁ£×Ó
-        // ¼ì²â±¬Õ¨·¶Î§ÄÚµÄËùÓĞÎïÌå
+        CameraShake.Instance.ShakeScreen();     //å±å¹•æ™ƒåŠ¨
+        AudioManager.Instance.PlaySound("bomb_explode");                        //æ’­æ”¾éŸ³æ•ˆ
+        Instantiate(particlePrefab, transform.position, Quaternion.identity);   //ç”Ÿæˆç²’å­
+        // æ£€æµ‹çˆ†ç‚¸èŒƒå›´å†…çš„æ‰€æœ‰ç‰©ä½“
         Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, explosionRadius);
 
         foreach (Collider2D collider in colliders)
         {
-            // ¼ÆËã±¬Õ¨Á¦µÄ·½Ïò
-            Vector2 direction = collider.transform.position - transform.position;   //·½Ïò
-            float distance = direction.magnitude;                                   //¹æ¸ñ»¯
+            // è®¡ç®—çˆ†ç‚¸åŠ›çš„æ–¹å‘
+            Vector2 direction = collider.transform.position - transform.position;   //æ–¹å‘
+            float distance = direction.magnitude;                                   //è§„æ ¼åŒ–
 
-            // ¼ÆËãÊ©¼ÓµÄ±¬Õ¨Á¦£¬¾àÀëÔ½½ü£¬Ê©¼ÓµÄÁ¦Ô½´ó
+            // è®¡ç®—æ–½åŠ çš„çˆ†ç‚¸åŠ›ï¼Œè·ç¦»è¶Šè¿‘ï¼Œæ–½åŠ çš„åŠ›è¶Šå¤§
             float forceMagnitude = Mathf.Lerp(explosionForce, 0, distance / explosionRadius);
             Rigidbody2D rb = collider.GetComponent<Rigidbody2D>();
 
             if (rb != null)
             {
-                // Ê©¼Ó±¬Õ¨Á¦
+                // æ–½åŠ çˆ†ç‚¸åŠ›
                 rb.AddForce(direction.normalized * forceMagnitude * rb.mass, ForceMode2D.Impulse);
             }
 
-            //Ôì³ÉÉËº¦
+            //é€ æˆä¼¤å®³
             if (collider.GetComponent<Item_Block>() != null)
                 collider.GetComponent<Item_Block>().GetHurt(explosionDamageToBlock);
             if(collider.GetComponent<Item_Block_bomb>()!=null)
@@ -99,16 +105,16 @@ public class Item_Block_bomb : MonoBehaviour
                 collider.GetComponent<EnemyHealthSystem>().GetHurt(explosionDamageToEnemy, transform.position,25f);
         }
 
-        // Ïú»ÙÕ¨µ¯¶ÔÏó
+        // é”€æ¯ç‚¸å¼¹å¯¹è±¡
         Destroy(gameObject);
     }
 
-    //ÊÜÉËº¯Êı(Íâ²¿µ÷ÓÃ)
+    //å—ä¼¤å‡½æ•°(å¤–éƒ¨è°ƒç”¨)
     public void GetHurt(float damage)
     {
-        currentHealth -= damage;        //¿Û³ıÑªÁ¿
+        currentHealth -= damage;        //æ‰£é™¤è¡€é‡
         ShowFigure(damage, true);
-        StartCoroutine(HurtEffect());   //ÊÜÉËĞ§¹û
+        StartCoroutine(HurtEffect());   //å—ä¼¤æ•ˆæœ
     }
 
     IEnumerator HurtEffect()
@@ -127,21 +133,22 @@ public class Item_Block_bomb : MonoBehaviour
         sprite.color = new Color(1f, 1f, 1f, 1f);
     }
 
-    
-    [SerializeField] private GameObject figureTextPrefab;   //Êı×ÖÎÄ±¾Ô¤ÖÆÌå
-    private GameObject figureCanvas;                        //FigureCanvas¸¸½Úµã
 
-    //ÏÔÊ¾UIÊı×Ö
+    [Tooltip("æ•°å­—æ–‡æœ¬é¢„åˆ¶ä½“")]
+    [SerializeField] private GameObject figureTextPrefab;   //æ•°å­—æ–‡æœ¬é¢„åˆ¶ä½“
+    private GameObject figureCanvas;                        //FigureCanvasçˆ¶èŠ‚ç‚¹
+
+    //æ˜¾ç¤ºUIæ•°å­—
     private void ShowFigure(float num, bool isRed)
     {
         Transform parent = figureCanvas.transform;
-        //´´½¨TMPÉËº¦Êı×ÖÊµÀı
+        //åˆ›å»ºTMPä¼¤å®³æ•°å­—å®ä¾‹
         GameObject figureText = Instantiate(figureTextPrefab, transform.position + Vector3.up, Quaternion.identity, parent);
-        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //»ñÈ¡TMP
+        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //è·å–TMP
 
         tmp.SetText(num.ToString());
 
-        //ÉèÖÃÎÄ±¾ÑÕÉ«
+        //è®¾ç½®æ–‡æœ¬é¢œè‰²
         if (isRed)
             tmp.color = new Color(1, 0.4f, 0.4f, 1);
         else
@@ -149,7 +156,7 @@ public class Item_Block_bomb : MonoBehaviour
 
     }
 
-    //Åöµ½¹ÖÎïÖ±½Ó±¬Õ¨
+    //ç¢°åˆ°æ€ªç‰©ç›´æ¥çˆ†ç‚¸
     private void OnCollisionEnter2D(Collision2D other)
     {
         if (other.collider.CompareTag("Enemy"))

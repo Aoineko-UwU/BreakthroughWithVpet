@@ -2,13 +2,16 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 管理传送珍珠的飞行生命周期和与桌宠接触后的传送伤害效果。
+/// </summary>
 public class Item_Pearl : MonoBehaviour
 {
     private GameObject vpet;
 
     private void Awake()
     {
-        vpet = GameObject.FindGameObjectWithTag("Vpet");    //��ȡ�������Ϸ����
+        vpet = GameObject.FindGameObjectWithTag("Vpet");    //获取桌宠的游戏对象
     }
 
     private void Start()
@@ -24,7 +27,7 @@ public class Item_Pearl : MonoBehaviour
             vpet.GetComponent<VpetHealthSystem>().VpetGethurt(3f, Vector2.zero);
             AudioManager.Instance.PlaySound("teleport");
             Destroy(gameObject);
-        } 
+        }
     }
 
 }

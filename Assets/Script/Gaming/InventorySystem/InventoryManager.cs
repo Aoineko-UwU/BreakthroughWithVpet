@@ -2,9 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 管理道具池、物品栏内容、难度相关生成间隔和界面刷新。
+/// </summary>
 public class InventoryManager : Singleton<InventoryManager>
 {
-    public List<ItemData> allItemPool;  //所有可抽取的物品池(外部挂载) 
+    public List<ItemData> allItemPool;  //所有可抽取的物品池(外部挂载)
 
     public List<ItemData> slots = new List<ItemData>();     //当前物品栏
     public int totalSlotCount = 3;                          //物品格子总数
@@ -42,14 +45,14 @@ public class InventoryManager : Singleton<InventoryManager>
         {
             //简单难度
             case GameDifficultyLevel.Easy:
-                itemAddCD = 3f;                 
+                itemAddCD = 3f;
                 break;
 
             //正常难度
             case GameDifficultyLevel.Normal:
                 itemAddCD = 4.5f;
                 break;
-            
+
             //困难难度
             case GameDifficultyLevel.Hard:
                 itemAddCD = 6f;
@@ -84,6 +87,9 @@ public class InventoryManager : Singleton<InventoryManager>
 
 
     //物品栏删除并排序
+    /// <summary>
+    /// 移除指定索引的物品，并刷新所有物品栏格子。
+    /// </summary>
     public void RemoveAt(int index)
     {
         if (index < 0 || index >= slots.Count)
@@ -97,6 +103,9 @@ public class InventoryManager : Singleton<InventoryManager>
     }
 
     //刷新物品栏UI显示
+    /// <summary>
+    /// 根据后台物品列表同步物品栏图标和选中状态。
+    /// </summary>
     public void RefreshUI()
     {
         foreach(SlotUI slot in slotUIs)
@@ -117,6 +126,10 @@ public class InventoryManager : Singleton<InventoryManager>
     }
 
     //给物品栏添加特定物体(外部调用)
+    /// <summary>
+    /// 尝试将指定物品加入物品栏。
+    /// </summary>
+    /// <returns>物品栏有空位且添加成功时返回 <c>true</c>。</returns>
     public bool TryAddSpecificItem(ItemData item)
     {
         if (slots.Count >= totalSlotCount)
@@ -130,6 +143,9 @@ public class InventoryManager : Singleton<InventoryManager>
     }
 
     //获取一个随机的物品数据(外部调用)
+    /// <summary>
+    /// 从配置的物品池中随机取得一个物品数据，不会修改物品栏。
+    /// </summary>
     public ItemData GetRandomItem()
     {
         int rand = Random.Range(0, allItemPool.Count);  //随机获取物品池相关的ID随机数

@@ -3,13 +3,16 @@ using UnityEngine.UI;
 using DG.Tweening;
 using UnityEngine;
 
+/// <summary>
+/// æ§åˆ¶ UI Image å…‰æ•ˆçš„é—ªçƒã€æ¸å˜å’Œè‡ªåŠ¨é”€æ¯ã€‚
+/// </summary>
 public class ShiningLight_Image : MonoBehaviour
 {
-    private Image image;                    //Image×é¼ş
-    private float colorChangeSpeed = 0.4f;  //É«Ïà±ä»¯µÄËÙ¶È
-    private float hue;                      //µ±Ç°É«ÏàÖµ
+    private Image image;                    //Imageç»„ä»¶
+    private float colorChangeSpeed = 0.4f;  //è‰²ç›¸å˜åŒ–çš„é€Ÿåº¦
+    private float hue;                      //å½“å‰è‰²ç›¸å€¼
 
-    private float rotateSpeed = -100f;       //Ğı×ªËÙ¶È
+    private float rotateSpeed = -100f;       //æ—‹è½¬é€Ÿåº¦
 
     private void Awake()
     {
@@ -24,26 +27,26 @@ public class ShiningLight_Image : MonoBehaviour
 
     private void Update()
     {
-        transform.Rotate(Vector3.forward * rotateSpeed * Time.deltaTime);   //¹âÏßĞı×ª
+        transform.Rotate(Vector3.forward * rotateSpeed * Time.deltaTime);   //å…‰çº¿æ—‹è½¬
 
-        ColorChange();      //ÑÕÉ«Ğ§¹û
+        ColorChange();      //é¢œè‰²æ•ˆæœ
     }
 
     private void ColorChange()
     {
         hue += colorChangeSpeed * Time.deltaTime;
-        // È·±£É«ÏàÖµÔÚ [0, 1] ·¶Î§ÄÚÑ­»·
+        // ç¡®ä¿è‰²ç›¸å€¼åœ¨ [0, 1] èŒƒå›´å†…å¾ªç¯
         if (hue > 1f)
             hue -= 1f;
 
-        // »ñÈ¡µ±Ç°µÄ alpha Öµ
+        // è·å–å½“å‰çš„ alpha å€¼
         float currentAlpha = image.color.a;
 
-        // Ê¹ÓÃ HSV É«²Ê¿Õ¼ä×ª»»Îª RGB ÑÕÉ«
+        // ä½¿ç”¨ HSV è‰²å½©ç©ºé—´è½¬æ¢ä¸º RGB é¢œè‰²
         Color rainbowColor = Color.HSVToRGB(hue, 1f, 1f);
         rainbowColor.a = currentAlpha;
 
-        // ÉèÖÃ Sprite µÄÑÕÉ«
+        // è®¾ç½® Sprite çš„é¢œè‰²
         image.color = rainbowColor;
     }
 

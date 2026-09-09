@@ -2,28 +2,31 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// å¯¹é€‰ä¸­æ¡†æ‰§è¡Œå¾ªç¯ç¼©æ”¾åŠ¨ç”»ï¼Œå¢å¼ºç‰©å“æˆ– UI å…ƒç´ çš„é€‰ä¸­åé¦ˆã€‚
+/// </summary>
 public class SelectedFrameScale : MonoBehaviour
 {
-    private float minScale = 0.95f;     //×îĞ¡Ëõ·ÅÖµ
-    private float maxScale = 1.05f;     //×î´óËõ·ÅÖµ
+    private float minScale = 0.95f;     //æœ€å°ç¼©æ”¾å€¼
+    private float maxScale = 1.05f;     //æœ€å¤§ç¼©æ”¾å€¼
     private Vector3 minVec3Scale;
     private Vector3 maxVec3Scale;
 
-    private float speed = 2f;  //Ëõ·ÅËÙ¶È
+    private float speed = 2f;  //ç¼©æ”¾é€Ÿåº¦
 
     private RectTransform rectTransform;
 
     void Start()
     {
-        rectTransform = GetComponent<RectTransform>();             // »ñÈ¡ImageµÄRectTransform
-        minVec3Scale = new Vector3(minScale, minScale, minScale);  //×îĞ¡Ëõ·ÅÖµVec3
-        maxVec3Scale = new Vector3(maxScale, maxScale, maxScale);  //×î´óËõ·ÅÖµVec3
+        rectTransform = GetComponent<RectTransform>();             // è·å–Imageçš„RectTransform
+        minVec3Scale = new Vector3(minScale, minScale, minScale);  //æœ€å°ç¼©æ”¾å€¼Vec3
+        maxVec3Scale = new Vector3(maxScale, maxScale, maxScale);  //æœ€å¤§ç¼©æ”¾å€¼Vec3
 }
 
     void Update()
     {
-        // Ê¹ÓÃ sin º¯ÊıÀ´ÊµÏÖÖÜÆÚĞÔ±ä»¯
-        float scale = Mathf.PingPong(Time.time * speed, 1f); // ¼ÆËãÖÜÆÚµÄÖµ
-        rectTransform.localScale = Vector3.Lerp(minVec3Scale, maxVec3Scale, scale); // ¸ù¾İÖÜÆÚµ÷ÕûËõ·Å
+        // ä½¿ç”¨ sin å‡½æ•°æ¥å®ç°å‘¨æœŸæ€§å˜åŒ–
+        float scale = Mathf.PingPong(Time.time * speed, 1f); // è®¡ç®—å‘¨æœŸçš„å€¼
+        rectTransform.localScale = Vector3.Lerp(minVec3Scale, maxVec3Scale, scale); // æ ¹æ®å‘¨æœŸè°ƒæ•´ç¼©æ”¾
     }
 }

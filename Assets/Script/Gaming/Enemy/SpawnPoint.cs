@@ -2,25 +2,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// åœ¨æ¡Œå® æ¥è¿‘æ—¶ç”Ÿæˆæ•Œäººï¼Œå¹¶æ ¹æ®éš¾åº¦æ§åˆ¶å¤æ´»é—´éš”ã€‚
+/// </summary>
 public class SpawnPoint : MonoBehaviour
 {
-    [SerializeField] private GameObject Enemy;       //Ë¢ĞÂµÄ¹ÖÎï
-    private GameObject currentEnemy;                 //µ±Ç°¹ÖÎï
+    [Tooltip("åˆ·æ–°çš„æ€ªç‰©")]
+    [SerializeField] private GameObject Enemy;       //åˆ·æ–°çš„æ€ªç‰©
+    private GameObject currentEnemy;                 //å½“å‰æ€ªç‰©
     private Transform parent;
 
     private GameObject vpet;
-    private bool isAllowSpawn = true;       //ÊÇ·ñÔÊĞíÉú³É£¿
-    private bool isEnemySpawned = false;    //¹ÖÎïÊÇ·ñÒÑ¾­Éú³É
+    private bool isAllowSpawn = true;       //æ˜¯å¦å…è®¸ç”Ÿæˆï¼Ÿ
+    private bool isEnemySpawned = false;    //æ€ªç‰©æ˜¯å¦å·²ç»ç”Ÿæˆ
 
     private void Awake()
     {
-        vpet = GameObject.FindGameObjectWithTag("Vpet");  //»ñÈ¡×À³èµÄÓÎÏ·¶ÔÏó
+        vpet = GameObject.FindGameObjectWithTag("Vpet");  //è·å–æ¡Œå® çš„æ¸¸æˆå¯¹è±¡
     }
 
     private void Start()
     {
         parent = gameObject.transform;
-        InitValueBasedDifficulty();     //³õÊ¼»¯ÊıÖµ
+        InitValueBasedDifficulty();     //åˆå§‹åŒ–æ•°å€¼
     }
 
     private void Update()
@@ -30,76 +34,83 @@ public class SpawnPoint : MonoBehaviour
         CheckToSpawnEnemy();
     }
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 spawnTimeFix = 5f;
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 spawnTimeFix = 0f;
                 break;
 
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 spawnTimeFix = -5f;
                 break;
         }
     }
 
-    [SerializeField] private float minSpawnRange = -3f;         //×îĞ¡ÖØÉú·¶Î§
-    [SerializeField] private float maxSpawnRange = 3f;          //×î´óÖØÉú·¶Î§
-    [SerializeField] private float minRespawnTime = 15f;        //¹ÖÎï×î¶ÌÖØÉúÊ±¼ä
-    [SerializeField] private float maxRespawnTime = 30f;        //¹ÖÎï×î³¤ÖØÉúÊ±¼ä
-    private float spawnTimeFix = 0f;    //ÖØÉúÊ±¼äĞŞÕı
+    [Tooltip("æœ€å°é‡ç”ŸèŒƒå›´")]
+    [SerializeField] private float minSpawnRange = -3f;         //æœ€å°é‡ç”ŸèŒƒå›´
+    [Tooltip("æœ€å¤§é‡ç”ŸèŒƒå›´")]
+    [SerializeField] private float maxSpawnRange = 3f;          //æœ€å¤§é‡ç”ŸèŒƒå›´
+    [Tooltip("æ€ªç‰©æœ€çŸ­é‡ç”Ÿæ—¶é—´")]
+    [SerializeField] private float minRespawnTime = 15f;        //æ€ªç‰©æœ€çŸ­é‡ç”Ÿæ—¶é—´
+    [Tooltip("æ€ªç‰©æœ€é•¿é‡ç”Ÿæ—¶é—´")]
+    [SerializeField] private float maxRespawnTime = 30f;        //æ€ªç‰©æœ€é•¿é‡ç”Ÿæ—¶é—´
+    private float spawnTimeFix = 0f;    //é‡ç”Ÿæ—¶é—´ä¿®æ­£
 
-    private float respawnTimer;     //ÖØÉú¼ÆÊ±Æ÷
-    bool isRespawn = false;         //ÊÇ·ñ½øÈëÁËÖØÉú
+    private float respawnTimer;     //é‡ç”Ÿè®¡æ—¶å™¨
+    bool isRespawn = false;         //æ˜¯å¦è¿›å…¥äº†é‡ç”Ÿ
 
     private void CheckToSpawnEnemy()
     {
-        if (!isAllowSpawn) return;  //Èô²»ÔÊĞíÖØÉúÔò·µ»Ø
+        if (!isAllowSpawn) return;  //è‹¥ä¸å…è®¸é‡ç”Ÿåˆ™è¿”å›
 
-        if(!isEnemySpawned) respawnTimer -= Time.deltaTime;     //¹ÖÎïÎ´Éú³ÉÊ±¼ÆÊ±Æ÷ÔËĞĞ
+        if(!isEnemySpawned) respawnTimer -= Time.deltaTime;     //æ€ªç‰©æœªç”Ÿæˆæ—¶è®¡æ—¶å™¨è¿è¡Œ
 
-        //Èô¹ÖÎï»¹Î´½øĞĞµÚÒ»´ÎÉú³É
-        if (!isEnemySpawned && !isRespawn)        
+        //è‹¥æ€ªç‰©è¿˜æœªè¿›è¡Œç¬¬ä¸€æ¬¡ç”Ÿæˆ
+        if (!isEnemySpawned && !isRespawn)
         {
-            SpawnEnemy();           //Éú³É¹ÖÎï
-            isEnemySpawned = true;  //ÒÑÉú³É
+            SpawnEnemy();           //ç”Ÿæˆæ€ªç‰©
+            isEnemySpawned = true;  //å·²ç”Ÿæˆ
         }
-        //Èô¹ÖÎïÒÑÉú³É²¢ÒÑËÀÍö
+        //è‹¥æ€ªç‰©å·²ç”Ÿæˆå¹¶å·²æ­»äº¡
         else if(isEnemySpawned && currentEnemy == null)
         {
-            isEnemySpawned = false; //Î´Éú³É
-            isRespawn = true;       //½øÈëÖØÉú
-            float randSpawnTime = Random.Range(minRespawnTime + spawnTimeFix , maxRespawnTime + spawnTimeFix); //»ñÈ¡Ëæ»úÖØÉúÊ±¼ä
-            respawnTimer = randSpawnTime;   //ÉèÖÃÖØÉúÊ±¼ä
+            isEnemySpawned = false; //æœªç”Ÿæˆ
+            isRespawn = true;       //è¿›å…¥é‡ç”Ÿ
+            float randSpawnTime = Random.Range(minRespawnTime + spawnTimeFix , maxRespawnTime + spawnTimeFix); //è·å–éšæœºé‡ç”Ÿæ—¶é—´
+            respawnTimer = randSpawnTime;   //è®¾ç½®é‡ç”Ÿæ—¶é—´
         }
-        //Èô¹ÖÎïÖØÉú¼ÆÊ±½áÊø && ´¦ÓÚÖØÉú½×¶Î && »¹Î´Éú³É
+        //è‹¥æ€ªç‰©é‡ç”Ÿè®¡æ—¶ç»“æŸ && å¤„äºé‡ç”Ÿé˜¶æ®µ && è¿˜æœªç”Ÿæˆ
         if(respawnTimer <=0 && isRespawn && !isEnemySpawned)
         {
-            SpawnEnemy();           //Éú³É¹ÖÎï
-            isEnemySpawned = true;  //ÒÑÉú³É
+            SpawnEnemy();           //ç”Ÿæˆæ€ªç‰©
+            isEnemySpawned = true;  //å·²ç”Ÿæˆ
         }
     }
 
-    //¹ÖÎïÉú³É
+    //æ€ªç‰©ç”Ÿæˆ
     private void SpawnEnemy()
     {
-        float rand = Random.Range(minSpawnRange, maxSpawnRange);                            //»ñÈ¡Ëæ»úÖØÉú·¶Î§
-        Vector2 randPos = new Vector2(transform.position.x + rand, transform.position.y);   //Éè¶¨ÖØÉúÎ»ÖÃ
-        currentEnemy = Instantiate(Enemy, randPos, Quaternion.identity, parent);            //Éú³É
-        currentEnemy.GetComponent<EnemyHealthSystem>().SetParentSpawnPoint(this);           //ÉèÖÃ¶ÔÏóµÄÖØÉúµã¸¸Àà
+        float rand = Random.Range(minSpawnRange, maxSpawnRange);                            //è·å–éšæœºé‡ç”ŸèŒƒå›´
+        Vector2 randPos = new Vector2(transform.position.x + rand, transform.position.y);   //è®¾å®šé‡ç”Ÿä½ç½®
+        currentEnemy = Instantiate(Enemy, randPos, Quaternion.identity, parent);            //ç”Ÿæˆ
+        currentEnemy.GetComponent<EnemyHealthSystem>().SetParentSpawnPoint(this);           //è®¾ç½®å¯¹è±¡çš„é‡ç”Ÿç‚¹çˆ¶ç±»
     }
 
-    //ÑÓ³ÙÖØÖÃÖØÉú×´Ì¬(Íâ²¿µ÷ÓÃ)
+    //å»¶è¿Ÿé‡ç½®é‡ç”ŸçŠ¶æ€(å¤–éƒ¨è°ƒç”¨)
+    /// <summary>
+    /// å»¶è¿Ÿé‡ç½®ç”ŸæˆçŠ¶æ€ï¼Œç»™æ­»äº¡ç‰¹æ•ˆå’Œå¯¹è±¡é”€æ¯ç•™å‡ºè¿‡æ¸¡æ—¶é—´ã€‚
+    /// </summary>
     public void DelayResetRespawnState()
     {
         Invoke("ResetRespawn", 0.5f);
@@ -107,7 +118,7 @@ public class SpawnPoint : MonoBehaviour
 
     private void ResetRespawn()
     {
-        isRespawn = false;     //ÖØÖÃÖØÉú×´Ì¬
+        isRespawn = false;     //é‡ç½®é‡ç”ŸçŠ¶æ€
         isEnemySpawned = false;
     }
 

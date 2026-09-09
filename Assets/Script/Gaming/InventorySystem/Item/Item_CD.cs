@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// ç®¡ç† CD é“å…·ä¸æ¡Œå® æ¥è§¦åçš„ç‰¹æ®Šäº¤äº’å’Œä¸´æ—¶è§†è§‰æ•ˆæœã€‚
+/// </summary>
 public class Item_CD : MonoBehaviour
 {
     [SerializeField] private GameObject lightPrefab;
@@ -21,10 +24,10 @@ public class Item_CD : MonoBehaviour
 
             if (vpet.isAllowEat)
             {
-                Destroy(gameObject);    //Ïú»ÙCD
-                vpet.VpetStateSet(6);   //ÉèÖÃ×´Ì¬
-                Instantiate(lightPrefab, vpetTransform.position, Quaternion.identity, vpetTransform);   //Ìí¼Ó¹âĞ§
-                Instantiate(lightPrefab, vpetTransform.position, Quaternion.identity, vpetTransform);   //Ìí¼Ó¹âĞ§
+                Destroy(gameObject);    //é”€æ¯CD
+                vpet.VpetStateSet(6);   //è®¾ç½®çŠ¶æ€
+                Instantiate(lightPrefab, vpetTransform.position, Quaternion.identity, vpetTransform);   //æ·»åŠ å…‰æ•ˆ
+                Instantiate(lightPrefab, vpetTransform.position, Quaternion.identity, vpetTransform);   //æ·»åŠ å…‰æ•ˆ
             }
         }
     }
@@ -38,10 +41,10 @@ public class Item_CD : MonoBehaviour
 
             if (vpet.isAllowEat)
             {
-                Destroy(gameObject);    //Ïú»ÙCD
-                vpet.VpetStateSet(6);   //ÉèÖÃ×´Ì¬
-                Instantiate(lightPrefab, vpetTransform.position, Quaternion.identity, vpetTransform);   //Ìí¼Ó¹âĞ§
-                Instantiate(lightPrefab, vpetTransform.position, Quaternion.identity, vpetTransform);   //Ìí¼Ó¹âĞ§
+                Destroy(gameObject);    //é”€æ¯CD
+                vpet.VpetStateSet(6);   //è®¾ç½®çŠ¶æ€
+                Instantiate(lightPrefab, vpetTransform.position, Quaternion.identity, vpetTransform);   //æ·»åŠ å…‰æ•ˆ
+                Instantiate(lightPrefab, vpetTransform.position, Quaternion.identity, vpetTransform);   //æ·»åŠ å…‰æ•ˆ
             }
         }
     }

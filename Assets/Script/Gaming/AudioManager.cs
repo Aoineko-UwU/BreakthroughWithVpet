@@ -4,6 +4,9 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
+/// <summary>
+/// 统一管理 Addressables 音频的加载、播放、音量控制和句柄释放。
+/// </summary>
 public class AudioManager : Singleton<AudioManager>
 {
     #region Inspector Configuration

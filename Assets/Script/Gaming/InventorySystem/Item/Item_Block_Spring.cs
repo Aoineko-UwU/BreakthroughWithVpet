@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// 管理弹簧方块对桌宠的弹跳效果及其冷却状态。
+/// </summary>
 public class Item_Block_Spring : MonoBehaviour
 {
     private Animator animator;
@@ -12,8 +15,10 @@ public class Item_Block_Spring : MonoBehaviour
     }
 
     private bool isActive = false;
-    [SerializeField]private float bounceForce = 13f;//������(�����)
-    [SerializeField] private float resetTime = 10f; //����ʱ��
+    [Tooltip("弹簧力(冲击力)")]
+    [SerializeField]private float bounceForce = 13f;//弹簧力(冲击力)
+    [Tooltip("重设时间")]
+    [SerializeField] private float resetTime = 10f; //重设时间
 
     private void Update()
     {
