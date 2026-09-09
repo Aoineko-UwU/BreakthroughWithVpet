@@ -6,9 +6,16 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class AudioManager : MonoBehaviour
 {
+    #region Inspector Configuration
+
     public static AudioManager Instance { get; private set; }
-    [SerializeField] private List<AudioSource> audioSourcePool;      //一次性音源池
-    [SerializeField] private List<AudioSource> audioSources3DPool;   //一次性3D音源池
+
+    [Header("Audio Source Pools")]
+    [Tooltip("用于播放短音效的 2D AudioSource 列表。请确保列表中的元素不重复。")]
+    [SerializeField] private List<AudioSource> audioSourcePool;
+
+    [Tooltip("用于播放空间音效的 3D AudioSource 列表。请确保列表中的元素不重复。")]
+    [SerializeField] private List<AudioSource> audioSources3DPool;
 
     private readonly Dictionary<string, AudioClip> loadedClips = new();
     private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> loadedClipHandles = new();
@@ -18,14 +25,27 @@ public class AudioManager : MonoBehaviour
     private readonly Dictionary<AudioSource, string> playingSourceAddresses = new();
     private readonly Dictionary<AudioSource, string> playing3DSourceAddresses = new();
 
-    [SerializeField] private AudioSource bgmAudioSource;        //背景音乐音源
+    [Header("Background Music")]
+    [Tooltip("用于播放背景音乐的 AudioSource。该 Source 会随 AudioManager 跨场景保留。")]
+    [SerializeField] private AudioSource bgmAudioSource;
+
+    #endregion
+
+    #region Volume State
 
 
     private float _currentBgmVolume = 0.5f;   //当前音乐音量  (默认值)
     private float _currentSfxVolume = 0.5f;   //当前音效音量  (默认值)
 
-    public float GetCurrentBgmVolume() => _currentBgmVolume;    //外部获取BGM音量方法
-    public float GetCurrentSfxVolume() => _currentSfxVolume;    //外部获取音效音量方法
+    /// <summary>获取当前背景音乐音量。</summary>
+    public float GetCurrentBgmVolume() => _currentBgmVolume;
+
+    /// <summary>获取当前音效音量。</summary>
+    public float GetCurrentSfxVolume() => _currentSfxVolume;
+
+    #endregion
+
+    #region Lifecycle
 
     private void Awake()
     {
@@ -58,6 +78,13 @@ public class AudioManager : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region Clip Loading
+
+    /// <summary>
+    /// 请求一个音频片段；相同地址在加载期间会合并请求，加载完成后通知所有调用方。
+    /// </summary>
     private void RequestClip(string address, Action<AudioClip> onLoaded)
     {
         if (loadedClips.TryGetValue(address, out AudioClip cachedClip))
@@ -99,19 +126,23 @@ public class AudioManager : MonoBehaviour
         };
     }
 
-    //单次音效播放方法(外部调用)
+    #endregion
+
+    #region One-Shot Audio
+
+    /// <summary>异步加载并播放一个 2D 短音效。</summary>
     public void PlaySound(string address)
     {
         RequestClip(address, clip => PlayClip(clip, address));
     }
 
-    //停止播放输入地址的所有音效
+    /// <summary>停止指定地址对应的全部 2D 短音效。</summary>
     public void StopSound(string address)
     {
         StopSourcesForAddress(playingSourceAddresses, address);
     }
 
-    //播放音效并记录播放来源
+    /// <summary>从 2D 音效池中取出一个空闲 Source 播放片段。</summary>
     private void PlayClip(AudioClip clip, string address)
     {
         AudioSource freeSource = GetFreeAudioSource();      //获取空闲音源池
@@ -129,7 +160,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    //获取单次音源池的空闲音源
+    /// <summary>清理已自然播放结束的 Source，并返回一个可用 Source。</summary>
     private AudioSource GetFreeAudioSource()
     {
         CleanupFinishedSources(playingSourceAddresses);
@@ -142,19 +173,23 @@ public class AudioManager : MonoBehaviour
         return null; // 都在播放
     }
 
-    //播放3D音效方法
+    #endregion
+
+    #region Spatial Audio
+
+    /// <summary>异步加载并播放一个 3D 短音效。</summary>
     public void PlaySound3D(string address, Vector3 position)
     {
         RequestClip(address, clip => PlayClip3D(clip, address, position));
     }
 
-    //停止3D音效播放
+    /// <summary>停止指定地址对应的全部 3D 短音效。</summary>
     public void StopSound3D(string address)
     {
         StopSourcesForAddress(playing3DSourceAddresses, address);
     }
 
-    //3D音效播放
+    /// <summary>从 3D 音效池中取出一个空闲 Source 播放片段。</summary>
     private void PlayClip3D(AudioClip clip, string address, Vector3 position)
     {
         AudioSource source = GetFreeAudioSource3D();
@@ -174,7 +209,7 @@ public class AudioManager : MonoBehaviour
         }
     }
 
-    //获取空闲3D音源池
+    /// <summary>清理已自然播放结束的 3D Source，并返回一个可用 Source。</summary>
     private AudioSource GetFreeAudioSource3D()
     {
         CleanupFinishedSources(playing3DSourceAddresses);
@@ -187,6 +222,7 @@ public class AudioManager : MonoBehaviour
         return null;
     }
 
+    /// <summary>停止指定地址对应的 Source，并移除播放归属记录。</summary>
     private static void StopSourcesForAddress(Dictionary<AudioSource, string> sourceAddresses, string address)
     {
         List<AudioSource> sourcesToRemove = new();
@@ -223,7 +259,11 @@ public class AudioManager : MonoBehaviour
             sourceAddresses.Remove(source);
     }
 
-    //播放背景音乐
+    #endregion
+
+    #region Background Music
+
+    /// <summary>异步加载并播放背景音乐。</summary>
     public void PlayBGM(string address)
     {
         RequestClip(address, clip =>
@@ -237,7 +277,7 @@ public class AudioManager : MonoBehaviour
         });
     }
 
-    //清空背景音乐剪辑
+    /// <summary>停止并清空当前背景音乐。</summary>
     public void ClearBGM()
     {
         if (bgmAudioSource == null)
@@ -247,13 +287,14 @@ public class AudioManager : MonoBehaviour
         bgmAudioSource.clip = null;
     }
 
-    // 调整背景音乐的音量(基于currentBgmVolume)
+    /// <summary>按当前背景音乐音量乘数调整播放音量。</summary>
     public void AdjustBGMVolume(float volumeMultiplier)
     {
         float adjustedVolume = Mathf.Clamp01(volumeMultiplier) * _currentBgmVolume;
         bgmAudioSource.volume = adjustedVolume;
     }
 
+    /// <summary>暂停或恢复当前背景音乐。</summary>
     public void PauseOrContinueBGM(bool isPause)
     {
         if (isPause)
@@ -262,14 +303,14 @@ public class AudioManager : MonoBehaviour
             bgmAudioSource.UnPause();
     }
 
-    //设置背景音乐音量
+    /// <summary>设置背景音乐音量。</summary>
     public void SetBgmVolume(float volume)
     {
         _currentBgmVolume = Mathf.Clamp01(volume);
         bgmAudioSource.volume = _currentBgmVolume;
     }
 
-    //设置音效音量
+    /// <summary>设置音效音量，并立即同步到音效池中的 Source。</summary>
     public void SetSfxVolume(float volume)
     {
         _currentSfxVolume = Mathf.Clamp01(volume);
@@ -285,5 +326,5 @@ public class AudioManager : MonoBehaviour
                 src.volume = _currentSfxVolume;
     }
 
-
+    #endregion
 }
