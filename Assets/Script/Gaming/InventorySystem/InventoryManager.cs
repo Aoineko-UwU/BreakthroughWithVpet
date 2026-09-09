@@ -86,6 +86,12 @@ public class InventoryManager : Singleton<InventoryManager>
     //物品栏删除并排序
     public void RemoveAt(int index)
     {
+        if (index < 0 || index >= slots.Count)
+        {
+            Debug.LogWarning($"尝试移除无效的物品栏索引：{index}");
+            return;
+        }
+
         slots.RemoveAt(index);      //移除物品栏物品
         RefreshUI();                //刷新UI
     }

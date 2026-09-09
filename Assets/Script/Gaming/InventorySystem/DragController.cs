@@ -36,6 +36,9 @@ public class DragController : Singleton<DragController>
     //开始拖拽方法(外部调用)
     public void BeginDrag(GameObject preview, ItemData data)
     {
+        if (preview == null || data == null)
+            return;
+
         previewItem = preview;                                      //获取预览道具GameObject
         currentItemData = data;                                     //获取预览道具的道具数据
         preItemSprite = previewItem.GetComponent<SpriteRenderer>(); //获取预览道具的精灵渲染
@@ -84,6 +87,8 @@ public class DragController : Singleton<DragController>
     // 判断是否可以放置物品(Update)
     private void CheckPlaceItem()
     {
+        isAllowPlaceItem = false;
+
         //为空判断
         if (previewItem != null && currentItemData != null)
         {
@@ -93,7 +98,7 @@ public class DragController : Singleton<DragController>
                 PolygonCollider2D collider = previewItem.GetComponent<PolygonCollider2D>();     //获取previewItem碰撞箱
 
                 //为空检查
-                if (collider != null)
+                if (collider != null && preItemSprite != null)
                 {
                     ContactFilter2D filter = new ContactFilter2D();     //准备一个 ContactFilter2D
                     filter.useTriggers = false;                         //检测其他 trigger 的碰撞体             
@@ -128,6 +133,19 @@ public class DragController : Singleton<DragController>
     //放置物品(内部调用)
     private void TryPlaceItem()
     {
+        if (inv == null || currentItemData == null || previewItem == null)
+        {
+            CancelDrag();
+            return;
+        }
+
+        int itemIndex = inv.slots.IndexOf(currentItemData);
+        if (itemIndex < 0)
+        {
+            CancelDrag();
+            return;
+        }
+
         if (isAllowPlaceItem)
         {
             if (currentItemData.itemID <= 49)
@@ -137,7 +155,7 @@ public class DragController : Singleton<DragController>
                 var prefab = Instantiate(currentItemData.prefab, previewItem.transform.position, itemRotation);         //实例创建
                 prefab.transform.localScale = new Vector2(currentItemData.entityScale, currentItemData.entityScale);    //更新缩放值
                                                                                                                         //执行物品栏删除并清除预览实例
-                inv.RemoveAt(inv.slots.IndexOf(currentItemData));
+                inv.RemoveAt(itemIndex);
                 AudioManager.Instance.PlaySound("place_confirm");
                 CancelDrag();
             }
@@ -154,7 +172,7 @@ public class DragController : Singleton<DragController>
                 thrownItem.GetComponent<Rigidbody2D>().AddForce(dir * throwForce, ForceMode2D.Impulse);     //投掷力给予                  
 
                 //其他处理
-                inv.RemoveAt(inv.slots.IndexOf(currentItemData));
+                inv.RemoveAt(itemIndex);
                 AudioManager.Instance.PlaySound("throw");
                 CancelDrag();
             }
@@ -172,7 +190,9 @@ public class DragController : Singleton<DragController>
         Destroy(previewItem);   //销毁预览物品
         previewItem = null;     //清除预览物体引用
         preItemSprite = null;   //清除精灵引用
+        currentItemData = null; //清除当前物品数据
         isSelected = false;     //标志为无物品选中
+        isAllowPlaceItem = false;
 
         //将Slot的选中框隐藏
         foreach (SlotUI slot in slotUIs)

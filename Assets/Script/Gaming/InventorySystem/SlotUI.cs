@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class SlotUI : MonoBehaviour
 {
-    public int index;                 // ²å²ÛË÷Òı
+    public int index;                 // æ’æ§½ç´¢å¼•
     private InventoryManager inv;
     private GameObject previewItem;
 
@@ -16,35 +16,41 @@ public class SlotUI : MonoBehaviour
         SetActiveOfSelectedFrame(false);
     }
 
-    // Button °ó¶¨£ºµã»÷¸ñ×Ó
+    // Button ç»‘å®šï¼šç‚¹å‡»æ ¼å­
     public void ClickSlot()
     {
+        if (inv == null || GameManager.Instance == null || DragController.Instance == null) return;
         if (!GameManager.Instance.isAllowPlayerControl) return;
-        if (index + 1 > inv.slots.Count) return;        // ÈôÃ»ÓĞµÀ¾ß
-        if (DragController.Instance != null && DragController.Instance.isSelected) return; // ÒÑÔÚÍÏ¶¯ÖĞ
+        if (index + 1 > inv.slots.Count) return;        // è‹¥æ²¡æœ‰é“å…·
+        if (DragController.Instance.isSelected) return; // å·²åœ¨æ‹–åŠ¨ä¸­
 
         BeginDrag(inv.slots[index]);
     }
 
     private void BeginDrag(ItemData data)
     {
-        if (data == null) return;
+        if (data == null || data.prefab == null || data.entitySprite == null)
+            return;
 
-        // Éú³ÉÒ»¸ö preview£¨ºÍÄãÔ­À´ÊµÏÖÒ»ÖÂ£©
+        SpriteRenderer sourceRenderer = data.prefab.GetComponent<SpriteRenderer>();
+        PolygonCollider2D sourceCollider = data.prefab.GetComponent<PolygonCollider2D>();
+        if (sourceRenderer == null || sourceCollider == null)
+            return;
+
+        // ç”Ÿæˆä¸€ä¸ª previewï¼ˆå’Œä½ åŸæ¥å®ç°ä¸€è‡´ï¼‰
         previewItem = new GameObject("PreviewItem");
         SpriteRenderer previewRenderer = previewItem.AddComponent<SpriteRenderer>();
         previewRenderer.sortingLayerName = "TextUI";
         previewRenderer.sprite = data.entitySprite;
         previewRenderer.color = new Color(1f, 1f, 1f, 0.5f);
 
-        if (data.prefab.GetComponent<SpriteRenderer>().drawMode == SpriteDrawMode.Tiled)
+        if (sourceRenderer.drawMode == SpriteDrawMode.Tiled)
         {
             previewRenderer.drawMode = SpriteDrawMode.Tiled;
-            previewRenderer.size = data.prefab.GetComponent<SpriteRenderer>().size;
+            previewRenderer.size = sourceRenderer.size;
         }
 
-        // ¸´ÖÆÅö×²Ïä
-        PolygonCollider2D sourceCollider = data.prefab.GetComponent<PolygonCollider2D>();
+        // å¤åˆ¶ç¢°æ’ç®±
         PolygonCollider2D previewCollider = previewItem.AddComponent<PolygonCollider2D>();
 
         previewCollider.pathCount = sourceCollider.pathCount;
@@ -52,28 +58,31 @@ public class SlotUI : MonoBehaviour
             previewCollider.SetPath(i, sourceCollider.GetPath(i));
         previewCollider.isTrigger = true;
 
-        // ½« preview ·ÅÔÚÊó±êÎ»ÖÃ£¨»ò´¥ÃşÎ»ÖÃ£©
+        // å°† preview æ”¾åœ¨é¼ æ ‡ä½ç½®ï¼ˆæˆ–è§¦æ‘¸ä½ç½®ï¼‰
         Vector3 pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
         pos.z = 0;
         previewItem.transform.position = pos;
 
-        // Ëõ·Å
+        // ç¼©æ”¾
         previewItem.transform.localScale = new Vector2(data.entityScale, data.entityScale);
 
-        // ÓÃ Tag ºöÂÔÄ³Ğ©¼ì²â£¨ÄãÔ­À´ÓĞÕâ¸ö£©
+        // ç”¨ Tag å¿½ç•¥æŸäº›æ£€æµ‹ï¼ˆä½ åŸæ¥æœ‰è¿™ä¸ªï¼‰
         previewItem.tag = "Ignore";
 
-        // Æô¶¯ÍÏ¶¯£¨DragController ¶©ÔÄÊäÈë£©
+        // å¯åŠ¨æ‹–åŠ¨ï¼ˆDragController è®¢é˜…è¾“å…¥ï¼‰
         DragController.Instance.BeginDrag(previewItem, data);
         SetActiveOfSelectedFrame(true);
 
-        // ²¥·ÅÑ¡ÖĞÒôĞ§
+        // æ’­æ”¾é€‰ä¸­éŸ³æ•ˆ
         AudioManager.Instance.PlaySound("slot_select");
     }
 
-    // Íâ²¿µ÷ÓÃ£º¸üĞÂ slot Í¼±ê
+    // å¤–éƒ¨è°ƒç”¨ï¼šæ›´æ–° slot å›¾æ ‡
     public void SetItemImage(ItemData data)
     {
+        if (slotItemImage == null)
+            return;
+
         if (data != null)
         {
             slotItemImage.sprite = data.icon;
@@ -88,6 +97,7 @@ public class SlotUI : MonoBehaviour
 
     public void SetActiveOfSelectedFrame(bool isActive)
     {
-        slotSelectedFrame.SetActive(isActive);
+        if (slotSelectedFrame != null)
+            slotSelectedFrame.SetActive(isActive);
     }
 }
