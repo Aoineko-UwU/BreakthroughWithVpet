@@ -3,22 +3,23 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class MapProgressBar : MonoBehaviour
+public class MapProgressBar : Singleton<MapProgressBar>
 {
-    [SerializeField] private Transform vpet;        //×À³èµÄTransform
-    [SerializeField] private Image checkPoint01;    //´æµµµã1µÄImage
-    [SerializeField] private Image checkPoint02;    //´æµµµã2µÄImage
+    [SerializeField] private Transform vpet;        //æ¡Œå® çš„Transform
+    [SerializeField] private Image checkPoint01;    //å­˜æ¡£ç‚¹1çš„Image
+    [SerializeField] private Image checkPoint02;    //å­˜æ¡£ç‚¹2çš„Image
 
-    private Slider slider;                 //»¬¶¯Ìõ
-    private float startPosX = -14f;        //¿ªÊ¼Î»ÖÃ
-    private float endPosX = 550f;          //½áÊøÎ»ÖÃ
+    private Slider slider;                 //æ»‘åŠ¨æ¡
+    private float startPosX = -14f;        //å¼€å§‹ä½ç½®
+    private float endPosX = 550f;          //ç»“æŸä½ç½®
 
-    public static MapProgressBar Instance { get; private set; }     //Ààµ¥Àı
-
-    private void Awake()
+    protected override void Awake()
     {
+        base.Awake();
+        if (Instance != this)
+            return;
+
         slider = GetComponent<Slider>();
-        Instance = this;                
     }
 
     private void Update()
@@ -26,19 +27,19 @@ public class MapProgressBar : MonoBehaviour
         SetProgressValue();
     }
 
-    //¸üĞÂ½ø¶È(Update)
+    //æ›´æ–°è¿›åº¦(Update)
     private void SetProgressValue()
     {
         if (vpet == null || slider == null)
             return;
 
-        float currentX = vpet.position.x;       //»ñÈ¡×À³èXÖáÎ»ÖÃ
-        float progress = Mathf.InverseLerp(startPosX, endPosX, currentX); // ×Ô¶¯·µ»Ø×À³èÎ»ÖÃÏà¶ÔstartPosXºÍendPosXµÄÎ»ÖÃ£¬²¢×Ô¶¯Ç¯ÖÆÎª0~1
+        float currentX = vpet.position.x;       //è·å–æ¡Œå® Xè½´ä½ç½®
+        float progress = Mathf.InverseLerp(startPosX, endPosX, currentX); // è‡ªåŠ¨è¿”å›æ¡Œå® ä½ç½®ç›¸å¯¹startPosXå’ŒendPosXçš„ä½ç½®ï¼Œå¹¶è‡ªåŠ¨é’³åˆ¶ä¸º0~1
 
-        slider.value = progress;    //¸³Óèvalue
+        slider.value = progress;    //èµ‹äºˆvalue
     }
 
-    //ÉèÖÃµ½´ïÇé¿ö
+    //è®¾ç½®åˆ°è¾¾æƒ…å†µ
     public void SetArrive(int index)
     {
         switch (index)
@@ -52,7 +53,7 @@ public class MapProgressBar : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("ĞòºÅÎ´Öª");
+                Debug.Log("åºå·æœªçŸ¥");
                 break;
 
         }

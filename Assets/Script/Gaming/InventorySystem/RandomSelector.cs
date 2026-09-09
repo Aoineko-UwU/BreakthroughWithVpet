@@ -2,58 +2,52 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RandomSelector : MonoBehaviour
+public class RandomSelector : Singleton<RandomSelector>
 {
-    // ¶¨ÒåÒ»¸ö½á¹¹ÌåÀ´´æ´¢Ğ§¹ûÃû³ÆºÍËüµÄ¸ÅÂÊ
+    // å®šä¹‰ä¸€ä¸ªç»“æ„ä½“æ¥å­˜å‚¨æ•ˆæœåç§°å’Œå®ƒçš„æ¦‚ç‡
     [System.Serializable]
     private class RandomEvent
     {
-        public int eventIndex;     //Ğ§¹û±àºÅ
-        public float probability;  //¶ÔÓ¦µÄ¸ÅÂÊ
+        public int eventIndex;     //æ•ˆæœç¼–å·
+        public float probability;  //å¯¹åº”çš„æ¦‚ç‡
     }
 
-    public static RandomSelector Instance;      //¾²Ì¬µ¥Àı
 
-    private void Awake()
-    {
-        Instance = this;    //µ¥Àı»¯
-    }
-
-    //½øÊ³Ğ§¹ûËæ»úÊÂ¼ş×é(ÊÂ¼ş×éIDÎª1)
+    //è¿›é£Ÿæ•ˆæœéšæœºäº‹ä»¶ç»„(äº‹ä»¶ç»„IDä¸º1)
     private List<RandomEvent> eatEffect = new List<RandomEvent>()
     {
-        //ÊÂ¼ş1£º »Ø¸´ÉúÃü
+        //äº‹ä»¶1ï¼š å›å¤ç”Ÿå‘½
         new RandomEvent() { eventIndex = 1, probability = 25f },
-        //ÊÂ¼ş2£º Ë²¼äËÀÍö
+        //äº‹ä»¶2ï¼š ç¬é—´æ­»äº¡
         new RandomEvent() { eventIndex = 2, probability = 5f },
-        //ÊÂ¼ş3£º ÒÆ¶¯¼ÓËÙ
+        //äº‹ä»¶3ï¼š ç§»åŠ¨åŠ é€Ÿ
         new RandomEvent() { eventIndex = 3, probability = 15f },
-        //ÊÂ¼ş4£º ÆÕÍ¨¹¥»÷ÉËº¦Ôö¼Ó
+        //äº‹ä»¶4ï¼š æ™®é€šæ”»å‡»ä¼¤å®³å¢åŠ 
         new RandomEvent() { eventIndex = 4, probability = 15f },
-        //ÊÂ¼ş5£º ¿Û³ıÉúÃü
+        //äº‹ä»¶5ï¼š æ‰£é™¤ç”Ÿå‘½
         new RandomEvent() { eventIndex = 5, probability = 10f },
-        //ÊÂ¼ş6£º Ë²ÒÆ
+        //äº‹ä»¶6ï¼š ç¬ç§»
         new RandomEvent() { eventIndex = 6, probability = 15f },
-        //ÊÂ¼ş7£º Ë²¼ä±¬Õ¨
+        //äº‹ä»¶7ï¼š ç¬é—´çˆ†ç‚¸
         new RandomEvent() { eventIndex = 7, probability = 15f }
     };
 
-    //Å¤µ°Ëæ»úÊÂ¼ş×é(ÊÂ¼ş×éIDÎª2)
+    //æ‰­è›‹éšæœºäº‹ä»¶ç»„(äº‹ä»¶ç»„IDä¸º2)
     private List<RandomEvent> gachaEvent = new List<RandomEvent>()
     {
-        //ÊÂ¼ş1£º Éú³ÉÊı¸ö¿ÉÊ°È¡µÄËæ»úÎïÆ·
+        //äº‹ä»¶1ï¼š ç”Ÿæˆæ•°ä¸ªå¯æ‹¾å–çš„éšæœºç‰©å“
         new RandomEvent() { eventIndex = 1, probability = 30f },
-        //ÊÂ¼ş2£º Éú³ÉÊı¸öËæ»ú¹ÖÎï
+        //äº‹ä»¶2ï¼š ç”Ÿæˆæ•°ä¸ªéšæœºæ€ªç‰©
         new RandomEvent() { eventIndex = 2, probability = 15f },
-        //ÊÂ¼ş3£º Éú³ÉÊı¸öÕ¨µ¯
+        //äº‹ä»¶3ï¼š ç”Ÿæˆæ•°ä¸ªç‚¸å¼¹
         new RandomEvent() { eventIndex = 3, probability = 15f },
-        //ÊÂ¼ş3£º Éú³ÉÊı¸öµ¯»É
+        //äº‹ä»¶3ï¼š ç”Ÿæˆæ•°ä¸ªå¼¹ç°§
         new RandomEvent() { eventIndex = 4, probability = 20f },
-        //ÊÂ¼ş4£º Éú³ÉÊı¸öÊ¯×¶
+        //äº‹ä»¶4ï¼š ç”Ÿæˆæ•°ä¸ªçŸ³é”¥
         new RandomEvent() { eventIndex = 5, probability = 20f },
     };
 
-    //¸ÅÂÊ³éÈ¡·½·¨
+    //æ¦‚ç‡æŠ½å–æ–¹æ³•
     public int EventRandomSelector(int eventGroupIndex)
     {
         List<RandomEvent> eventGroups = new List<RandomEvent>();
@@ -68,36 +62,36 @@ public class RandomSelector : MonoBehaviour
                 break;
 
             default:
-                Debug.Log("Î´ÖªµÄÊÂ¼ş²ÎÊı");
+                Debug.Log("æœªçŸ¥çš„äº‹ä»¶å‚æ•°");
                 break;
         }
 
-        //ÈôÒÑÑ¡È¡µ½ÊÂ¼ş×é
+        //è‹¥å·²é€‰å–åˆ°äº‹ä»¶ç»„
         if (eventGroups.Count >0)
         {
-            // ¼ÆËãËùÓĞĞ§¹ûµÄ×Ü¸ÅÂÊ
+            // è®¡ç®—æ‰€æœ‰æ•ˆæœçš„æ€»æ¦‚ç‡
             float totalProbability = 0f;
             foreach (var effect in eventGroups)
             {
                 totalProbability += effect.probability;
             }
 
-            // Éú³ÉÒ»¸öËæ»úÊı£¬·¶Î§´Ó 0 µ½ totalProbability
+            // ç”Ÿæˆä¸€ä¸ªéšæœºæ•°ï¼ŒèŒƒå›´ä» 0 åˆ° totalProbability
             float randomValue = Random.Range(0f, totalProbability);
 
-            // ¸ù¾İËæ»úÊıÀ´Ñ¡ÔñĞ§¹û
+            // æ ¹æ®éšæœºæ•°æ¥é€‰æ‹©æ•ˆæœ
             foreach (var effect in eventGroups)
             {
                 randomValue -= effect.probability;
                 if (randomValue <= 0f)
                 {
-                    // ·µ»Ø¶ÔÓ¦µÄĞ§¹û²ÎÊı
+                    // è¿”å›å¯¹åº”çš„æ•ˆæœå‚æ•°
                     return effect.eventIndex;
                 }
             }
         }
 
-        // Èç¹ûÃ»ÓĞ´¥·¢£¬Ôò·µ»Ø0Öµ
+        // å¦‚æœæ²¡æœ‰è§¦å‘ï¼Œåˆ™è¿”å›0å€¼
         return 0;
 
     }

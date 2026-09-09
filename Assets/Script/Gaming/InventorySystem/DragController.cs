@@ -2,55 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class DragController : MonoBehaviour
+public class DragController : Singleton<DragController>
 {
-    public static DragController Instance;  //¾²Ì¬Ààµ¥Àı
-
-    private GameObject previewItem;         //°ëÍ¸Ã÷ÎïÆ·Ô¤ÀÀ
-    private SpriteRenderer preItemSprite;   //°ëÍ¸Ã÷ÎïÆ·¾«Áé
-    private ItemData currentItemData;   //µ±Ç°ÍÏ¶¯µÄÎïÆ·Êı¾İ
-    private InventoryManager inv;       //³¡¾°ÄÚÎïÆ·À¸¹ÜÀíÆ÷
+    private GameObject previewItem;         //åŠé€æ˜ç‰©å“é¢„è§ˆ
+    private SpriteRenderer preItemSprite;   //åŠé€æ˜ç‰©å“ç²¾çµ
+    private ItemData currentItemData;   //å½“å‰æ‹–åŠ¨çš„ç‰©å“æ•°æ®
+    private InventoryManager inv;       //åœºæ™¯å†…ç‰©å“æ ç®¡ç†å™¨
     private GameObject vpet;
+    private SlotUI[] slotUIs;
 
-    //ÉúÃüÖÜÆÚº¯Êı--------------------------------------------------------------------------------//
+    //ç”Ÿå‘½å‘¨æœŸå‡½æ•°--------------------------------------------------------------------------------//
 
-    private void Awake()
+    protected override void Awake()
     {
-        vpet = GameObject.FindGameObjectWithTag("Vpet");  //»ñÈ¡×À³èµÄÓÎÏ·¶ÔÏó
-        Instance = this;    //È·±£µ¥ÀıÖ¸ÏòÀà±¾Éí
-        inv = FindObjectOfType<InventoryManager>(); //»ñÈ¡³¡¾°ÄÚµÄÎïÆ·À¸¹ÜÀíÆ÷
+        base.Awake();
+        if (Instance != this)
+            return;
+
+        vpet = GameObject.FindGameObjectWithTag("Vpet");  //è·å–æ¡Œå® çš„æ¸¸æˆå¯¹è±¡
+        inv = FindObjectOfType<InventoryManager>(); //è·å–åœºæ™¯å†…çš„ç‰©å“æ ç®¡ç†å™¨
+        slotUIs = FindObjectsOfType<SlotUI>();
     }
 
     void Update()
     {
-        PreItemAndCheckKey();   //¸üĞÂÔ¤ÀÀÎïÌåÎ»ÖÃ²¢¼àÌı°´¼ü
-        CheckPlaceItem();       //¼à²âÊÇ·ñÄÜ¹»·ÅÖÃÎïÌå
+        PreItemAndCheckKey();   //æ›´æ–°é¢„è§ˆç‰©ä½“ä½ç½®å¹¶ç›‘å¬æŒ‰é”®
+        CheckPlaceItem();       //ç›‘æµ‹æ˜¯å¦èƒ½å¤Ÿæ”¾ç½®ç‰©ä½“
     }
-    //ĞĞÎª·½·¨º¯Êı--------------------------------------------------------------------------------//
+    //è¡Œä¸ºæ–¹æ³•å‡½æ•°--------------------------------------------------------------------------------//
 
-    public bool isSelected = false;    //ÊÇ·ñÓĞÎïÆ·ÒÑ±»Ñ¡ÖĞ£¿
+    public bool isSelected = false;    //æ˜¯å¦æœ‰ç‰©å“å·²è¢«é€‰ä¸­ï¼Ÿ
 
-    //¿ªÊ¼ÍÏ×§·½·¨(Íâ²¿µ÷ÓÃ)
+    //å¼€å§‹æ‹–æ‹½æ–¹æ³•(å¤–éƒ¨è°ƒç”¨)
     public void BeginDrag(GameObject preview, ItemData data)
     {
-        previewItem = preview;                                      //»ñÈ¡Ô¤ÀÀµÀ¾ßGameObject
-        currentItemData = data;                                     //»ñÈ¡Ô¤ÀÀµÀ¾ßµÄµÀ¾ßÊı¾İ
-        preItemSprite = previewItem.GetComponent<SpriteRenderer>(); //»ñÈ¡Ô¤ÀÀµÀ¾ßµÄ¾«ÁéäÖÈ¾
-        isSelected = true;                                          //±êÖ¾ÎªÒÑÓĞÎïÆ·±»Ñ¡ÖĞ
+        previewItem = preview;                                      //è·å–é¢„è§ˆé“å…·GameObject
+        currentItemData = data;                                     //è·å–é¢„è§ˆé“å…·çš„é“å…·æ•°æ®
+        preItemSprite = previewItem.GetComponent<SpriteRenderer>(); //è·å–é¢„è§ˆé“å…·çš„ç²¾çµæ¸²æŸ“
+        isSelected = true;                                          //æ ‡å¿—ä¸ºå·²æœ‰ç‰©å“è¢«é€‰ä¸­
     }
 
-    //Ô¤ÀÀÎïÌå¸úËæÓë°´¼ü¼à²â(Update)
+    //é¢„è§ˆç‰©ä½“è·Ÿéšä¸æŒ‰é”®ç›‘æµ‹(Update)
     private void PreItemAndCheckKey()
     {
-        //Îª¿Õ¼ì²é
+        //ä¸ºç©ºæ£€æŸ¥
         if (previewItem != null)
         {
-            // ¸úËæÊó±ê
+            // è·Ÿéšé¼ æ ‡
             Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             previewItem.transform.position = new Vector3(mousePosition.x, mousePosition.y, 0f);
 
-            // ÅĞ¶ÏÊÇ·ñµã»÷×ó¼ü·ÅÖÃ
-            if (Input.GetMouseButtonDown(0)) // ×ó¼üµã»÷·ÅÖÃ
+            // åˆ¤æ–­æ˜¯å¦ç‚¹å‡»å·¦é”®æ”¾ç½®
+            if (Input.GetMouseButtonDown(0)) // å·¦é”®ç‚¹å‡»æ”¾ç½®
             {
                 if (GameManager.Instance.isAllowPlayerControl)
                     TryPlaceItem();
@@ -58,48 +61,48 @@ public class DragController : MonoBehaviour
                     CancelDrag();
             }
 
-            // ÅĞ¶ÏÊÇ·ñµã»÷ÓÒ¼üÈ¡Ïû
-            if (Input.GetMouseButtonDown(1)) // ÓÒ¼üµã»÷È¡Ïû
+            // åˆ¤æ–­æ˜¯å¦ç‚¹å‡»å³é”®å–æ¶ˆ
+            if (Input.GetMouseButtonDown(1)) // å³é”®ç‚¹å‡»å–æ¶ˆ
             {
                 CancelDrag();
                 if (GameManager.Instance.isAllowPlayerControl)
                     AudioManager.Instance.PlaySound("slot_cancel");
             }
 
-            //¼ì²âÊó±ê¹öÂÖ£¬Ğı×ªÔ¤ÀÀÎïÆ·
-            float scrollInput = Input.GetAxis("Mouse ScrollWheel");  //»ñÈ¡Êó±ê¹öÂÖÊäÈë
-            if (scrollInput != 0 && previewItem != null && GameManager.Instance.isAllowPlayerControl)  // Èç¹û¹öÂÖÓĞÒÆ¶¯
+            //æ£€æµ‹é¼ æ ‡æ»šè½®ï¼Œæ—‹è½¬é¢„è§ˆç‰©å“
+            float scrollInput = Input.GetAxis("Mouse ScrollWheel");  //è·å–é¼ æ ‡æ»šè½®è¾“å…¥
+            if (scrollInput != 0 && previewItem != null && GameManager.Instance.isAllowPlayerControl)  // å¦‚æœæ»šè½®æœ‰ç§»åŠ¨
             {
-                float rotationAmount = scrollInput > 0 ? 15f : -15f;            //ÏòÉÏ¹ö¶¯Ë³Ê±ÕëĞı×ª£¬ÏòÏÂ¹ö¶¯ÄæÊ±ÕëĞı×ª
-                previewItem.transform.Rotate(Vector3.forward, rotationAmount);  //°´ZÖáĞı×ªÎïÆ·
+                float rotationAmount = scrollInput > 0 ? 15f : -15f;            //å‘ä¸Šæ»šåŠ¨é¡ºæ—¶é’ˆæ—‹è½¬ï¼Œå‘ä¸‹æ»šåŠ¨é€†æ—¶é’ˆæ—‹è½¬
+                previewItem.transform.Rotate(Vector3.forward, rotationAmount);  //æŒ‰Zè½´æ—‹è½¬ç‰©å“
             }
         }
     }
 
-    private bool isAllowPlaceItem = false;      //ÊÇ·ñÔÊĞí·ÅÖÃµÀ¾ß£¿
+    private bool isAllowPlaceItem = false;      //æ˜¯å¦å…è®¸æ”¾ç½®é“å…·ï¼Ÿ
 
-    // ÅĞ¶ÏÊÇ·ñ¿ÉÒÔ·ÅÖÃÎïÆ·(Update)
+    // åˆ¤æ–­æ˜¯å¦å¯ä»¥æ”¾ç½®ç‰©å“(Update)
     private void CheckPlaceItem()
     {
-        //Îª¿ÕÅĞ¶Ï
+        //ä¸ºç©ºåˆ¤æ–­
         if (previewItem != null && currentItemData != null)
         {
-            //½öµ±ÎïÆ·Îª·ÅÖÃÀàÎïÆ·Ê±Ö´ĞĞ·ÅÖÃÔÊĞíÅĞ¶Ï
+            //ä»…å½“ç‰©å“ä¸ºæ”¾ç½®ç±»ç‰©å“æ—¶æ‰§è¡Œæ”¾ç½®å…è®¸åˆ¤æ–­
             if (currentItemData.itemID <= 49)
             {
-                PolygonCollider2D collider = previewItem.GetComponent<PolygonCollider2D>();     //»ñÈ¡previewItemÅö×²Ïä
+                PolygonCollider2D collider = previewItem.GetComponent<PolygonCollider2D>();     //è·å–previewItemç¢°æ’ç®±
 
-                //Îª¿Õ¼ì²é
+                //ä¸ºç©ºæ£€æŸ¥
                 if (collider != null)
                 {
-                    ContactFilter2D filter = new ContactFilter2D();     //×¼±¸Ò»¸ö ContactFilter2D
-                    filter.useTriggers = false;                         //¼ì²âÆäËû trigger µÄÅö×²Ìå             
-                    Collider2D[] results = new Collider2D[10];          //´æ´¢¼ì²âµ½µÄÅö×²Ìå
+                    ContactFilter2D filter = new ContactFilter2D();     //å‡†å¤‡ä¸€ä¸ª ContactFilter2D
+                    filter.useTriggers = false;                         //æ£€æµ‹å…¶ä»– trigger çš„ç¢°æ’ä½“             
+                    Collider2D[] results = new Collider2D[10];          //å­˜å‚¨æ£€æµ‹åˆ°çš„ç¢°æ’ä½“
 
-                    //Ö´ĞĞÖØµş¼ì²â
+                    //æ‰§è¡Œé‡å æ£€æµ‹
                     int hitCount = collider.OverlapCollider(filter, results);
 
-                    //Èç¹ûÓĞÅö×²Ìå£¬ÉèÖÃÎª²»ÄÜ·ÅÖÃ£¬²¢¸ü¸ÄäÖÈ¾ÑÕÉ«
+                    //å¦‚æœæœ‰ç¢°æ’ä½“ï¼Œè®¾ç½®ä¸ºä¸èƒ½æ”¾ç½®ï¼Œå¹¶æ›´æ”¹æ¸²æŸ“é¢œè‰²
                     if (hitCount > 0)
                     {
                         isAllowPlaceItem = false;
@@ -112,7 +115,7 @@ public class DragController : MonoBehaviour
                     }
                 }
             }
-            //·ñÔòÄ¬ÈÏÔÊĞí·ÅÖÃ
+            //å¦åˆ™é»˜è®¤å…è®¸æ”¾ç½®
             else
             {
                 isAllowPlaceItem = true;
@@ -120,37 +123,37 @@ public class DragController : MonoBehaviour
         }
     }
 
-    private float throwForce = 6f; //ÕäÖé·¢ÉäÁ¦¶È
+    private float throwForce = 6f; //çç å‘å°„åŠ›åº¦
 
-    //·ÅÖÃÎïÆ·(ÄÚ²¿µ÷ÓÃ)
+    //æ”¾ç½®ç‰©å“(å†…éƒ¨è°ƒç”¨)
     private void TryPlaceItem()
     {
         if (isAllowPlaceItem)
         {
             if (currentItemData.itemID <= 49)
             {
-                // ´´½¨ÎïÆ·µÄ³¡¾°ÊµÀı
-                Quaternion itemRotation = previewItem.transform.rotation;   //»ñÈ¡µ±Ç°Ô¤ÀÀÎïÆ·µÄĞı×ªÖµ
-                var prefab = Instantiate(currentItemData.prefab, previewItem.transform.position, itemRotation);         //ÊµÀı´´½¨
-                prefab.transform.localScale = new Vector2(currentItemData.entityScale, currentItemData.entityScale);    //¸üĞÂËõ·ÅÖµ
-                                                                                                                        //Ö´ĞĞÎïÆ·À¸É¾³ı²¢Çå³ıÔ¤ÀÀÊµÀı
+                // åˆ›å»ºç‰©å“çš„åœºæ™¯å®ä¾‹
+                Quaternion itemRotation = previewItem.transform.rotation;   //è·å–å½“å‰é¢„è§ˆç‰©å“çš„æ—‹è½¬å€¼
+                var prefab = Instantiate(currentItemData.prefab, previewItem.transform.position, itemRotation);         //å®ä¾‹åˆ›å»º
+                prefab.transform.localScale = new Vector2(currentItemData.entityScale, currentItemData.entityScale);    //æ›´æ–°ç¼©æ”¾å€¼
+                                                                                                                        //æ‰§è¡Œç‰©å“æ åˆ é™¤å¹¶æ¸…é™¤é¢„è§ˆå®ä¾‹
                 inv.RemoveAt(inv.slots.IndexOf(currentItemData));
                 AudioManager.Instance.PlaySound("place_confirm");
                 CancelDrag();
             }
-            //ÈôÎª´«ËÍÕäÖé
+            //è‹¥ä¸ºä¼ é€çç 
             else if (currentItemData.itemID == 50)
             {
-                //´¦Àíµã»÷Í¶ÖÀĞ§¹û
-                Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);   //»ñÈ¡Êó±ê×ø±ê
-                mouseWorldPosition.z = 0;  // ±£Ö¤zÖáÎª0
+                //å¤„ç†ç‚¹å‡»æŠ•æ·æ•ˆæœ
+                Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);   //è·å–é¼ æ ‡åæ ‡
+                mouseWorldPosition.z = 0;  // ä¿è¯zè½´ä¸º0
 
-                Vector2 dir = (mouseWorldPosition - vpet.transform.position).normalized;    // ¼ÆËã´ÓVpetµ½Êó±êµÄ·½Ïò
-                GameObject thrownItem = Instantiate(currentItemData.prefab, vpet.transform.position, Quaternion.identity);  //Éú³É
-                thrownItem.transform.localScale = new Vector2(currentItemData.entityScale, currentItemData.entityScale);    //¸üĞÂËõ·ÅÖµ
-                thrownItem.GetComponent<Rigidbody2D>().AddForce(dir * throwForce, ForceMode2D.Impulse);     //Í¶ÖÀÁ¦¸øÓè                  
+                Vector2 dir = (mouseWorldPosition - vpet.transform.position).normalized;    // è®¡ç®—ä»Vpetåˆ°é¼ æ ‡çš„æ–¹å‘
+                GameObject thrownItem = Instantiate(currentItemData.prefab, vpet.transform.position, Quaternion.identity);  //ç”Ÿæˆ
+                thrownItem.transform.localScale = new Vector2(currentItemData.entityScale, currentItemData.entityScale);    //æ›´æ–°ç¼©æ”¾å€¼
+                thrownItem.GetComponent<Rigidbody2D>().AddForce(dir * throwForce, ForceMode2D.Impulse);     //æŠ•æ·åŠ›ç»™äºˆ                  
 
-                //ÆäËû´¦Àí
+                //å…¶ä»–å¤„ç†
                 inv.RemoveAt(inv.slots.IndexOf(currentItemData));
                 AudioManager.Instance.PlaySound("throw");
                 CancelDrag();
@@ -163,17 +166,16 @@ public class DragController : MonoBehaviour
         }
     }
 
-    //È¡ÏûÍÏ¶¯(ÄÚ²¿µ÷ÓÃ)
+    //å–æ¶ˆæ‹–åŠ¨(å†…éƒ¨è°ƒç”¨)
     private void CancelDrag()
     {
-        Destroy(previewItem);   //Ïú»ÙÔ¤ÀÀÎïÆ·
-        previewItem = null;     //Çå³ıÔ¤ÀÀÎïÌåÒıÓÃ
-        preItemSprite = null;   //Çå³ı¾«ÁéÒıÓÃ
-        isSelected = false;     //±êÖ¾ÎªÎŞÎïÆ·Ñ¡ÖĞ
+        Destroy(previewItem);   //é”€æ¯é¢„è§ˆç‰©å“
+        previewItem = null;     //æ¸…é™¤é¢„è§ˆç‰©ä½“å¼•ç”¨
+        preItemSprite = null;   //æ¸…é™¤ç²¾çµå¼•ç”¨
+        isSelected = false;     //æ ‡å¿—ä¸ºæ— ç‰©å“é€‰ä¸­
 
-        //½«SlotµÄÑ¡ÖĞ¿òÒş²Ø
-        SlotUI[] slotUI = FindObjectsOfType<SlotUI>();
-        foreach (SlotUI slot in slotUI)
+        //å°†Slotçš„é€‰ä¸­æ¡†éšè—
+        foreach (SlotUI slot in slotUIs)
         {
             slot.SetActiveOfSelectedFrame(false);
         }

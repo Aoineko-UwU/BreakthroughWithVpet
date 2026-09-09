@@ -2,100 +2,102 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InventoryManager : MonoBehaviour
+public class InventoryManager : Singleton<InventoryManager>
 {
-    public List<ItemData> allItemPool;  //ËùÓĞ¿É³éÈ¡µÄÎïÆ·³Ø(Íâ²¿¹ÒÔØ) 
+    public List<ItemData> allItemPool;  //æ‰€æœ‰å¯æŠ½å–çš„ç‰©å“æ± (å¤–éƒ¨æŒ‚è½½) 
 
-    public List<ItemData> slots = new List<ItemData>();     //µ±Ç°ÎïÆ·À¸
-    public int totalSlotCount = 3;                          //ÎïÆ·¸ñ×Ó×ÜÊı
+    public List<ItemData> slots = new List<ItemData>();     //å½“å‰ç‰©å“æ 
+    public int totalSlotCount = 3;                          //ç‰©å“æ ¼å­æ€»æ•°
 
-    public static InventoryManager Instance;        //Ààµ¥Àı
+    private SlotUI[] slotUIs;
 
-    private void Awake()
+    protected override void Awake()
     {
-        Instance = this;        //³õÊ¼»¯Ààµ¥Àı
+        base.Awake();
+        if (Instance != this)
+            return;
+
+        slotUIs = FindObjectsOfType<SlotUI>();
     }
 
     private void Start()
     {
-        InitValueBasedDifficulty(); //³õÊ¼»¯ÊıÖµ
+        InitValueBasedDifficulty(); //åˆå§‹åŒ–æ•°å€¼
     }
 
     private void Update()
     {
-        AddItemTimerSet();      //Ìí¼ÓµÀ¾ß¼ÆÊ±Æ÷
+        AddItemTimerSet();      //æ·»åŠ é“å…·è®¡æ—¶å™¨
     }
 
-    private float itemAddTimer;             //µÀ¾ßÌí¼Ó¼ÆÊ±Æ÷
-    private float itemAddCD = 5f;           //µÀ¾ßÌí¼Ó¼ä¸ô
+    private float itemAddTimer;             //é“å…·æ·»åŠ è®¡æ—¶å™¨
+    private float itemAddCD = 5f;           //é“å…·æ·»åŠ é—´éš”
 
 
-    //¸ù¾İÄÑ¶È³õÊ¼»¯ÊıÖµ
+    //æ ¹æ®éš¾åº¦åˆå§‹åŒ–æ•°å€¼
     private void InitValueBasedDifficulty()
     {
-        //»ñÈ¡ÓÎÏ·ÄÑ¶È½øĞĞÆ¥Åä
+        //è·å–æ¸¸æˆéš¾åº¦è¿›è¡ŒåŒ¹é…
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //¼òµ¥ÄÑ¶È
+            //ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 itemAddCD = 3f;                 
                 break;
 
-            //Õı³£ÄÑ¶È
+            //æ­£å¸¸éš¾åº¦
             case GameDifficultyLevel.Normal:
                 itemAddCD = 4.5f;
                 break;
             
-            //À§ÄÑÄÑ¶È
+            //å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 itemAddCD = 6f;
                 break;
         }
     }
 
-    //Ìí¼ÓµÀ¾ß¼ÆÊ±Æ÷
+    //æ·»åŠ é“å…·è®¡æ—¶å™¨
     private void AddItemTimerSet()
     {
         if (!GameManager.Instance.isAllowPlayerControl) return;
 
         itemAddTimer -= Time.deltaTime;
 
-        //¼ÆÊ±Æ÷Íê³ÉÊ±Ë¢ĞÂ²¢Ìí¼ÓÎïÆ·
+        //è®¡æ—¶å™¨å®Œæˆæ—¶åˆ·æ–°å¹¶æ·»åŠ ç‰©å“
         if (itemAddTimer <= 0)
         {
-            itemAddTimer = itemAddCD;  //Ë¢ĞÂ¼ÆÊ±Æ÷CD
+            itemAddTimer = itemAddCD;  //åˆ·æ–°è®¡æ—¶å™¨CD
             TryAddRandomItem();
         }
     }
 
-    //³¢ÊÔÎªÎïÆ·À¸Ìí¼ÓËæ»úÎïÆ·
+    //å°è¯•ä¸ºç‰©å“æ æ·»åŠ éšæœºç‰©å“
     private void TryAddRandomItem()
     {
-        if (slots.Count >= totalSlotCount) return;      //ÈôÎïÆ·À¸ÒÑÂúÔò²»Ìí¼ÓĞÂÎïÆ·
+        if (slots.Count >= totalSlotCount) return;      //è‹¥ç‰©å“æ å·²æ»¡åˆ™ä¸æ·»åŠ æ–°ç‰©å“
 
-        int rand = Random.Range(0, allItemPool.Count);  //Ëæ»ú»ñÈ¡ÎïÆ·³ØÏà¹ØµÄIDËæ»úÊı
-        slots.Add(allItemPool[rand]);                   //Ìí¼Óµ½ÎïÆ·À¸
-        RefreshUI();                                    //Ë¢ĞÂUI
+        int rand = Random.Range(0, allItemPool.Count);  //éšæœºè·å–ç‰©å“æ± ç›¸å…³çš„IDéšæœºæ•°
+        slots.Add(allItemPool[rand]);                   //æ·»åŠ åˆ°ç‰©å“æ 
+        RefreshUI();                                    //åˆ·æ–°UI
     }
 
 
-    //ÎïÆ·À¸É¾³ı²¢ÅÅĞò
+    //ç‰©å“æ åˆ é™¤å¹¶æ’åº
     public void RemoveAt(int index)
     {
-        slots.RemoveAt(index);      //ÒÆ³ıÎïÆ·À¸ÎïÆ·
-        RefreshUI();                //Ë¢ĞÂUI
+        slots.RemoveAt(index);      //ç§»é™¤ç‰©å“æ ç‰©å“
+        RefreshUI();                //åˆ·æ–°UI
     }
 
-    //Ë¢ĞÂÎïÆ·À¸UIÏÔÊ¾
+    //åˆ·æ–°ç‰©å“æ UIæ˜¾ç¤º
     public void RefreshUI()
     {
-        SlotUI[] slotUI = FindObjectsOfType<SlotUI>();      //»ñÈ¡ËùÓĞµÄÎïÆ·À¸SlotUI½Å±¾
-
-        foreach(SlotUI slot in slotUI)
+        foreach(SlotUI slot in slotUIs)
         {
-            int i = slot.index;     //ÎïÆ·À¸µÄË÷Òı(µÚ¼¸¸ñ)(µÚÒ»¸ñÎïÆ·À¸indexÖµÎª0)
+            int i = slot.index;     //ç‰©å“æ çš„ç´¢å¼•(ç¬¬å‡ æ ¼)(ç¬¬ä¸€æ ¼ç‰©å“æ indexå€¼ä¸º0)
 
-            if(i < slots.Count)     //¶ÔÓ¦¸ñ×ÓµÄÎïÆ·À¸ÓëºóÌ¨Slot½øĞĞÆ¥Åä
+            if(i < slots.Count)     //å¯¹åº”æ ¼å­çš„ç‰©å“æ ä¸åå°Slotè¿›è¡ŒåŒ¹é…
             {
                 slot.SetItemImage(slots[i]);
             }
@@ -108,7 +110,7 @@ public class InventoryManager : MonoBehaviour
 
     }
 
-    //¸øÎïÆ·À¸Ìí¼ÓÌØ¶¨ÎïÌå(Íâ²¿µ÷ÓÃ)
+    //ç»™ç‰©å“æ æ·»åŠ ç‰¹å®šç‰©ä½“(å¤–éƒ¨è°ƒç”¨)
     public bool TryAddSpecificItem(ItemData item)
     {
         if (slots.Count >= totalSlotCount)
@@ -116,16 +118,16 @@ public class InventoryManager : MonoBehaviour
             return false;
         }
 
-        slots.Add(item);    //Ìí¼ÓÎïÆ·
-        RefreshUI();        //Ë¢ĞÂUIÏÔÊ¾
+        slots.Add(item);    //æ·»åŠ ç‰©å“
+        RefreshUI();        //åˆ·æ–°UIæ˜¾ç¤º
         return true;
     }
 
-    //»ñÈ¡Ò»¸öËæ»úµÄÎïÆ·Êı¾İ(Íâ²¿µ÷ÓÃ)
+    //è·å–ä¸€ä¸ªéšæœºçš„ç‰©å“æ•°æ®(å¤–éƒ¨è°ƒç”¨)
     public ItemData GetRandomItem()
     {
-        int rand = Random.Range(0, allItemPool.Count);  //Ëæ»ú»ñÈ¡ÎïÆ·³ØÏà¹ØµÄIDËæ»úÊı
-        return allItemPool[rand];                       //Ìí¼Óµ½ÎïÆ·À¸
+        int rand = Random.Range(0, allItemPool.Count);  //éšæœºè·å–ç‰©å“æ± ç›¸å…³çš„IDéšæœºæ•°
+        return allItemPool[rand];                       //æ·»åŠ åˆ°ç‰©å“æ 
     }
 
 }

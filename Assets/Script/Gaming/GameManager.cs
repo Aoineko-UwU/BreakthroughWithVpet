@@ -6,52 +6,53 @@ using UnityEngine.UI;
 using DG.Tweening;
 using TMPro;
 
-public class GameManager : MonoBehaviour
+public class GameManager : Singleton<GameManager>
 {
-    [SerializeField] private CameraScaleBar cameraScale;    //ÉãÏñ»úËõ·Å½Å±¾
-    [SerializeField] private CanvasGroup GUICanvasGroup;    //GUI»­²¼×é
-    [SerializeField] private Image whiteFade;               //°×³¡¹ı¶ÉÍ¼
+    [SerializeField] private CameraScaleBar cameraScale;    //æ‘„åƒæœºç¼©æ”¾è„šæœ¬
+    [SerializeField] private CanvasGroup GUICanvasGroup;    //GUIç”»å¸ƒç»„
+    [SerializeField] private Image whiteFade;               //ç™½åœºè¿‡æ¸¡å›¾
 
-    [SerializeField] private GameObject settingPanel;       //ÉèÖÃÃæ°å
-    [SerializeField] private GameObject winPanel;           //Ê¤ÀûÃæ°å
-    [SerializeField] private GameObject losePanel;          //Ê§°ÜÃæ°å
-    [SerializeField] private GameObject gameSetPanel;       //ÓÎÏ·ÉèÖÃÃæ°å
-    [SerializeField] private CanvasGroup resultPanelCGroup; //ËùÓĞ½áËãÃæ°åµÄCanvasGroup
-    [SerializeField] private TextMeshProUGUI startText;     //¿ªÊ¼ÎÄ±¾
+    [SerializeField] private GameObject settingPanel;       //è®¾ç½®é¢æ¿
+    [SerializeField] private GameObject winPanel;           //èƒœåˆ©é¢æ¿
+    [SerializeField] private GameObject losePanel;          //å¤±è´¥é¢æ¿
+    [SerializeField] private GameObject gameSetPanel;       //æ¸¸æˆè®¾ç½®é¢æ¿
+    [SerializeField] private CanvasGroup resultPanelCGroup; //æ‰€æœ‰ç»“ç®—é¢æ¿çš„CanvasGroup
+    [SerializeField] private TextMeshProUGUI startText;     //å¼€å§‹æ–‡æœ¬
 
-    [SerializeField] private Image winAvatar;               //Ê¤ÀûÃæ°åµÄAvatar
-    [SerializeField] private Sprite winPic01;               //Ê¤ÀûÍ¼1
-    [SerializeField] private Sprite winPic02;               //Ê¤ÀûÍ¼2
-    [SerializeField] private Sprite winPic03;               //Ê¤ÀûÍ¼3
-    [SerializeField] private TextMeshProUGUI winText01;     //Ê¤ÀûÎÄ×Ö01
-    [SerializeField] private TextMeshProUGUI winText02;     //Ê¤ÀûÎÄ×Ö02s
+    [SerializeField] private Image winAvatar;               //èƒœåˆ©é¢æ¿çš„Avatar
+    [SerializeField] private Sprite winPic01;               //èƒœåˆ©å›¾1
+    [SerializeField] private Sprite winPic02;               //èƒœåˆ©å›¾2
+    [SerializeField] private Sprite winPic03;               //èƒœåˆ©å›¾3
+    [SerializeField] private TextMeshProUGUI winText01;     //èƒœåˆ©æ–‡å­—01
+    [SerializeField] private TextMeshProUGUI winText02;     //èƒœåˆ©æ–‡å­—02s
 
 
-    [SerializeField] private Transform winPosTransform;     //Ê¤ÀûÎ»ÖÃµÄTransform
+    [SerializeField] private Transform winPosTransform;     //èƒœåˆ©ä½ç½®çš„Transform
 
-    [SerializeField] private Button guideBtn;            //½Ì³Ì°´Å¥
-    [SerializeField] private GameObject guidePanel01;    //½Ì³ÌÃæ°å01
-    [SerializeField] private GameObject guidePanel02;    //½Ì³ÌÃæ°å02
+    [SerializeField] private Button guideBtn;            //æ•™ç¨‹æŒ‰é’®
+    [SerializeField] private GameObject guidePanel01;    //æ•™ç¨‹é¢æ¿01
+    [SerializeField] private GameObject guidePanel02;    //æ•™ç¨‹é¢æ¿02
 
-    private GameObject vpet; //×À³èÓÎÏ·¶ÔÏó
+    private GameObject vpet; //æ¡Œå® æ¸¸æˆå¯¹è±¡
 
-    public static GameManager Instance;       //ÓÎÏ·¹ÜÀíÆ÷½Å±¾µ¥Àı 
+    public bool isAllowPlayerControl = true;  //æ˜¯å¦å…è®¸è§’è‰²æ“ä½œ
 
-    public bool isAllowPlayerControl = true;  //ÊÇ·ñÔÊĞí½ÇÉ«²Ù×÷
+    //ç”Ÿå‘½å‘¨æœŸ--------------------------------------------------------------------------------------------//
 
-    //ÉúÃüÖÜÆÚ--------------------------------------------------------------------------------------------//
-
-    private void Awake()
+    protected override void Awake()
     {
-        Instance = this;    //µ¥ÀıÖ¸Ïò±¾Éí
-        vpet = GameObject.FindGameObjectWithTag("Vpet");    //»ñÈ¡×À³è¶ÔÏó
+        base.Awake();
+        if (Instance != this)
+            return;
+
+        vpet = GameObject.FindGameObjectWithTag("Vpet");    //è·å–æ¡Œå® å¯¹è±¡
     }
 
     private void Start()
     {
-        InitRespawn();      //³õÊ¼»¯ÖØÉú±êÖ¾
-        GameStartInit();    //ÓÎÏ·¿ª³¡³õÊ¼
-        InitPanel();        //Ãæ°å³õÊ¼»¯
+        InitRespawn();      //åˆå§‹åŒ–é‡ç”Ÿæ ‡å¿—
+        GameStartInit();    //æ¸¸æˆå¼€åœºåˆå§‹
+        InitPanel();        //é¢æ¿åˆå§‹åŒ–
         AudioManager.Instance.AdjustBGMVolume(1);
         AudioManager.Instance.ClearBGM();   
         AudioManager.Instance.PlayBGM("GameMusic");
@@ -59,49 +60,49 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        SelectedStateHandle();      //Ñ¡Ôñ×´Ì¬´¦Àí(·À°´Å¥Îó´¥)
-        HandleEscape();             //´¦ÀíESC
-        CheckWin();                 //Íæ¼ÒÊ¤Àû¼à²â
+        SelectedStateHandle();      //é€‰æ‹©çŠ¶æ€å¤„ç†(é˜²æŒ‰é’®è¯¯è§¦)
+        HandleEscape();             //å¤„ç†ESC
+        CheckWin();                 //ç©å®¶èƒœåˆ©ç›‘æµ‹
     }
 
-    //¹¦ÄÜº¯Êı--------------------------------------------------------------------------------------------//
+    //åŠŸèƒ½å‡½æ•°--------------------------------------------------------------------------------------------//
 
-    //´¦ÀíESCÊÂ¼ş
+    //å¤„ç†ESCäº‹ä»¶
     private void HandleEscape()
     {
         if (!isAllowPlayerControl) return;
 
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            //ÈôÊÇÔİÍ£×´Ì¬
+            //è‹¥æ˜¯æš‚åœçŠ¶æ€
             if (isPaused)
             {
-                //Èô´ËÊ±ÒÑ´ò¿ªÉèÖÃÃæ°å
-                if (gameSetPanel.activeSelf) OnClickBtn_GameSetClose(); //ÓÅÏÈ¹Ø±ÕÉèÖÃÃæ°å 
-                                                                        //Èô´ËÊ±´ò¿ªµÄÊÇ½Ì³ÌÃæ°å
+                //è‹¥æ­¤æ—¶å·²æ‰“å¼€è®¾ç½®é¢æ¿
+                if (gameSetPanel.activeSelf) OnClickBtn_GameSetClose(); //ä¼˜å…ˆå…³é—­è®¾ç½®é¢æ¿ 
+                                                                        //è‹¥æ­¤æ—¶æ‰“å¼€çš„æ˜¯æ•™ç¨‹é¢æ¿
                 else if (guidePanel01.activeSelf || guidePanel02.activeSelf) OnClickBtn_CloseGuidePanel();
-                //·ñÔò¾ÍÊÇÔİÍ£Ãæ°å
+                //å¦åˆ™å°±æ˜¯æš‚åœé¢æ¿
                 else OnClickBtn_Continue();
             }
             else
             {
-                OnClickBtn_Pause(); //ÔİÍ£ÓÎÏ·
+                OnClickBtn_Pause(); //æš‚åœæ¸¸æˆ
             }
         }
     }
 
-    private bool currentSelected = false;   //µ±Ç°ÊÇ·ñÓĞSlotÑ¡ÖĞ
-    private float selectTimer;              //¼ÆÊ±Æ÷
-    private float selectInterval = 0.5f;    //ÎïÆ·À¸ÎïÆ··ÅÖÃºó¶à¾Ã¿ÉÒÔµã»÷ÔİÍ£°´Å¥
+    private bool currentSelected = false;   //å½“å‰æ˜¯å¦æœ‰Sloté€‰ä¸­
+    private float selectTimer;              //è®¡æ—¶å™¨
+    private float selectInterval = 0.5f;    //ç‰©å“æ ç‰©å“æ”¾ç½®åå¤šä¹…å¯ä»¥ç‚¹å‡»æš‚åœæŒ‰é’®
 
-    //ÎïÆ·Ñ¡ÖĞ×´Ì¬´¦Àí(Õë¶ÔÔİÍ£°´Å¥£¬·ÀÖ¹Îó´¥)
+    //ç‰©å“é€‰ä¸­çŠ¶æ€å¤„ç†(é’ˆå¯¹æš‚åœæŒ‰é’®ï¼Œé˜²æ­¢è¯¯è§¦)
     private void SelectedStateHandle()
     {
-        //Í¬²½Ñ¡ÖĞ×´Ì¬
+        //åŒæ­¥é€‰ä¸­çŠ¶æ€
         if (DragController.Instance.isSelected)
         {
             currentSelected = true;
-            selectTimer = selectInterval;       //¸³ÓèÊ±¼ä¼ä¸ô
+            selectTimer = selectInterval;       //èµ‹äºˆæ—¶é—´é—´éš”
         }
         
         if (currentSelected)
@@ -114,10 +115,10 @@ public class GameManager : MonoBehaviour
             }
     }
 
-    //Ãæ°å³õÊ¼»¯(Start)
+    //é¢æ¿åˆå§‹åŒ–(Start)
     private void InitPanel()
     {
-        //Ãæ°åÄ¬ÈÏ¹Ø±Õ
+        //é¢æ¿é»˜è®¤å…³é—­
         winPanel.SetActive(false);
         losePanel.SetActive(false);
         settingPanel.SetActive(false);
@@ -125,26 +126,26 @@ public class GameManager : MonoBehaviour
         guidePanel01.SetActive(false);
         guidePanel02.SetActive(false);
 
-        //UIÄ¬ÈÏÍ¸Ã÷
+        //UIé»˜è®¤é€æ˜
         resultPanelCGroup.alpha = 0;         
         GUICanvasGroup.alpha = 0;
 
-        resultPanelCGroup.gameObject.SetActive(true);   //½áËãÃæ°åÓÎÏ·¶ÔÏóÄ¬ÈÏÆô¶¯
-        whiteFade.gameObject.SetActive(true);           //°×³¡Ä¬ÈÏÆô¶¯
-        startText.gameObject.SetActive(false);          //¿ª³¡ÎÄ×ÖÄ¬ÈÏ¹Ø±Õ
+        resultPanelCGroup.gameObject.SetActive(true);   //ç»“ç®—é¢æ¿æ¸¸æˆå¯¹è±¡é»˜è®¤å¯åŠ¨
+        whiteFade.gameObject.SetActive(true);           //ç™½åœºé»˜è®¤å¯åŠ¨
+        startText.gameObject.SetActive(false);          //å¼€åœºæ–‡å­—é»˜è®¤å…³é—­
     }
 
 
-    public bool isRestart = false;      //ÊÇ·ñÊÇÒÔÖØĞÂ¿ªÊ¼ÓÎÏ·µÄ×´Ì¬½øÈëµÄ£¿
+    public bool isRestart = false;      //æ˜¯å¦æ˜¯ä»¥é‡æ–°å¼€å§‹æ¸¸æˆçš„çŠ¶æ€è¿›å…¥çš„ï¼Ÿ
 
-    //ÓÎÏ·¿ªÊ¼³õÊ¼»¯
+    //æ¸¸æˆå¼€å§‹åˆå§‹åŒ–
     private void GameStartInit()
     {
-        vpet.transform.position = respawnPosition.position;  //ÉèÖÃ×À³èµÄÖØÉúÎ»ÖÃ
-        //Èô²»ÊÇÖØÉú×´Ì¬
+        vpet.transform.position = respawnPosition.position;  //è®¾ç½®æ¡Œå® çš„é‡ç”Ÿä½ç½®
+        //è‹¥ä¸æ˜¯é‡ç”ŸçŠ¶æ€
         if (!isRestart)
             StartCoroutine(FirstStart());
-        //ÈôÊÇÖØÉú×´Ì¬
+        //è‹¥æ˜¯é‡ç”ŸçŠ¶æ€
         else
             StartCoroutine(RespawnStart());
 
@@ -152,29 +153,29 @@ public class GameManager : MonoBehaviour
 
     IEnumerator FirstStart()
     {   
-        isAllowPlayerControl = false;           //½ûÖ¹Íæ¼Ò²Ù×÷
-        whiteFade.DOFade(0, 2f);                //°×³¡¹ı¶É
-        yield return new WaitForSeconds(1f);    //µÈ´ı¹ı¶É
-        cameraScale.StartCameraScale();         //¿ªÊ¼¾µÍ·Ëõ·ÅĞ§¹û
-        yield return new WaitForSeconds(2.5f);  //µÈ´ı¾µÍ·Ğ§¹û
+        isAllowPlayerControl = false;           //ç¦æ­¢ç©å®¶æ“ä½œ
+        whiteFade.DOFade(0, 2f);                //ç™½åœºè¿‡æ¸¡
+        yield return new WaitForSeconds(1f);    //ç­‰å¾…è¿‡æ¸¡
+        cameraScale.StartCameraScale();         //å¼€å§‹é•œå¤´ç¼©æ”¾æ•ˆæœ
+        yield return new WaitForSeconds(2.5f);  //ç­‰å¾…é•œå¤´æ•ˆæœ
 
-        //¿ª³¡ÎÄ×Ö
+        //å¼€åœºæ–‡å­—
         startText.gameObject.SetActive(true);
-        startText.SetText("±£»¤");
+        startText.SetText("ä¿æŠ¤");
         AudioManager.Instance.PlaySound("cat01");
         yield return new WaitForSeconds(0.7f);
-        startText.SetText("±£»¤ ÂÜÀòË¿");
+        startText.SetText("ä¿æŠ¤ èè‰ä¸");
         AudioManager.Instance.PlaySound("cat01");
         yield return new WaitForSeconds(0.7f);
-        startText.SetText("±£»¤ ÂÜÀòË¿ ³ö·¢£¡");
+        startText.SetText("ä¿æŠ¤ èè‰ä¸ å‡ºå‘ï¼");
         AudioManager.Instance.PlaySound("cat02");
         yield return new WaitForSeconds(0.7f);
 
         startText.DOFade(0, 1f);
-        isAllowPlayerControl = true;            //ÔÊĞíÍæ¼Ò²Ù×÷
-        whiteFade.gameObject.SetActive(false);  //¹Ø±Õ°×³¡¹ı¶ÉGameObject
-        GUICanvasGroup.DOFade(1, 1f);           //GUIÏÔÏÖ
-        vpet.GetComponent<VpetAction>().VpetStateSet(1);   //ÉèÖÃVpetĞĞ×ß×´Ì¬
+        isAllowPlayerControl = true;            //å…è®¸ç©å®¶æ“ä½œ
+        whiteFade.gameObject.SetActive(false);  //å…³é—­ç™½åœºè¿‡æ¸¡GameObject
+        GUICanvasGroup.DOFade(1, 1f);           //GUIæ˜¾ç°
+        vpet.GetComponent<VpetAction>().VpetStateSet(1);   //è®¾ç½®Vpetè¡Œèµ°çŠ¶æ€
 
         yield return new WaitForSeconds(1f);
         startText.gameObject.SetActive(false);
@@ -182,33 +183,33 @@ public class GameManager : MonoBehaviour
 
     IEnumerator RespawnStart()
     {
-        whiteFade.DOFade(0, 2f);                //°×³¡¹ı¶É
+        whiteFade.DOFade(0, 2f);                //ç™½åœºè¿‡æ¸¡
         yield return new WaitForSeconds(1f);    
-        GUICanvasGroup.DOFade(1, 1f);           //GUIÏÔÏÖ
+        GUICanvasGroup.DOFade(1, 1f);           //GUIæ˜¾ç°
         yield return new WaitForSeconds(1f);
-        whiteFade.gameObject.SetActive(false);  //¹Ø±Õ°×³¡¹ı¶ÉGameObject
-        vpet.GetComponent<VpetAction>().VpetStateSet(1);   //ÉèÖÃVpetĞĞ×ß×´Ì¬
+        whiteFade.gameObject.SetActive(false);  //å…³é—­ç™½åœºè¿‡æ¸¡GameObject
+        vpet.GetComponent<VpetAction>().VpetStateSet(1);   //è®¾ç½®Vpetè¡Œèµ°çŠ¶æ€
     }
 
-    //×À³èÏà¹Ø½ø³Ìº¯Êı--------------------------------------------------------------------------------------------//
+    //æ¡Œå® ç›¸å…³è¿›ç¨‹å‡½æ•°--------------------------------------------------------------------------------------------//
 
-    public Transform respawnPosition;            //µ±Ç°ÖØÉúµãÎ»ÖÃ
-    private int currentRespawnOrder = -1;        //µ±Ç°ÖØÉúµãÓÅÏÈ¼¶
+    public Transform respawnPosition;            //å½“å‰é‡ç”Ÿç‚¹ä½ç½®
+    private int currentRespawnOrder = -1;        //å½“å‰é‡ç”Ÿç‚¹ä¼˜å…ˆçº§
 
     private void InitRespawn()
     {
-        //¶ÁÈ¡PlayerPrefsÖĞµÄ¸´»î±êÖ¾
+        //è¯»å–PlayerPrefsä¸­çš„å¤æ´»æ ‡å¿—
         isRestart = PlayerPrefs.GetInt("isRestart", 0) == 1;
-        //Èô¶ÁÈ¡³É¹¦
+        //è‹¥è¯»å–æˆåŠŸ
         if (isRestart)
         {
-            // ¶ÁÈ¡²¢Ó¦ÓÃÖØÉúµã
+            // è¯»å–å¹¶åº”ç”¨é‡ç”Ÿç‚¹
             float x = PlayerPrefs.GetFloat("respawnX", 0f);
             float y = PlayerPrefs.GetFloat("respawnY", 0f);
             respawnPosition.position = new Vector2(x, y);
-            // ¶ÁÈ¡ÓÅÏÈ¼¶
+            // è¯»å–ä¼˜å…ˆçº§
             currentRespawnOrder = PlayerPrefs.GetInt("respawnOrder", -1);
-            // ÓÃÍêÇå³ı
+            // ç”¨å®Œæ¸…é™¤
             PlayerPrefs.DeleteKey("isRestart");
             PlayerPrefs.DeleteKey("respawnX");
             PlayerPrefs.DeleteKey("respawnY");
@@ -216,203 +217,203 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    //ÉèÖÃÖØÉúµãÓÅÏÈ¼¶
+    //è®¾ç½®é‡ç”Ÿç‚¹ä¼˜å…ˆçº§
     public void SetCurrentRespawnOrder(int p)
     {
         currentRespawnOrder = p;
     }
-    //»ñÈ¡µ±Ç°µÄÖØÉúµãÓÅÏÈ¼¶
+    //è·å–å½“å‰çš„é‡ç”Ÿç‚¹ä¼˜å…ˆçº§
     public int GetCurrentRespawnOrder()
     {
         return currentRespawnOrder;
     }
 
 
-    //×À³èËÀÍö´¦Àí
+    //æ¡Œå® æ­»äº¡å¤„ç†
     public void VpetDeadHandle()
     {
-        isAllowPlayerControl = false;                   //½ûÖ¹Íæ¼Ò²Ù×÷UI
-        cameraScale.DieCameraScale();                   //ËÀÍö¾µÍ·Ëõ·ÅÌØĞ´
-        AudioManager.Instance.PauseOrContinueBGM(true); //ÔİÍ£µ±Ç°BGM
-        GUICanvasGroup.DOFade(0, 2f);                   //GUI½¥Òş
-        StartCoroutine(LoseMusicAndAnimation());        //¿ªÊ¼²¥·ÅÊ§°Ü¶¯»­
+        isAllowPlayerControl = false;                   //ç¦æ­¢ç©å®¶æ“ä½œUI
+        cameraScale.DieCameraScale();                   //æ­»äº¡é•œå¤´ç¼©æ”¾ç‰¹å†™
+        AudioManager.Instance.PauseOrContinueBGM(true); //æš‚åœå½“å‰BGM
+        GUICanvasGroup.DOFade(0, 2f);                   //GUIæ¸éš
+        StartCoroutine(LoseMusicAndAnimation());        //å¼€å§‹æ’­æ”¾å¤±è´¥åŠ¨ç”»
     }
 
     IEnumerator LoseMusicAndAnimation()
     {
-        yield return new WaitForSeconds(2f);            //µÈ´ı
-        AudioManager.Instance.PlaySound("LoseMusic");   //²¥·ÅÊ§°ÜÒôÀÖ
-        yield return new WaitForSeconds(1.5f);          //µÈ´ı
-        losePanel.SetActive(true);                      //ÉèÖÃÃæ°å¿É¼û
-        resultPanelCGroup.DOFade(1, 1f);                //½áËãÃæ°å½¥³ö
+        yield return new WaitForSeconds(2f);            //ç­‰å¾…
+        AudioManager.Instance.PlaySound("LoseMusic");   //æ’­æ”¾å¤±è´¥éŸ³ä¹
+        yield return new WaitForSeconds(1.5f);          //ç­‰å¾…
+        losePanel.SetActive(true);                      //è®¾ç½®é¢æ¿å¯è§
+        resultPanelCGroup.DOFade(1, 1f);                //ç»“ç®—é¢æ¿æ¸å‡º
 
     }
 
     private bool isWin = false;
 
-    //¼ì²éÊÇ·ñ»ñÊ¤
+    //æ£€æŸ¥æ˜¯å¦è·èƒœ
     private void CheckWin()
     {
         if (vpet.transform.position.x >= winPosTransform.position.x && !isWin)
         {
             isWin = true;
-            VpetWinHandle();    //Ê¤Àû´¦Àí
-            vpet.GetComponent<VpetAction>().VpetWin();  //Vpet¶¯×÷´¦Àí
+            VpetWinHandle();    //èƒœåˆ©å¤„ç†
+            vpet.GetComponent<VpetAction>().VpetWin();  //VpetåŠ¨ä½œå¤„ç†
         }
     }
 
-    //×À³èÊ¤Àû´¦Àí
+    //æ¡Œå® èƒœåˆ©å¤„ç†
     public void VpetWinHandle()
     {
-        isAllowPlayerControl = false;                   //½ûÖ¹Íæ¼Ò²Ù×÷UI
-        cameraScale.WinCameraScale();                   //Ê¤Àû¾µÍ·Ëõ·ÅÌØĞ´
-        AudioManager.Instance.PauseOrContinueBGM(true); //ÔİÍ£µ±Ç°BGM
-        GUICanvasGroup.DOFade(0, 2f);                   //GUI½¥Òş
-        SetWinPanelInfo();                              //ÉèÖÃÊ¤ÀûÃæ°åĞÅÏ¢
-        StartCoroutine(WinMusicAndAnimation());         //¿ªÊ¼²¥·ÅÊ¤Àû¶¯»­
+        isAllowPlayerControl = false;                   //ç¦æ­¢ç©å®¶æ“ä½œUI
+        cameraScale.WinCameraScale();                   //èƒœåˆ©é•œå¤´ç¼©æ”¾ç‰¹å†™
+        AudioManager.Instance.PauseOrContinueBGM(true); //æš‚åœå½“å‰BGM
+        GUICanvasGroup.DOFade(0, 2f);                   //GUIæ¸éš
+        SetWinPanelInfo();                              //è®¾ç½®èƒœåˆ©é¢æ¿ä¿¡æ¯
+        StartCoroutine(WinMusicAndAnimation());         //å¼€å§‹æ’­æ”¾èƒœåˆ©åŠ¨ç”»
     }
 
     IEnumerator WinMusicAndAnimation()
     {
-        yield return new WaitForSeconds(2f);            //µÈ´ı
-        AudioManager.Instance.PlaySound("WinMusic");    //²¥·ÅÊ¤ÀûÒôÀÖ
-        winPanel.SetActive(true);                       //ÉèÖÃÃæ°å¿É¼û
-        resultPanelCGroup.DOFade(1, 1f);                //½áËãÃæ°å½¥³ö
+        yield return new WaitForSeconds(2f);            //ç­‰å¾…
+        AudioManager.Instance.PlaySound("WinMusic");    //æ’­æ”¾èƒœåˆ©éŸ³ä¹
+        winPanel.SetActive(true);                       //è®¾ç½®é¢æ¿å¯è§
+        resultPanelCGroup.DOFade(1, 1f);                //ç»“ç®—é¢æ¿æ¸å‡º
     }
 
-    //ÉèÖÃÊ¤ÀûÃæ°åµÄĞÅÏ¢
+    //è®¾ç½®èƒœåˆ©é¢æ¿çš„ä¿¡æ¯
     private void SetWinPanelInfo()
     {
-        //¸ù¾İÓÎÏ·ÄÑ¶ÈÉèÖÃÆÀ¼Û
+        //æ ¹æ®æ¸¸æˆéš¾åº¦è®¾ç½®è¯„ä»·
         switch (GameDifficultySystem.Instance.CurrentDifficulty)
         {
-            //ÈôÊÇ¼òµ¥ÄÑ¶È
+            //è‹¥æ˜¯ç®€å•éš¾åº¦
             case GameDifficultyLevel.Easy:
                 winAvatar.sprite = winPic01;
-                winText01.SetText("»¹ËãºÏ¸ñß÷~");
-                winText02.SetText("(ºÃ¸Ğ¶È+50)");
+                winText01.SetText("è¿˜ç®—åˆæ ¼å–µ~");
+                winText02.SetText("(å¥½æ„Ÿåº¦+50)");
                 break;
 
-            //ÈôÊÇÆÕÍ¨ÄÑ¶È
+            //è‹¥æ˜¯æ™®é€šéš¾åº¦
             case GameDifficultyLevel.Normal:
                 winAvatar.sprite = winPic02;
-                winText01.SetText("²»À¢ÊÇÎÒµÄÖ÷ÈËß÷~");
-                winText02.SetText("(ºÃ¸Ğ¶È+100)");
+                winText01.SetText("ä¸æ„§æ˜¯æˆ‘çš„ä¸»äººå–µ~");
+                winText02.SetText("(å¥½æ„Ÿåº¦+100)");
                 break;
 
-            //ÈôÊÇÀ§ÄÑÄÑ¶È
+            //è‹¥æ˜¯å›°éš¾éš¾åº¦
             case GameDifficultyLevel.Hard:
                 winAvatar.sprite = winPic03;
-                winText01.SetText("Ö÷ÈËÕâÃ´Ç¿Âğß÷£¡£¡");
-                winText02.SetText("(ºÃ¸Ğ¶È+114514)");
+                winText01.SetText("ä¸»äººè¿™ä¹ˆå¼ºå—å–µï¼ï¼");
+                winText02.SetText("(å¥½æ„Ÿåº¦+114514)");
                 break;
         }
     }
 
-    //°´Å¥---------------------------------------------------------------------------------------------------//
+    //æŒ‰é’®---------------------------------------------------------------------------------------------------//
 
     private bool isPaused = false;
 
-    //ÔİÍ£°´Å¥(Íâ²¿°ó¶¨)
+    //æš‚åœæŒ‰é’®(å¤–éƒ¨ç»‘å®š)
     public void OnClickBtn_Pause()
     {
         if (currentSelected && !isAllowPlayerControl) return;
-        Time.timeScale = 0;     //ÔİÍ£ÓÎÏ·
+        Time.timeScale = 0;     //æš‚åœæ¸¸æˆ
         isPaused = true;
         AudioManager.Instance.PlaySound("button_click");
         settingPanel.SetActive(true);
     }
 
-    //¼ÌĞøÓÎÏ·°´Å¥(Íâ²¿°ó¶¨)
+    //ç»§ç»­æ¸¸æˆæŒ‰é’®(å¤–éƒ¨ç»‘å®š)
     public void OnClickBtn_Continue()
     {
-        Time.timeScale = 1;     //¼ÌĞøÓÎÏ·
+        Time.timeScale = 1;     //ç»§ç»­æ¸¸æˆ
         isPaused = false;
         AudioManager.Instance.PlaySound("button_click");
         settingPanel.SetActive(false);
     }
 
-    //ÓÎÏ·ÉèÖÃ°´Å¥(Íâ²¿°ó¶¨)
+    //æ¸¸æˆè®¾ç½®æŒ‰é’®(å¤–éƒ¨ç»‘å®š)
     public void OnClickBtn_GameSetOpen()
     {
         AudioManager.Instance.PlaySound("button_click");
-        gameSetPanel.SetActive(true);   //´ò¿ªÉèÖÃÃæ°å
+        gameSetPanel.SetActive(true);   //æ‰“å¼€è®¾ç½®é¢æ¿
     }
 
-    //¹Ø±ÕÓÎÏ·ÉèÖÃ°´Å¥(Íâ²¿°ó¶¨)
+    //å…³é—­æ¸¸æˆè®¾ç½®æŒ‰é’®(å¤–éƒ¨ç»‘å®š)
     public void OnClickBtn_GameSetClose()
     {
         AudioManager.Instance.PlaySound("button_click");
-        gameSetPanel.SetActive(false);   //¹Ø±ÕÉèÖÃÃæ°å
+        gameSetPanel.SetActive(false);   //å…³é—­è®¾ç½®é¢æ¿
     }
 
-    //µã»÷·µ»ØÖ÷²Ëµ¥°´Å¥
+    //ç‚¹å‡»è¿”å›ä¸»èœå•æŒ‰é’®
     public void OnClickBtn_BackToMenu()
     {
-        AudioManager.Instance.PlaySound("button_click");                //²¥·ÅÒôĞ§
+        AudioManager.Instance.PlaySound("button_click");                //æ’­æ”¾éŸ³æ•ˆ
         DOTween.KillAll();
         AudioManager.Instance.StopSound("WinMusic");
         SceneManager.LoadScene("0_MainMenu");
     }
 
 
-    //µã»÷¼ÌĞøÓÎÏ·°´Å¥(Íâ²¿°ó¶¨)(´Ó×î½üµÄÖØÉúµã¸´»î)
+    //ç‚¹å‡»ç»§ç»­æ¸¸æˆæŒ‰é’®(å¤–éƒ¨ç»‘å®š)(ä»æœ€è¿‘çš„é‡ç”Ÿç‚¹å¤æ´»)
     public void OnClickBtn_Respawn()
     {
-        //½«ÖØÆôÊı¾İĞ´Èë²¢±£´æ
-        PlayerPrefs.SetInt("isRestart", 1);                             //±ê¼ÇÎªisRestart = true;
-        PlayerPrefs.SetFloat("respawnX", respawnPosition.position.x);   //±£´æÖØÉú×ø±êX
-        PlayerPrefs.SetFloat("respawnY", respawnPosition.position.y);   //±£´æÖØÉú×ø±êY
-        PlayerPrefs.SetInt("respawnOrder", currentRespawnOrder);        //±£´æµ±Ç°ÖØÉúµãÓÅÏÈ¼¶
+        //å°†é‡å¯æ•°æ®å†™å…¥å¹¶ä¿å­˜
+        PlayerPrefs.SetInt("isRestart", 1);                             //æ ‡è®°ä¸ºisRestart = true;
+        PlayerPrefs.SetFloat("respawnX", respawnPosition.position.x);   //ä¿å­˜é‡ç”Ÿåæ ‡X
+        PlayerPrefs.SetFloat("respawnY", respawnPosition.position.y);   //ä¿å­˜é‡ç”Ÿåæ ‡Y
+        PlayerPrefs.SetInt("respawnOrder", currentRespawnOrder);        //ä¿å­˜å½“å‰é‡ç”Ÿç‚¹ä¼˜å…ˆçº§
 
-        AudioManager.Instance.PlaySound("button_click");                //²¥·ÅÒôĞ§
+        AudioManager.Instance.PlaySound("button_click");                //æ’­æ”¾éŸ³æ•ˆ
         DOTween.KillAll();
-        //ÖØĞÂ¼ÓÔØµ±Ç°³¡¾°
+        //é‡æ–°åŠ è½½å½“å‰åœºæ™¯
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    //µã»÷ÖØÍ·¿ªÊ¼°´Å¥(Íâ²¿°ó¶¨)(ÖØÆô³¡¾°)
+    //ç‚¹å‡»é‡å¤´å¼€å§‹æŒ‰é’®(å¤–éƒ¨ç»‘å®š)(é‡å¯åœºæ™¯)
     public void OnClickBtn_Restart()
     {
-        AudioManager.Instance.PlaySound("button_click");                //²¥·ÅÒôĞ§
+        AudioManager.Instance.PlaySound("button_click");                //æ’­æ”¾éŸ³æ•ˆ
         DOTween.KillAll();
-        //ÖØĞÂ¼ÓÔØµ±Ç°³¡¾°
+        //é‡æ–°åŠ è½½å½“å‰åœºæ™¯
         AudioManager.Instance.StopSound("WinMusic");
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    //´ò¿ª½Ì³ÌÃæ°å(2Ìø×ª1)
+    //æ‰“å¼€æ•™ç¨‹é¢æ¿(2è·³è½¬1)
     public void OnClickBtn_OpenGuidePanel()
     {
         if (currentSelected && !isAllowPlayerControl) return;
 
-        Time.timeScale = 0;     //ÔİÍ£ÓÎÏ·
+        Time.timeScale = 0;     //æš‚åœæ¸¸æˆ
         isPaused = true;
         AudioManager.Instance.PlaySound("button_click");
-        guidePanel01.SetActive(true);   //´ò¿ªguide1
-        guidePanel02.SetActive(false);  //½ûÓÃguide2
+        guidePanel01.SetActive(true);   //æ‰“å¼€guide1
+        guidePanel02.SetActive(false);  //ç¦ç”¨guide2
         guideBtn.gameObject.SetActive(false);
     }
 
-    //½Ì³ÌÃæ°å1Ìø×ª2
+    //æ•™ç¨‹é¢æ¿1è·³è½¬2
     public void OnClickBtn_Guide1To2()
     {
         AudioManager.Instance.PlaySound("button_click");
-        guidePanel02.SetActive(true);   //´ò¿ªguide2
-        guidePanel01.SetActive(false);  //½ûÓÃguide1
+        guidePanel02.SetActive(true);   //æ‰“å¼€guide2
+        guidePanel01.SetActive(false);  //ç¦ç”¨guide1
         guideBtn.gameObject.SetActive(false);
     }
 
-    //¹Ø±Õ½Ì³ÌÃæ°å
+    //å…³é—­æ•™ç¨‹é¢æ¿
     public void OnClickBtn_CloseGuidePanel()
     {
 
-        Time.timeScale = 1;     //¼ÌĞøÓÎÏ·
+        Time.timeScale = 1;     //ç»§ç»­æ¸¸æˆ
         isPaused = false;
 
         AudioManager.Instance.PlaySound("button_click");
-        guidePanel01.SetActive(false);   //½ûÓÃguide1
-        guidePanel02.SetActive(false);   //½ûÓÃguide2
+        guidePanel01.SetActive(false);   //ç¦ç”¨guide1
+        guidePanel02.SetActive(false);   //ç¦ç”¨guide2
         guideBtn.gameObject.SetActive(true);
     }
 

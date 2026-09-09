@@ -10,24 +10,13 @@ public enum GameDifficultyLevel
     Hard    
 }
 
-public class GameDifficultySystem : MonoBehaviour
+public class GameDifficultySystem : Singleton<GameDifficultySystem>
 {
-    public static GameDifficultySystem Instance { get; private set; }  //Ààµ¥Àı(Íâ²¿Ö»¿É¶Á)
+    public GameDifficultyLevel CurrentDifficulty { get; private set; } = GameDifficultyLevel.Normal; //(å¤–éƒ¨åªå¯è¯»)
 
-    public GameDifficultyLevel CurrentDifficulty { get; private set; } = GameDifficultyLevel.Normal; //(Íâ²¿Ö»¿É¶Á)
+    protected override bool PersistAcrossScenes => true;
 
-    private void Awake()
-    {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-        Instance = this;
-        DontDestroyOnLoad(gameObject); // ±£Ö¤ÇĞ»»³¡¾°²»Ïú»Ù
-    }
-
-    //ÓÎÏ·ÄÑ¶ÈÉèÖÃ
+    //æ¸¸æˆéš¾åº¦è®¾ç½®
     public void SetDifficulty(GameDifficultyLevel level)
     {
         CurrentDifficulty = level;

@@ -4,11 +4,11 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
-public class AudioManager : MonoBehaviour
+public class AudioManager : Singleton<AudioManager>
 {
     #region Inspector Configuration
 
-    public static AudioManager Instance { get; private set; }
+    protected override bool PersistAcrossScenes => true;
 
     [Header("Audio Source Pools")]
     [Tooltip("用于播放短音效的 2D AudioSource 列表。请确保列表中的元素不重复。")]
@@ -47,24 +47,15 @@ public class AudioManager : MonoBehaviour
 
     #region Lifecycle
 
-    private void Awake()
+    protected override void Awake()
     {
-        // 如果已有实例且不是当前这个，就销毁它（避免重复）
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
+        base.Awake();
+        if (Instance != this)
             return;
-        }
-
-        Instance = this;    //单例化
-        DontDestroyOnLoad(gameObject);
     }
 
-    private void OnDestroy()
+    protected override void OnDestroy()
     {
-        if (Instance == this)
-            Instance = null;
-
         foreach (AsyncOperationHandle<AudioClip> handle in loadedClipHandles.Values)
         {
             if (handle.IsValid())
@@ -76,6 +67,8 @@ public class AudioManager : MonoBehaviour
             if (handle.IsValid())
                 Addressables.Release(handle);
         }
+
+        base.OnDestroy();
     }
 
     #endregion

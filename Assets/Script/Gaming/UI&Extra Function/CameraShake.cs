@@ -2,22 +2,23 @@ using System.Collections;
 using UnityEngine;
 using Cinemachine;
 
-public class CameraShake : MonoBehaviour
+public class CameraShake : Singleton<CameraShake>
 {
-    private CinemachineVirtualCamera virtualCamera;    //ĞéÄâÉãÏñ»ú
-    private CinemachineBasicMultiChannelPerlin noise;  //ĞéÄâÉãÏñ»úÍØÕ¹×é¼ş
-    public static CameraShake Instance;                //µ¥Àı
-
-    private void Awake()
+    private CinemachineVirtualCamera virtualCamera;    //è™šæ‹Ÿæ‘„åƒæœº
+    private CinemachineBasicMultiChannelPerlin noise;  //è™šæ‹Ÿæ‘„åƒæœºæ‹“å±•ç»„ä»¶
+    protected override void Awake()
     {
-        Instance = this;
+        base.Awake();
+        if (Instance != this)
+            return;
+
         virtualCamera = GetComponent<CinemachineVirtualCamera>();
     }
 
-    private float shakeFrequency = 0.2f;    //ÆµÂÊ
-    private float shakeAmplitude = 5;       //Õñ·ù
-    private float initShakeFrequencyGain;   //Ä¬ÈÏÆµÂÊ
-    private float initShakeAmplitude;       //Ä¬ÈÏÕñ·ù
+    private float shakeFrequency = 0.2f;    //é¢‘ç‡
+    private float shakeAmplitude = 5;       //æŒ¯å¹…
+    private float initShakeFrequencyGain;   //é»˜è®¤é¢‘ç‡
+    private float initShakeAmplitude;       //é»˜è®¤æŒ¯å¹…
 
     private void Start()
     {
@@ -26,7 +27,7 @@ public class CameraShake : MonoBehaviour
         initShakeAmplitude = noise.m_AmplitudeGain;
     }
 
-    //ÆÁÄ»»Î¶¯(Íâ²¿µ÷ÓÃ)
+    //å±å¹•æ™ƒåŠ¨(å¤–éƒ¨è°ƒç”¨)
     public void ShakeScreen()
     {
         if(shakeScreenCoroutine != null)
@@ -42,26 +43,26 @@ public class CameraShake : MonoBehaviour
 
     IEnumerator Shake()
     {
-        noise.m_AmplitudeGain = shakeAmplitude;     //µ÷ÕûÕñ·ù
+        noise.m_AmplitudeGain = shakeAmplitude;     //è°ƒæ•´æŒ¯å¹…
 
-        //Öğ½¥¼ÓÇ¿ÆµÂÊ
+        //é€æ¸åŠ å¼ºé¢‘ç‡
         while(noise.m_FrequencyGain < shakeFrequency)
         {
             noise.m_FrequencyGain += 0.01f;
             yield return null;
         }
 
-        //Öğ½¥¼õÈõÆµÂÊ
+        //é€æ¸å‡å¼±é¢‘ç‡
         while(noise.m_FrequencyGain > initShakeFrequencyGain)
         {
             noise.m_FrequencyGain -= 0.002f;
             yield return null;
         }
 
-        //»Ö¸´Ä¬ÈÏ
+        //æ¢å¤é»˜è®¤
         noise.m_FrequencyGain = initShakeFrequencyGain;
         noise.m_AmplitudeGain = initShakeAmplitude;
 
-        shakeScreenCoroutine = null;    //ÇåÀíĞ­³Ì
+        shakeScreenCoroutine = null;    //æ¸…ç†åç¨‹
     }
 }
