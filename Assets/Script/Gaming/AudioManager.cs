@@ -11,10 +11,10 @@ public class AudioManager : MonoBehaviour
     public static AudioManager Instance { get; private set; }
 
     [Header("Audio Source Pools")]
-    [Tooltip("ÓÃÓÚ²¥·Å¶ÌÒôĞ§µÄ 2D AudioSource ÁĞ±í¡£ÇëÈ·±£ÁĞ±íÖĞµÄÔªËØ²»ÖØ¸´¡£")]
+    [Tooltip("ç”¨äºæ’­æ”¾çŸ­éŸ³æ•ˆçš„ 2D AudioSource åˆ—è¡¨ã€‚è¯·ç¡®ä¿åˆ—è¡¨ä¸­çš„å…ƒç´ ä¸é‡å¤ã€‚")]
     [SerializeField] private List<AudioSource> audioSourcePool;
 
-    [Tooltip("ÓÃÓÚ²¥·Å¿Õ¼äÒôĞ§µÄ 3D AudioSource ÁĞ±í¡£ÇëÈ·±£ÁĞ±íÖĞµÄÔªËØ²»ÖØ¸´¡£")]
+    [Tooltip("ç”¨äºæ’­æ”¾ç©ºé—´éŸ³æ•ˆçš„ 3D AudioSource åˆ—è¡¨ã€‚è¯·ç¡®ä¿åˆ—è¡¨ä¸­çš„å…ƒç´ ä¸é‡å¤ã€‚")]
     [SerializeField] private List<AudioSource> audioSources3DPool;
 
     private readonly Dictionary<string, AudioClip> loadedClips = new();
@@ -26,7 +26,7 @@ public class AudioManager : MonoBehaviour
     private readonly Dictionary<AudioSource, string> playing3DSourceAddresses = new();
 
     [Header("Background Music")]
-    [Tooltip("ÓÃÓÚ²¥·Å±³¾°ÒôÀÖµÄ AudioSource¡£¸Ã Source »áËæ AudioManager ¿ç³¡¾°±£Áô¡£")]
+    [Tooltip("ç”¨äºæ’­æ”¾èƒŒæ™¯éŸ³ä¹çš„ AudioSourceã€‚è¯¥ Source ä¼šéš AudioManager è·¨åœºæ™¯ä¿ç•™ã€‚")]
     [SerializeField] private AudioSource bgmAudioSource;
 
     #endregion
@@ -34,13 +34,13 @@ public class AudioManager : MonoBehaviour
     #region Volume State
 
 
-    private float _currentBgmVolume = 0.5f;   //µ±Ç°ÒôÀÖÒôÁ¿  (Ä¬ÈÏÖµ)
-    private float _currentSfxVolume = 0.5f;   //µ±Ç°ÒôĞ§ÒôÁ¿  (Ä¬ÈÏÖµ)
+    private float _currentBgmVolume = 0.5f;   //å½“å‰éŸ³ä¹éŸ³é‡  (é»˜è®¤å€¼)
+    private float _currentSfxVolume = 0.5f;   //å½“å‰éŸ³æ•ˆéŸ³é‡  (é»˜è®¤å€¼)
 
-    /// <summary>»ñÈ¡µ±Ç°±³¾°ÒôÀÖÒôÁ¿¡£</summary>
+    /// <summary>è·å–å½“å‰èƒŒæ™¯éŸ³ä¹éŸ³é‡ã€‚</summary>
     public float GetCurrentBgmVolume() => _currentBgmVolume;
 
-    /// <summary>»ñÈ¡µ±Ç°ÒôĞ§ÒôÁ¿¡£</summary>
+    /// <summary>è·å–å½“å‰éŸ³æ•ˆéŸ³é‡ã€‚</summary>
     public float GetCurrentSfxVolume() => _currentSfxVolume;
 
     #endregion
@@ -49,14 +49,14 @@ public class AudioManager : MonoBehaviour
 
     private void Awake()
     {
-        // Èç¹ûÒÑÓĞÊµÀıÇÒ²»ÊÇµ±Ç°Õâ¸ö£¬¾ÍÏú»ÙËü£¨±ÜÃâÖØ¸´£©
+        // å¦‚æœå·²æœ‰å®ä¾‹ä¸”ä¸æ˜¯å½“å‰è¿™ä¸ªï¼Œå°±é”€æ¯å®ƒï¼ˆé¿å…é‡å¤ï¼‰
         if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
 
-        Instance = this;    //µ¥Àı»¯
+        Instance = this;    //å•ä¾‹åŒ–
         DontDestroyOnLoad(gameObject);
     }
 
@@ -83,7 +83,7 @@ public class AudioManager : MonoBehaviour
     #region Clip Loading
 
     /// <summary>
-    /// ÇëÇóÒ»¸öÒôÆµÆ¬¶Î£»ÏàÍ¬µØÖ·ÔÚ¼ÓÔØÆÚ¼ä»áºÏ²¢ÇëÇó£¬¼ÓÔØÍê³ÉºóÍ¨ÖªËùÓĞµ÷ÓÃ·½¡£
+    /// è¯·æ±‚ä¸€ä¸ªéŸ³é¢‘ç‰‡æ®µï¼›ç›¸åŒåœ°å€åœ¨åŠ è½½æœŸé—´ä¼šåˆå¹¶è¯·æ±‚ï¼ŒåŠ è½½å®Œæˆåé€šçŸ¥æ‰€æœ‰è°ƒç”¨æ–¹ã€‚
     /// </summary>
     private void RequestClip(string address, Action<AudioClip> onLoaded)
     {
@@ -113,7 +113,7 @@ public class AudioManager : MonoBehaviour
 
             if (completedHandle.Status != AsyncOperationStatus.Succeeded)
             {
-                Debug.LogError($"ÒôÆµ¼ÓÔØÊ§°Ü [{address}]: {completedHandle.OperationException}");
+                Debug.LogError($"éŸ³é¢‘åŠ è½½å¤±è´¥ [{address}]: {completedHandle.OperationException}");
                 return;
             }
 
@@ -130,37 +130,37 @@ public class AudioManager : MonoBehaviour
 
     #region One-Shot Audio
 
-    /// <summary>Òì²½¼ÓÔØ²¢²¥·ÅÒ»¸ö 2D ¶ÌÒôĞ§¡£</summary>
+    /// <summary>å¼‚æ­¥åŠ è½½å¹¶æ’­æ”¾ä¸€ä¸ª 2D çŸ­éŸ³æ•ˆã€‚</summary>
     public void PlaySound(string address)
     {
         RequestClip(address, clip => PlayClip(clip, address));
     }
 
-    /// <summary>Í£Ö¹Ö¸¶¨µØÖ·¶ÔÓ¦µÄÈ«²¿ 2D ¶ÌÒôĞ§¡£</summary>
+    /// <summary>åœæ­¢æŒ‡å®šåœ°å€å¯¹åº”çš„å…¨éƒ¨ 2D çŸ­éŸ³æ•ˆã€‚</summary>
     public void StopSound(string address)
     {
         StopSourcesForAddress(playingSourceAddresses, address);
     }
 
-    /// <summary>´Ó 2D ÒôĞ§³ØÖĞÈ¡³öÒ»¸ö¿ÕÏĞ Source ²¥·ÅÆ¬¶Î¡£</summary>
+    /// <summary>ä» 2D éŸ³æ•ˆæ± ä¸­å–å‡ºä¸€ä¸ªç©ºé—² Source æ’­æ”¾ç‰‡æ®µã€‚</summary>
     private void PlayClip(AudioClip clip, string address)
     {
-        AudioSource freeSource = GetFreeAudioSource();      //»ñÈ¡¿ÕÏĞÒôÔ´³Ø
+        AudioSource freeSource = GetFreeAudioSource();      //è·å–ç©ºé—²éŸ³æºæ± 
         if (freeSource != null)
         {
-            //²¥·Åclip
-            freeSource.volume = _currentSfxVolume;      //¸üĞÂÒôÁ¿
+            //æ’­æ”¾clip
+            freeSource.volume = _currentSfxVolume;      //æ›´æ–°éŸ³é‡
             freeSource.clip = clip;
             freeSource.Play();
             playingSourceAddresses[freeSource] = address;
         }
         else
         {
-            Debug.LogWarning("ËùÓĞÒôÔ´¶¼ÔÚÊ¹ÓÃÖĞ£¬ÎŞ·¨²¥·ÅĞÂÒôĞ§£¡");
+            Debug.LogWarning("æ‰€æœ‰éŸ³æºéƒ½åœ¨ä½¿ç”¨ä¸­ï¼Œæ— æ³•æ’­æ”¾æ–°éŸ³æ•ˆï¼");
         }
     }
 
-    /// <summary>ÇåÀíÒÑ×ÔÈ»²¥·Å½áÊøµÄ Source£¬²¢·µ»ØÒ»¸ö¿ÉÓÃ Source¡£</summary>
+    /// <summary>æ¸…ç†å·²è‡ªç„¶æ’­æ”¾ç»“æŸçš„ Sourceï¼Œå¹¶è¿”å›ä¸€ä¸ªå¯ç”¨ Sourceã€‚</summary>
     private AudioSource GetFreeAudioSource()
     {
         CleanupFinishedSources(playingSourceAddresses);
@@ -170,46 +170,46 @@ public class AudioManager : MonoBehaviour
             if (source != null && !source.isPlaying)
                 return source;
         }
-        return null; // ¶¼ÔÚ²¥·Å
+        return null; // éƒ½åœ¨æ’­æ”¾
     }
 
     #endregion
 
     #region Spatial Audio
 
-    /// <summary>Òì²½¼ÓÔØ²¢²¥·ÅÒ»¸ö 3D ¶ÌÒôĞ§¡£</summary>
+    /// <summary>å¼‚æ­¥åŠ è½½å¹¶æ’­æ”¾ä¸€ä¸ª 3D çŸ­éŸ³æ•ˆã€‚</summary>
     public void PlaySound3D(string address, Vector3 position)
     {
         RequestClip(address, clip => PlayClip3D(clip, address, position));
     }
 
-    /// <summary>Í£Ö¹Ö¸¶¨µØÖ·¶ÔÓ¦µÄÈ«²¿ 3D ¶ÌÒôĞ§¡£</summary>
+    /// <summary>åœæ­¢æŒ‡å®šåœ°å€å¯¹åº”çš„å…¨éƒ¨ 3D çŸ­éŸ³æ•ˆã€‚</summary>
     public void StopSound3D(string address)
     {
         StopSourcesForAddress(playing3DSourceAddresses, address);
     }
 
-    /// <summary>´Ó 3D ÒôĞ§³ØÖĞÈ¡³öÒ»¸ö¿ÕÏĞ Source ²¥·ÅÆ¬¶Î¡£</summary>
+    /// <summary>ä» 3D éŸ³æ•ˆæ± ä¸­å–å‡ºä¸€ä¸ªç©ºé—² Source æ’­æ”¾ç‰‡æ®µã€‚</summary>
     private void PlayClip3D(AudioClip clip, string address, Vector3 position)
     {
         AudioSource source = GetFreeAudioSource3D();
         if (source != null)
         {
-            source.transform.position = position;  // ÉèÖÃÒôĞ§²¥·ÅµÄÎ»ÖÃ
-            source.volume = _currentSfxVolume;     //¸üĞÂÒôÁ¿
+            source.transform.position = position;  // è®¾ç½®éŸ³æ•ˆæ’­æ”¾çš„ä½ç½®
+            source.volume = _currentSfxVolume;     //æ›´æ–°éŸ³é‡
             source.clip = clip;
-            source.spatialBlend = 1f;              // È·±£ÊÇ3DÒôĞ§
+            source.spatialBlend = 1f;              // ç¡®ä¿æ˜¯3DéŸ³æ•ˆ
             source.Play();
 
             playing3DSourceAddresses[source] = address;
         }
         else
         {
-            Debug.LogWarning("ËùÓĞ3DÒôÔ´¶¼ÔÚÊ¹ÓÃÖĞ£¬ÎŞ·¨²¥·ÅĞÂÒôĞ§£¡");
+            Debug.LogWarning("æ‰€æœ‰3DéŸ³æºéƒ½åœ¨ä½¿ç”¨ä¸­ï¼Œæ— æ³•æ’­æ”¾æ–°éŸ³æ•ˆï¼");
         }
     }
 
-    /// <summary>ÇåÀíÒÑ×ÔÈ»²¥·Å½áÊøµÄ 3D Source£¬²¢·µ»ØÒ»¸ö¿ÉÓÃ Source¡£</summary>
+    /// <summary>æ¸…ç†å·²è‡ªç„¶æ’­æ”¾ç»“æŸçš„ 3D Sourceï¼Œå¹¶è¿”å›ä¸€ä¸ªå¯ç”¨ Sourceã€‚</summary>
     private AudioSource GetFreeAudioSource3D()
     {
         CleanupFinishedSources(playing3DSourceAddresses);
@@ -222,7 +222,7 @@ public class AudioManager : MonoBehaviour
         return null;
     }
 
-    /// <summary>Í£Ö¹Ö¸¶¨µØÖ·¶ÔÓ¦µÄ Source£¬²¢ÒÆ³ı²¥·Å¹éÊô¼ÇÂ¼¡£</summary>
+    /// <summary>åœæ­¢æŒ‡å®šåœ°å€å¯¹åº”çš„ Sourceï¼Œå¹¶ç§»é™¤æ’­æ”¾å½’å±è®°å½•ã€‚</summary>
     private static void StopSourcesForAddress(Dictionary<AudioSource, string> sourceAddresses, string address)
     {
         List<AudioSource> sourcesToRemove = new();
@@ -263,7 +263,7 @@ public class AudioManager : MonoBehaviour
 
     #region Background Music
 
-    /// <summary>Òì²½¼ÓÔØ²¢²¥·Å±³¾°ÒôÀÖ¡£</summary>
+    /// <summary>å¼‚æ­¥åŠ è½½å¹¶æ’­æ”¾èƒŒæ™¯éŸ³ä¹ã€‚</summary>
     public void PlayBGM(string address)
     {
         RequestClip(address, clip =>
@@ -277,7 +277,7 @@ public class AudioManager : MonoBehaviour
         });
     }
 
-    /// <summary>Í£Ö¹²¢Çå¿Õµ±Ç°±³¾°ÒôÀÖ¡£</summary>
+    /// <summary>åœæ­¢å¹¶æ¸…ç©ºå½“å‰èƒŒæ™¯éŸ³ä¹ã€‚</summary>
     public void ClearBGM()
     {
         if (bgmAudioSource == null)
@@ -287,14 +287,14 @@ public class AudioManager : MonoBehaviour
         bgmAudioSource.clip = null;
     }
 
-    /// <summary>°´µ±Ç°±³¾°ÒôÀÖÒôÁ¿³ËÊıµ÷Õû²¥·ÅÒôÁ¿¡£</summary>
+    /// <summary>æŒ‰å½“å‰èƒŒæ™¯éŸ³ä¹éŸ³é‡ä¹˜æ•°è°ƒæ•´æ’­æ”¾éŸ³é‡ã€‚</summary>
     public void AdjustBGMVolume(float volumeMultiplier)
     {
         float adjustedVolume = Mathf.Clamp01(volumeMultiplier) * _currentBgmVolume;
         bgmAudioSource.volume = adjustedVolume;
     }
 
-    /// <summary>ÔİÍ£»ò»Ö¸´µ±Ç°±³¾°ÒôÀÖ¡£</summary>
+    /// <summary>æš‚åœæˆ–æ¢å¤å½“å‰èƒŒæ™¯éŸ³ä¹ã€‚</summary>
     public void PauseOrContinueBGM(bool isPause)
     {
         if (isPause)
@@ -303,24 +303,24 @@ public class AudioManager : MonoBehaviour
             bgmAudioSource.UnPause();
     }
 
-    /// <summary>ÉèÖÃ±³¾°ÒôÀÖÒôÁ¿¡£</summary>
+    /// <summary>è®¾ç½®èƒŒæ™¯éŸ³ä¹éŸ³é‡ã€‚</summary>
     public void SetBgmVolume(float volume)
     {
         _currentBgmVolume = Mathf.Clamp01(volume);
         bgmAudioSource.volume = _currentBgmVolume;
     }
 
-    /// <summary>ÉèÖÃÒôĞ§ÒôÁ¿£¬²¢Á¢¼´Í¬²½µ½ÒôĞ§³ØÖĞµÄ Source¡£</summary>
+    /// <summary>è®¾ç½®éŸ³æ•ˆéŸ³é‡ï¼Œå¹¶ç«‹å³åŒæ­¥åˆ°éŸ³æ•ˆæ± ä¸­çš„ Sourceã€‚</summary>
     public void SetSfxVolume(float volume)
     {
         _currentSfxVolume = Mathf.Clamp01(volume);
 
-        //Á¢¿Ì¸üĞÂ³ØÀïËùÓĞ¿ÕÏĞ»òÕıÔÚ²¥·ÅµÄ 2D Ô´
+        //ç«‹åˆ»æ›´æ–°æ± é‡Œæ‰€æœ‰ç©ºé—²æˆ–æ­£åœ¨æ’­æ”¾çš„ 2D æº
         foreach (var src in audioSourcePool)
             if (src != null)
                 src.volume = _currentSfxVolume;
 
-        //Á¢¿Ì¸üĞÂËùÓĞ 3D Ô´
+        //ç«‹åˆ»æ›´æ–°æ‰€æœ‰ 3D æº
         foreach (var src in audioSources3DPool)
             if (src != null)
                 src.volume = _currentSfxVolume;
