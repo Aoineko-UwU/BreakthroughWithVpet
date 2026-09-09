@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -5,14 +6,17 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class AudioManager : MonoBehaviour
 {
-    public static AudioManager Instance;
+    public static AudioManager Instance { get; private set; }
     [SerializeField] private List<AudioSource> audioSourcePool;      //一次性音源池
     [SerializeField] private List<AudioSource> audioSources3DPool;   //一次性3D音源池
 
-    private Dictionary<string, AudioClip> loadedClips = new();                     // 缓存已加载的 AudioClip
+    private readonly Dictionary<string, AudioClip> loadedClips = new();
+    private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> loadedClipHandles = new();
+    private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> loadingClipHandles = new();
+    private readonly Dictionary<string, List<Action<AudioClip>>> pendingClipLoads = new();
 
-    private Dictionary<string, List<AudioSource>> playingSourcesByAddress = new();   //记录每个2D音效的播放音源
-    private Dictionary<string, List<AudioSource>> playing3DSourcesByAddress = new(); //记录每个3D音效的播放音源
+    private readonly Dictionary<AudioSource, string> playingSourceAddresses = new();
+    private readonly Dictionary<AudioSource, string> playing3DSourceAddresses = new();
 
     [SerializeField] private AudioSource bgmAudioSource;        //背景音乐音源
 
@@ -33,55 +37,78 @@ public class AudioManager : MonoBehaviour
         }
 
         Instance = this;    //单例化
-        DontDestroyOnLoad(this);
+        DontDestroyOnLoad(gameObject);
+    }
+
+    private void OnDestroy()
+    {
+        if (Instance == this)
+            Instance = null;
+
+        foreach (AsyncOperationHandle<AudioClip> handle in loadedClipHandles.Values)
+        {
+            if (handle.IsValid())
+                Addressables.Release(handle);
+        }
+
+        foreach (AsyncOperationHandle<AudioClip> handle in loadingClipHandles.Values)
+        {
+            if (handle.IsValid())
+                Addressables.Release(handle);
+        }
+    }
+
+    private void RequestClip(string address, Action<AudioClip> onLoaded)
+    {
+        if (loadedClips.TryGetValue(address, out AudioClip cachedClip))
+        {
+            onLoaded(cachedClip);
+            return;
+        }
+
+        if (pendingClipLoads.TryGetValue(address, out List<Action<AudioClip>> callbacks))
+        {
+            callbacks.Add(onLoaded);
+            return;
+        }
+
+        pendingClipLoads[address] = new List<Action<AudioClip>> { onLoaded };
+        AsyncOperationHandle<AudioClip> handle = Addressables.LoadAssetAsync<AudioClip>(address);
+        loadingClipHandles[address] = handle;
+        handle.Completed += completedHandle =>
+        {
+            loadingClipHandles.Remove(address);
+
+            if (!pendingClipLoads.TryGetValue(address, out List<Action<AudioClip>> pendingCallbacks))
+                return;
+
+            pendingClipLoads.Remove(address);
+
+            if (completedHandle.Status != AsyncOperationStatus.Succeeded)
+            {
+                Debug.LogError($"音频加载失败 [{address}]: {completedHandle.OperationException}");
+                return;
+            }
+
+            AudioClip clip = completedHandle.Result;
+            loadedClips[address] = clip;
+            loadedClipHandles[address] = completedHandle;
+
+            foreach (Action<AudioClip> callback in pendingCallbacks)
+                callback(clip);
+        };
     }
 
     //单次音效播放方法(外部调用)
     public void PlaySound(string address)
     {
-        //若该地址片段已缓存过
-        if (loadedClips.TryGetValue(address, out AudioClip cachedClip))
-        {
-            PlayClip(cachedClip, address);      //片段播放
-        }
-        //否则进行异步片段加载
-        else
-        {
-            Addressables.LoadAssetAsync<AudioClip>(address).Completed += handle =>
-            {
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    AudioClip clip = handle.Result;     //获取加载结果(AudioClip)
-                    loadedClips[address] = clip;        //将地址加入缓存字典
-                    PlayClip(clip, address);            //播放
-                }
-                else
-                {
-                    Debug.LogError($"音效加载失败: {handle.OperationException}");
-                }
-            };
-        }
+        RequestClip(address, clip => PlayClip(clip, address));
     }
 
     //停止播放输入地址的所有音效
     public void StopSound(string address)
     {
-        //若发现输入的地址有与播放字典中对应的地址字段
-        if (playingSourcesByAddress.TryGetValue(address, out List<AudioSource> sources))
-        {
-            //遍历音源池
-            foreach (var source in sources)
-            {
-                //暂停其播放
-                if (source != null && source.isPlaying)
-                {
-                    source.Stop();
-                    source.clip = null;
-                }
-            }
-
-            playingSourcesByAddress[address].Clear(); // 清空引用
-        }
+        StopSourcesForAddress(playingSourceAddresses, address);
     }
 
     //播放音效并记录播放来源
@@ -94,11 +121,7 @@ public class AudioManager : MonoBehaviour
             freeSource.volume = _currentSfxVolume;      //更新音量
             freeSource.clip = clip;
             freeSource.Play();
-            //若该片段地址不存在于“播放中字典”内，则记录
-            if (!playingSourcesByAddress.ContainsKey(address))
-                playingSourcesByAddress[address] = new List<AudioSource>();
-
-            playingSourcesByAddress[address].Add(freeSource);
+            playingSourceAddresses[freeSource] = address;
         }
         else
         {
@@ -109,9 +132,11 @@ public class AudioManager : MonoBehaviour
     //获取单次音源池的空闲音源
     private AudioSource GetFreeAudioSource()
     {
+        CleanupFinishedSources(playingSourceAddresses);
+
         foreach (AudioSource source in audioSourcePool)
         {
-            if (!source.isPlaying && source != null)
+            if (source != null && !source.isPlaying)
                 return source;
         }
         return null; // 都在播放
@@ -120,46 +145,13 @@ public class AudioManager : MonoBehaviour
     //播放3D音效方法
     public void PlaySound3D(string address, Vector3 position)
     {
-        //如果缓存中有音效，则使用缓存音效
-        if (loadedClips.TryGetValue(address, out AudioClip cachedClip))
-        {
-            PlayClip3D(cachedClip, address, position);
-        }
-
-        //否则获取音效播放并存入缓存字典
-        else
-        {
-            Addressables.LoadAssetAsync<AudioClip>(address).Completed += handle =>
-            {
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    AudioClip clip = handle.Result;
-                    loadedClips[address] = clip;
-                    PlayClip3D(clip, address, position);
-                }
-                else
-                {
-                    Debug.LogError($"3D音效加载失败: {handle.OperationException}");
-                }
-            };
-        }
+        RequestClip(address, clip => PlayClip3D(clip, address, position));
     }
 
     //停止3D音效播放
     public void StopSound3D(string address)
     {
-        if (playing3DSourcesByAddress.TryGetValue(address, out List<AudioSource> sources))
-        {
-            foreach (var source in sources)
-            {
-                if (source != null && source.isPlaying)
-                {
-                    source.Stop();
-                    source.clip = null;
-                }
-            }
-            playing3DSourcesByAddress[address].Clear();
-        }
+        StopSourcesForAddress(playing3DSourceAddresses, address);
     }
 
     //3D音效播放
@@ -174,10 +166,7 @@ public class AudioManager : MonoBehaviour
             source.spatialBlend = 1f;              // 确保是3D音效
             source.Play();
 
-            if (!playing3DSourcesByAddress.ContainsKey(address))
-                playing3DSourcesByAddress[address] = new List<AudioSource>();
-
-            playing3DSourcesByAddress[address].Add(source);
+            playing3DSourceAddresses[source] = address;
         }
         else
         {
@@ -188,48 +177,73 @@ public class AudioManager : MonoBehaviour
     //获取空闲3D音源池
     private AudioSource GetFreeAudioSource3D()
     {
+        CleanupFinishedSources(playing3DSourceAddresses);
+
         foreach (AudioSource source in audioSources3DPool)
         {
-            if (!source.isPlaying && source != null)
+            if (source != null && !source.isPlaying)
                 return source;
-            if (source == null)
-                Debug.Log($"音源" + source + "被销毁.");
         }
         return null;
+    }
+
+    private static void StopSourcesForAddress(Dictionary<AudioSource, string> sourceAddresses, string address)
+    {
+        List<AudioSource> sourcesToRemove = new();
+
+        foreach (KeyValuePair<AudioSource, string> pair in sourceAddresses)
+        {
+            if (pair.Value != address)
+                continue;
+
+            if (pair.Key != null)
+            {
+                pair.Key.Stop();
+                pair.Key.clip = null;
+            }
+
+            sourcesToRemove.Add(pair.Key);
+        }
+
+        foreach (AudioSource source in sourcesToRemove)
+            sourceAddresses.Remove(source);
+    }
+
+    private static void CleanupFinishedSources(Dictionary<AudioSource, string> sourceAddresses)
+    {
+        List<AudioSource> sourcesToRemove = new();
+
+        foreach (KeyValuePair<AudioSource, string> pair in sourceAddresses)
+        {
+            if (pair.Key == null || !pair.Key.isPlaying)
+                sourcesToRemove.Add(pair.Key);
+        }
+
+        foreach (AudioSource source in sourcesToRemove)
+            sourceAddresses.Remove(source);
     }
 
     //播放背景音乐
     public void PlayBGM(string address)
     {
-        // 使用缓存的音效或异步加载
-        if (loadedClips.TryGetValue(address, out AudioClip cachedClip))
+        RequestClip(address, clip =>
         {
-            bgmAudioSource.clip = cachedClip;
+            if (bgmAudioSource == null)
+                return;
+
+            bgmAudioSource.volume = _currentBgmVolume;
+            bgmAudioSource.clip = clip;
             bgmAudioSource.Play();
-        }
-        else
-        {
-            Addressables.LoadAssetAsync<AudioClip>(address).Completed += handle =>
-            {
-                if (handle.Status == AsyncOperationStatus.Succeeded)
-                {
-                    AudioClip clip = handle.Result;
-                    loadedClips[address] = clip;
-                    bgmAudioSource.volume = _currentBgmVolume;  //更新当前音量
-                    bgmAudioSource.clip = clip;
-                    bgmAudioSource.Play();
-                }
-                else
-                {
-                    Debug.LogError($"背景音乐加载失败: {handle.OperationException}");
-                }
-            };
-        }
+        });
     }
 
     //清空背景音乐剪辑
     public void ClearBGM()
     {
+        if (bgmAudioSource == null)
+            return;
+
+        bgmAudioSource.Stop();
         bgmAudioSource.clip = null;
     }
 
