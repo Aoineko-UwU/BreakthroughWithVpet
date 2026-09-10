@@ -3,32 +3,65 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 控制熊敌人的巡逻、追击、随机停顿与近身攻击行为。
+/// 熊敌人行为类
+/// - 控制熊的巡逻、追逐、随机停顿和接触攻击。
 /// </summary>
 public class Enemy03_Bear : MonoBehaviour
 {
-    [Tooltip("生命系统脚本")]
-    [SerializeField] private EnemyHealthSystem healthSystem;    //生命系统脚本
-    [Tooltip("移动速度")]
-    [SerializeField] private float moveSpeed = 100f;            //移动速度
+    #region 配置与运行状态
 
-    private Vector3 pointA;             //巡逻点A
-    private Vector3 pointB;             //巡逻点B
-    private float pointRange = 8f;      //巡逻点设置范围
+    [Tooltip("生命系统脚本。")]
+    [SerializeField] private EnemyHealthSystem healthSystem;
 
+    [Tooltip("巡逻速度参数；写入刚体速度前会乘以物理帧间隔，并按难度初始化覆盖。")]
+    [SerializeField] private float moveSpeed = 100f;
+
+    /// <summary>巡逻点A。</summary>
+    private Vector3 pointA;
+
+    /// <summary>巡逻点B。</summary>
+    private Vector3 pointB;
+
+    /// <summary>巡逻点设置范围。</summary>
+    private float pointRange = 8f;
+
+    /// <summary>当前对象的二维刚体组件。</summary>
     private Rigidbody2D rb;
+
+    /// <summary>当前对象的动画器。</summary>
     private Animator animator;
+
+    /// <summary>用于交互或距离判断的桌宠对象。</summary>
     private GameObject vpet;
-    private float currentSpeed;     //当前移速
-    private int moveDir;            //移动方向(-1left| +1 right| 0 idle)
-    private float faceDir;          //初始面朝方向
 
-    private bool isWalking = false;                 //是否在移动中
-    private bool isAllowAudioPlay = false;          //是否允许音效播放
-    private float audioTimer;                       //音效计时器
-    [Tooltip("计时器CD")]
-    [SerializeField] private float audioCD = 0.8f;  //计时器CD
+    /// <summary>当前移速。</summary>
+    private float currentSpeed;
 
+    /// <summary>移动方向(-1left| +1 right| 0 idle)。</summary>
+    private int moveDir;
+
+    /// <summary>初始面朝方向。</summary>
+    private float faceDir;
+
+    /// <summary>是否在移动中。</summary>
+    private bool isWalking = false;
+
+    /// <summary>是否允许音效播放。</summary>
+    private bool isAllowAudioPlay = false;
+
+    /// <summary>距离下次音效播放的剩余时间，单位为秒。</summary>
+    private float audioTimer;
+
+    [Tooltip("行走音效播放间隔，单位为秒。")]
+    [SerializeField] private float audioCD = 0.8f;
+
+    #endregion
+
+    #region 初始化与行为更新
+
+    /// <summary>
+    /// 缓存刚体、动画器和桌宠对象。
+    /// </summary>
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -36,6 +69,9 @@ public class Enemy03_Bear : MonoBehaviour
         vpet = GameObject.FindGameObjectWithTag("Vpet");
     }
 
+    /// <summary>
+    /// 初始化难度数值、随机移动方向、初始朝向及巡逻边界。
+    /// </summary>
     void Start()
     {
         InitValueBasedDifficulty();                 //数值初始化
@@ -47,7 +83,9 @@ public class Enemy03_Bear : MonoBehaviour
 
     }
 
-    //根据难度初始化数值
+    /// <summary>
+    /// 根据难度设置攻击伤害、移动速度参数和随机停顿时长修正。
+    /// </summary>
     private void InitValueBasedDifficulty()
     {
         //获取游戏难度进行匹配(攻击伤害|移动速度|停滞时间修正)
@@ -76,7 +114,9 @@ public class Enemy03_Bear : MonoBehaviour
         }
     }
 
-
+    /// <summary>
+    /// 更新停顿与音效计时，根据桌宠位置选择追逐或巡逻，并同步行走表现。
+    /// </summary>
     void Update()
     {
         //玩家距离超过20m不播放音效
@@ -115,15 +155,34 @@ public class Enemy03_Bear : MonoBehaviour
         }
     }
 
-    private float randomStopTimer;              //随机停止计时器
-    private float randomStopInterval = 10f;     //随机停止间隔
-    private float minStopTime = 3f;             //最低停止时长
-    private float maxStopTime = 6f;             //最高停止时长
-    private float stopTimeFix = 0f;             //停滞时间修正
+    #endregion
 
-    private bool  isStop = false;               //是否暂停中
-    private bool isAllowStopTimerWork = true;   //是否允许停止计时器工作
+    #region 停顿与巡逻追逐
 
+    /// <summary>随机停止计时器。</summary>
+    private float randomStopTimer;
+
+    /// <summary>随机停止间隔。</summary>
+    private float randomStopInterval = 10f;
+
+    /// <summary>最低停止时长。</summary>
+    private float minStopTime = 3f;
+
+    /// <summary>最高停止时长。</summary>
+    private float maxStopTime = 6f;
+
+    /// <summary>停滞时间修正。</summary>
+    private float stopTimeFix = 0f;
+
+    /// <summary>是否暂停中。</summary>
+    private bool  isStop = false;
+
+    /// <summary>是否允许停止计时器工作。</summary>
+    private bool isAllowStopTimerWork = true;
+
+    /// <summary>
+    /// 随机停顿间隔结束时暂停移动，并启动停顿等待。
+    /// </summary>
     private void RandomStopCheck()
     {
         if(randomStopTimer <= 0 && !isStop)
@@ -135,6 +194,10 @@ public class Enemy03_Bear : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 等待受难度修正的随机时长后退出停顿，并随机选择移动方向。
+    /// </summary>
+    /// <returns>控制本次停顿等待的协程迭代器。</returns>
     IEnumerator StopTime()
     {
         //等待随机时长
@@ -144,7 +207,9 @@ public class Enemy03_Bear : MonoBehaviour
         moveDir = (Random.value < 0.5f) ? -1 : 1;   //给随机方向
     }
 
-    //追逐逻辑
+    /// <summary>
+    /// 根据桌宠横向位置选择追逐方向；停顿期间仅在桌宠足够接近时提前恢复。
+    /// </summary>
     private void ChaseVpet()
     {
         //若处于间隔暂停中且距离玩家一定距离，则不触发追逐
@@ -158,7 +223,9 @@ public class Enemy03_Bear : MonoBehaviour
 
     }
 
-    //巡逻逻辑
+    /// <summary>
+    /// 非停顿时启用停顿间隔计时，并在越过巡逻边界时反向移动。
+    /// </summary>
     private void Partrol()
     {
         if (isStop) return;
@@ -174,6 +241,13 @@ public class Enemy03_Bear : MonoBehaviour
         }
     }
 
+    #endregion
+
+    #region 物理运动与接触攻击
+
+    /// <summary>
+    /// 存活时按移动方向写入水平速度，保留现有垂直速度。
+    /// </summary>
     void FixedUpdate()
     {
         if (healthSystem.isDead) return;
@@ -187,8 +261,9 @@ public class Enemy03_Bear : MonoBehaviour
             rb.velocity = new Vector2(0f, rb.velocity.y);
     }
 
-
-    // 翻转精灵图，根据 moveDir 方向
+    /// <summary>
+    /// 依据非零移动方向和初始缩放翻转精灵。
+    /// </summary>
     private void Flip()
     {
         if (moveDir > 0)
@@ -197,8 +272,13 @@ public class Enemy03_Bear : MonoBehaviour
             transform.localScale = new Vector2(-faceDir, transform.localScale.y);
     }
 
+    /// <summary>接触攻击造成的基础伤害。</summary>
     private float attackDamage = 3f;
 
+    /// <summary>
+    /// 存活时对持续接触的桌宠请求伤害及斜向击退。
+    /// </summary>
+    /// <param name="other">持续接触的碰撞信息。</param>
     private void OnCollisionStay2D(Collision2D other)
     {
         //攻击玩家
@@ -210,4 +290,5 @@ public class Enemy03_Bear : MonoBehaviour
         }
     }
 
+    #endregion
 }

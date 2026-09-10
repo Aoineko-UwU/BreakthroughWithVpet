@@ -5,46 +5,75 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 定义生命值对应的桌宠头像显示状态。
+/// 桌宠头像状态枚举
+/// - 区分健康、普通和危险生命区间对应的头像显示状态。
 /// </summary>
-public enum VpetAvatarState     //桌宠头像状态
+public enum VpetAvatarState
 {
-    healthy,    //0
-    normal,     //1
-    bad         //2
+    /// <summary>健康头像状态，生命比例不低于 70%。</summary>
+    healthy,
+
+    /// <summary>普通头像状态，生命比例不低于 30% 且低于 70%。</summary>
+    normal,
+
+    /// <summary>危险头像状态，生命比例低于 30%。</summary>
+    bad
 }
 
 /// <summary>
-/// 管理桌宠生命值、受击无敌、击退、恢复以及生命值 UI 反馈。
+/// 桌宠生命系统类
+/// - 管理生命、恢复、受击无敌与击退，并更新生命条、头像及飘字。
 /// </summary>
 public class VpetHealthSystem : MonoBehaviour
 {
-    private float vpetHealth = 30f;        //桌宠总生命值
-    private float _vpetCurrentHealth;      //桌宠当前生命值
+    #region 配置与运行状态
 
-    [Tooltip("血量条")]
-    [SerializeField] private Slider _sliderHealthBar;       //血量条
-    [Tooltip("血量条填充图")]
-    [SerializeField] private Image _sliderHealthFill;       //血量条填充图
-    [Tooltip("状态头像")]
-    [SerializeField] private Image _stateAvatar;            //状态头像
-    [Tooltip("健康状态精灵图")]
-    [SerializeField] private Sprite _healthy;               //健康状态精灵图
-    [Tooltip("普通状态精灵图")]
-    [SerializeField] private Sprite _normal;                //普通状态精灵图
-    [Tooltip("危险状态精灵图")]
-    [SerializeField] private Sprite _bad;                   //危险状态精灵图
+    /// <summary>桌宠总生命值。</summary>
+    private float vpetHealth = 30f;
 
-    private VpetAvatarState _currentAvatarState;            //当前头像状态
-    private VpetAvatarState _newAvatarState;                //新的头像状态
+    /// <summary>桌宠当前生命值。</summary>
+    private float _vpetCurrentHealth;
 
-    public bool isVpetDead = false;         //桌宠是否已死亡
+    [Tooltip("血量条。")]
+    [SerializeField] private Slider _sliderHealthBar;
 
-    private Rigidbody2D rb;                 //桌宠刚体
-    private VpetAction vpetAction;          //桌宠行为脚本
+    [Tooltip("血量条填充图。")]
+    [SerializeField] private Image _sliderHealthFill;
 
-    //生命周期-----------------------------------------------------------------------------------//
+    [Tooltip("状态头像。")]
+    [SerializeField] private Image _stateAvatar;
 
+    [Tooltip("健康状态精灵图。")]
+    [SerializeField] private Sprite _healthy;
+
+    [Tooltip("普通状态精灵图。")]
+    [SerializeField] private Sprite _normal;
+
+    [Tooltip("危险状态精灵图。")]
+    [SerializeField] private Sprite _bad;
+
+    /// <summary>当前头像状态。</summary>
+    private VpetAvatarState _currentAvatarState;
+
+    /// <summary>新的头像状态。</summary>
+    private VpetAvatarState _newAvatarState;
+
+    [Tooltip("桌宠是否停止常规行为；死亡流程设置，胜利流程也用此标记停用更新。")]
+    public bool isVpetDead = false;
+
+    /// <summary>当前对象的二维刚体组件。</summary>
+    private Rigidbody2D rb;
+
+    /// <summary>桌宠行为脚本。</summary>
+    private VpetAction vpetAction;
+
+    #endregion
+
+    #region 初始化与界面更新
+
+    /// <summary>
+    /// 初始化难度属性，缓存行为、刚体与飘字画布，然后初始化生命条及头像。
+    /// </summary>
     private void Start()
     {
         InitValueBasedDifficulty();                                         //初始化数值
@@ -56,15 +85,22 @@ public class VpetHealthSystem : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 同步当前生命值到血条，并在生命区间改变时更新头像和填充颜色。
+    /// </summary>
     private void Update()
     {
         UpdateHealthBar();         //更新血条
         UpdateAvatarAndColor();    //更新头像状态与血条颜色
     }
 
-    //功能函数-----------------------------------------------------------------------------------//
+    #endregion
 
-    //根据难度初始化数值
+    #region 难度与生命界面
+
+    /// <summary>
+    /// 根据难度设置最大生命、受击无敌时长和恢复倍率。
+    /// </summary>
     private void InitValueBasedDifficulty()
     {
         //获取游戏难度进行匹配(桌宠生命值|无敌时间|生命恢复倍率)
@@ -93,7 +129,9 @@ public class VpetHealthSystem : MonoBehaviour
         }
     }
 
-    //血条初始化(Start)
+    /// <summary>
+    /// 填满当前生命与血条，并初始化健康头像及填充颜色。
+    /// </summary>
     private void InitHealthBar()
     {
         _vpetCurrentHealth = vpetHealth;                //更新当前生命值
@@ -101,14 +139,15 @@ public class VpetHealthSystem : MonoBehaviour
         _sliderHealthBar.value = _vpetCurrentHealth;    //将Vpet当前生命值更新到血条Value
         _sliderHealthFill.color = SetColor("#83ff58");  //初始化血条颜色
 
-
         //初始化桌宠头像状态
         _currentAvatarState = VpetAvatarState.healthy;  //初始为健康状态
         _newAvatarState = _currentAvatarState;          //保持初始的状态一致性
         _stateAvatar.sprite = _healthy;                 //初始化状态头像
     }
 
-    //血条实时更新(Update)
+    /// <summary>
+    /// 生命数值变化时更新滑条，并按生命比例计算待显示的头像状态。
+    /// </summary>
     private void UpdateHealthBar()
     {
         //为空检查&&仅在currentHealth值发生改变时执行
@@ -132,7 +171,9 @@ public class VpetHealthSystem : MonoBehaviour
         }
     }
 
-    //更新状态头像&血条颜色(Update)
+    /// <summary>
+    /// 头像状态发生变化时，切换头像精灵与对应的血条颜色。
+    /// </summary>
     private void UpdateAvatarAndColor()
     {
         //状态发生改变时执行
@@ -167,13 +208,23 @@ public class VpetHealthSystem : MonoBehaviour
         }
     }
 
-    [Tooltip("绑定桌宠SpriteRenderer")]
-    [SerializeField] private SpriteRenderer vpetSpriteRenderer;   //绑定桌宠SpriteRenderer
+    #endregion
 
-    public bool isVpetInvincible = false;   //桌宠是否无敌？
-    private float invincibleTime = 1f;      //桌宠无敌时间
+    #region 受击无敌与生命操作
 
-    //受伤效果
+    [Tooltip("绑定桌宠SpriteRenderer。")]
+    [SerializeField] private SpriteRenderer vpetSpriteRenderer;
+
+    [Tooltip("桌宠是否无敌。")]
+    public bool isVpetInvincible = false;
+
+    /// <summary>桌宠无敌时间。</summary>
+    private float invincibleTime = 1f;
+
+    /// <summary>
+    /// 短暂将桌宠精灵染红，随后恢复白色。
+    /// </summary>
+    /// <returns>控制受击变色时长的协程迭代器。</returns>
     IEnumerator VpetHurtEffect()
     {
         vpetSpriteRenderer.color = new Color(1f, 0.5f, 0.5f, 1f);
@@ -181,7 +232,10 @@ public class VpetHealthSystem : MonoBehaviour
         vpetSpriteRenderer.color = new Color(1f, 1f, 1f, 1f);
     }
 
-    //无敌状态设置(协程)
+    /// <summary>
+    /// 开启受击无敌，并在配置时长后关闭。
+    /// </summary>
+    /// <returns>控制无敌等待时间的协程迭代器。</returns>
     IEnumerator VpetInvincibleSet()
     {
         isVpetInvincible = true;    //开启无敌
@@ -189,9 +243,11 @@ public class VpetHealthSystem : MonoBehaviour
         isVpetInvincible = false;   //关闭无敌
     }
 
-    //其他方法-----------------------------------------------------------------------------------//
-
-    //使用十六进制数转换颜色值(内部方法调用)
+    /// <summary>
+    /// 解析 HTML 格式颜色字符串。
+    /// </summary>
+    /// <param name="hexColor">要解析的颜色文本，例如 #83ff58。</param>
+    /// <returns>解析输出的颜色；解析失败时保留 Unity 接口给出的输出值。</returns>
     private Color SetColor(string hexColor)
     {
         Color newColor;
@@ -199,12 +255,13 @@ public class VpetHealthSystem : MonoBehaviour
         return newColor;
     }
 
-    private float knockBackFactor = 1f; //击退系数
+    /// <summary>击退系数。</summary>
+    private float knockBackFactor = 1f;
 
-    //设置是否可击退
     /// <summary>
-    /// 设置桌宠是否受到击退力影响。
+    /// 通过击退系数控制后续受伤请求是否施加击退力；受伤入口仍会清零速度。
     /// </summary>
+    /// <param name="isAllowKnockBack">为 true 时使用完整击退系数，为 false 时将系数设为零。</param>
     public void SetKnockBack(bool isAllowKnockBack)
     {
         if (isAllowKnockBack)
@@ -213,10 +270,11 @@ public class VpetHealthSystem : MonoBehaviour
             knockBackFactor = 0f;
     }
 
-    //受伤方法(外部调用)
     /// <summary>
-    /// 对桌宠造成伤害，并处理击退、无敌时间、受击特效和死亡通知。
+    /// 在非无敌且存活时扣除生命，处理死亡通知、击退、受击反馈及短暂无敌。
     /// </summary>
+    /// <param name="damage">本次扣除的生命值。</param>
+    /// <param name="force">受击施力向量，会乘以当前击退系数；调用前会清零刚体速度。</param>
     public void VpetGethurt(float damage,Vector2 force)
     {
         if (isVpetInvincible || isVpetDead) return;
@@ -244,12 +302,13 @@ public class VpetHealthSystem : MonoBehaviour
         ShowFigure(damage, true);
     }
 
-    private float recoverMultiplier = 1f;       //生命恢复倍率
+    /// <summary>生命恢复倍率。</summary>
+    private float recoverMultiplier = 1f;
 
-    //生命恢复方法(外部调用)
     /// <summary>
-    /// 按当前难度倍率恢复桌宠生命值。
+    /// 存活时按难度倍率计算并向上取整恢复量，恢复不超过最大生命。
     /// </summary>
+    /// <param name="recoverHealth">应用难度倍率前的基础恢复量。</param>
     public void VpetRecover(float recoverHealth)
     {
         float recover = Mathf.Ceil(recoverHealth * recoverMultiplier);
@@ -267,11 +326,21 @@ public class VpetHealthSystem : MonoBehaviour
         ShowFigure(recover, false);   //恢复数字
     }
 
-    [Tooltip("数字文本预制体")]
-    [SerializeField] private GameObject figureTextPrefab;   //数字文本预制体
-    private GameObject figureCanvas;                        //FigureCanvas父节点
+    #endregion
 
-    //显示UI数字
+    #region 数值飘字
+
+    [Tooltip("数字文本预制体。")]
+    [SerializeField] private GameObject figureTextPrefab;
+
+    /// <summary>FigureCanvas父节点。</summary>
+    private GameObject figureCanvas;
+
+    /// <summary>
+    /// 在飘字画布下生成数值文本，并按伤害或恢复类型设置颜色。
+    /// </summary>
+    /// <param name="num">要显示的数值。</param>
+    /// <param name="isRed">为 true 时使用受伤红色，为 false 时使用恢复绿色。</param>
     private void ShowFigure(float num,bool isRed)
     {
         Transform parent = figureCanvas.transform;
@@ -288,4 +357,6 @@ public class VpetHealthSystem : MonoBehaviour
             tmp.color = new Color(0.4f, 1, 0.5f, 1);
 
     }
+
+    #endregion
 }

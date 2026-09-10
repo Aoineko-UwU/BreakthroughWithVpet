@@ -4,38 +4,61 @@ using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
-/// 管理扭蛋的开启动画，并根据随机事件生成奖励或风险事件。
+/// 扭蛋道具类
+/// - 播放开启动画，按随机事件生成物品、敌人或陷阱。
 /// </summary>
 public class Item_Gacha : MonoBehaviour
 {
-    [Tooltip("怪物池")]
-    [SerializeField] private List<GameObject> enemyPool; //怪物池
-    [Tooltip("可拾取物品预制件")]
-    [SerializeField] private GameObject canPickItem;     //可拾取物品预制件
-    [Tooltip("炸弹")]
-    [SerializeField] private GameObject bomb;            //炸弹
-    [Tooltip("弹簧")]
-    [SerializeField] private GameObject spring;          //弹簧
-    [Tooltip("石锥")]
-    [SerializeField] private GameObject stoneCone;       //石锥
-    [Tooltip("扭蛋开启粒子效果")]
-    [SerializeField] private GameObject openParticle;    //扭蛋开启粒子效果
+    #region 配置与运行状态
 
+    [Tooltip("怪物池。")]
+    [SerializeField] private List<GameObject> enemyPool;
+
+    [Tooltip("可拾取物品预制件。")]
+    [SerializeField] private GameObject canPickItem;
+
+    [Tooltip("炸弹。")]
+    [SerializeField] private GameObject bomb;
+
+    [Tooltip("弹簧。")]
+    [SerializeField] private GameObject spring;
+
+    [Tooltip("石锥。")]
+    [SerializeField] private GameObject stoneCone;
+
+    [Tooltip("扭蛋开启粒子效果。")]
+    [SerializeField] private GameObject openParticle;
+
+    /// <summary>当前对象的精灵渲染器。</summary>
     private SpriteRenderer sprite;
 
+    #endregion
 
+    #region 初始化与开启动画
+
+    /// <summary>
+    /// 缓存扭蛋的精灵渲染器。
+    /// </summary>
     private void Awake()
     {
         sprite = GetComponent<SpriteRenderer>();    //获取精灵组件
     }
 
+    /// <summary>
+    /// 启动扭蛋闪烁和开启流程。
+    /// </summary>
     private void Start()
     {
         StartCoroutine(GachaAction());
     }
 
-    Color shiningColor = new Color(0.3f, 0.3f, 0.3f, 1f);   //闪烁颜色
+    /// <summary>闪烁颜色。</summary>
+    Color shiningColor = new Color(0.3f, 0.3f, 0.3f, 1f);
 
+    /// <summary>
+    /// 闪烁等待后触发随机事件，生成开启粒子并销毁扭蛋。
+    /// </summary>
+    /// <returns>控制扭蛋开启等待的协程迭代器。</returns>
     IEnumerator GachaAction()
     {
         //设置闪烁效果
@@ -52,7 +75,13 @@ public class Item_Gacha : MonoBehaviour
         Destroy(gameObject);
     }
 
-    //开到随机物品事件
+    #endregion
+
+    #region 随机事件生成
+
+    /// <summary>
+    /// 按扭蛋事件编号，在附近生成随机数量的拾取物、敌人、炸弹、弹簧或石锥。
+    /// </summary>
     private void OpenRandomItemEvent()
     {
         //获取随机的事件编号
@@ -125,7 +154,6 @@ public class Item_Gacha : MonoBehaviour
                 }
                 break;
 
-
             default:
                 Debug.Log("生成失败：未知的扭蛋事件");
                 break;
@@ -133,5 +161,5 @@ public class Item_Gacha : MonoBehaviour
 
     }
 
-
+    #endregion
 }

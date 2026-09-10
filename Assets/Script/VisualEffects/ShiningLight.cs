@@ -4,21 +4,40 @@ using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
-/// 控制场景精灵光效的闪烁、渐变和自动销毁。
+/// 场景彩光类
+/// - 控制精灵光效的淡入、旋转、循环色相变化及淡出销毁。
 /// </summary>
 public class ShiningLight : MonoBehaviour
 {
-    private SpriteRenderer spriteRenderer;  //SpriteRenderer组件
-    private float colorChangeSpeed = 0.3f;  //色相变化的速度
-    private float hue;                      //当前色相值
+    #region 配置与运行状态
 
-    private float rotateSpeed = -100f;       //旋转速度
+    /// <summary>SpriteRenderer组件。</summary>
+    private SpriteRenderer spriteRenderer;
 
+    /// <summary>色相变化的速度。</summary>
+    private float colorChangeSpeed = 0.3f;
+
+    /// <summary>当前色相值。</summary>
+    private float hue;
+
+    /// <summary>旋转速度。</summary>
+    private float rotateSpeed = -100f;
+
+    #endregion
+
+    #region 光效旋转与渐变
+
+    /// <summary>
+    /// 缓存光效精灵渲染器。
+    /// </summary>
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    /// <summary>
+    /// 从透明状态淡入，并启动延迟淡出销毁流程。
+    /// </summary>
     private void Start()
     {
         spriteRenderer.color = new Color(spriteRenderer.color.r, spriteRenderer.color.g, spriteRenderer.color.b, 0);
@@ -27,6 +46,9 @@ public class ShiningLight : MonoBehaviour
         StartCoroutine(EndFade());
     }
 
+    /// <summary>
+    /// 逐帧旋转光效并循环更新色相。
+    /// </summary>
     private void Update()
     {
         transform.Rotate(Vector3.forward * rotateSpeed * Time.deltaTime);   //光线旋转
@@ -34,6 +56,10 @@ public class ShiningLight : MonoBehaviour
         ColorChange();      //颜色效果
     }
 
+    /// <summary>
+    /// 等待展示阶段结束后淡出，并安排销毁光效对象。
+    /// </summary>
+    /// <returns>控制光效展示等待的协程迭代器。</returns>
     IEnumerator EndFade()
     {
         yield return new WaitForSeconds(13f);
@@ -41,6 +67,9 @@ public class ShiningLight : MonoBehaviour
         Destroy(gameObject, 3f);
     }
 
+    /// <summary>
+    /// 循环推进色相，将其转换为饱和彩虹色，同时保留当前透明度。
+    /// </summary>
     private void ColorChange()
     {
         hue += colorChangeSpeed * Time.deltaTime;
@@ -59,4 +88,5 @@ public class ShiningLight : MonoBehaviour
         spriteRenderer.color = rainbowColor;
     }
 
+    #endregion
 }

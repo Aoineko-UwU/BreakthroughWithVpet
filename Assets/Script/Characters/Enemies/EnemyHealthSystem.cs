@@ -4,26 +4,47 @@ using DG.Tweening;
 using UnityEngine;
 
 /// <summary>
-/// 管理敌人生命值、受击反馈、死亡流程、飘字和远距离自动销毁。
+/// 敌人生命系统类
+/// - 管理敌人生命、受击与死亡表现，并在远离桌宠时自动销毁。
 /// </summary>
 public class EnemyHealthSystem : MonoBehaviour
 {
-    [Tooltip("血条UI绑定")]
-    [SerializeField] private SpriteRenderer healthBar;  //血条UI绑定
-    [Tooltip("生命值")]
-    [SerializeField] public float health = 30;          //生命值
-    [Tooltip("粒子预制体")]
-    [SerializeField] private GameObject particlePrefab; //粒子预制体
+    #region 配置与运行状态
 
-    private float currentHealth;    //当前生命值
-    private float oringinWidth;     //血条初始宽度
-    private SpriteRenderer sprite;  //怪物精灵渲染器
+    [Tooltip("血条UI绑定。")]
+    [SerializeField] private SpriteRenderer healthBar;
+
+    [Tooltip("生命值。")]
+    [SerializeField] public float health = 30;
+
+    [Tooltip("粒子预制体。")]
+    [SerializeField] private GameObject particlePrefab;
+
+    /// <summary>当前生命值。</summary>
+    private float currentHealth;
+
+    /// <summary>血条初始宽度。</summary>
+    private float oringinWidth;
+
+    /// <summary>当前对象的精灵渲染器。</summary>
+    private SpriteRenderer sprite;
+
+    /// <summary>当前对象的二维刚体组件。</summary>
     private Rigidbody2D rb;
 
-    public bool isDead = false;     //是否已经死亡
+    [Tooltip("是否已经死亡。")]
+    public bool isDead = false;
 
+    /// <summary>用于交互或距离判断的桌宠对象。</summary>
     private GameObject vpet;
 
+    #endregion
+
+    #region 初始化与状态更新
+
+    /// <summary>
+    /// 缓存桌宠、刚体、精灵和飘字画布，并初始化难度生命倍率与血条。
+    /// </summary>
     private void Start()
     {
         vpet = GameObject.FindGameObjectWithTag("Vpet");                    //获取桌宠的游戏对象
@@ -37,6 +58,9 @@ public class EnemyHealthSystem : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 存活时更新血条、离场销毁及死亡判定；死亡后维持红色显示。
+    /// </summary>
     private void Update()
     {
         if (isDead)
@@ -50,8 +74,13 @@ public class EnemyHealthSystem : MonoBehaviour
         }
     }
 
+    #endregion
 
-    //根据难度初始化数值
+    #region 生命初始化与受击死亡
+
+    /// <summary>
+    /// 根据当前难度设置敌人初始生命倍率。
+    /// </summary>
     private void InitValueBasedDifficulty()
     {
         //获取游戏难度进行匹配(怪物生命倍率)
@@ -74,8 +103,15 @@ public class EnemyHealthSystem : MonoBehaviour
         }
     }
 
-    private float healthMultiplier = 1f;    //生命倍率
+    /// <summary>生命倍率。</summary>
+    private float healthMultiplier = 1f;
+
+    /// <summary>应用难度倍率并向上取整后的最大生命值。</summary>
     private float totalHealth;
+
+    /// <summary>
+    /// 记录血条宽度，将基础生命乘以难度倍率并向上取整，作为最大与当前生命。
+    /// </summary>
     private void InitHealth()
     {
         oringinWidth = healthBar.size.x;  //记录初始宽度
@@ -83,7 +119,9 @@ public class EnemyHealthSystem : MonoBehaviour
         currentHealth = totalHealth;
     }
 
-    //生命监测
+    /// <summary>
+    /// 生命归零且尚未标记死亡时，启动死亡表现并标记为死亡。
+    /// </summary>
     private void HealthCheck()
     {
         if (currentHealth <= 0 && !isDead)
@@ -95,11 +133,12 @@ public class EnemyHealthSystem : MonoBehaviour
         }
     }
 
-
-    //受伤函数(外部调用)
     /// <summary>
-    /// 对敌人造成伤害并施加击退力。
+    /// 扣除生命、播放受击反馈，并施加远离伤害来源的冲量；死亡后忽略请求。
     /// </summary>
+    /// <param name="damage">本次扣除的生命值。</param>
+    /// <param name="pos">伤害来源的世界坐标，用于计算击退方向。</param>
+    /// <param name="force">沿远离来源方向施加的击退冲量大小。</param>
     public void GetHurt(float damage , Vector3 pos, float force)
     {
         if (isDead) return;
@@ -121,7 +160,10 @@ public class EnemyHealthSystem : MonoBehaviour
         rb.AddForce(pushForce, ForceMode2D.Impulse);          //将推力施加到刚体上
     }
 
-    //受伤效果
+    /// <summary>
+    /// 短暂将精灵染红，再恢复为白色。
+    /// </summary>
+    /// <returns>控制受击变色等待的协程迭代器。</returns>
     IEnumerator HurtEffect()
     {
         sprite.color = new Color(1f, 0.5f, 0.5f, 1f);
@@ -129,7 +171,10 @@ public class EnemyHealthSystem : MonoBehaviour
         sprite.color = new Color(1f, 1f, 1f, 1f);
     }
 
-    //死亡效果
+    /// <summary>
+    /// 朝桌宠相对方向播放翻转动画，延迟销毁敌人并生成配置的死亡粒子。
+    /// </summary>
+    /// <returns>控制死亡延迟的协程迭代器。</returns>
     IEnumerator Dead()
     {
         GameObject vpet = GameObject.FindGameObjectWithTag("Vpet");
@@ -144,11 +189,21 @@ public class EnemyHealthSystem : MonoBehaviour
             Instantiate(particlePrefab, transform.position, Quaternion.identity);   //生成粒子
     }
 
-    [Tooltip("数字文本预制体")]
-    [SerializeField] private GameObject figureTextPrefab;   //数字文本预制体
-    private GameObject figureCanvas;                        //FigureCanvas父节点
+    #endregion
 
-    //显示UI数字
+    #region 飘字与远距离离场
+
+    [Tooltip("数字文本预制体。")]
+    [SerializeField] private GameObject figureTextPrefab;
+
+    /// <summary>FigureCanvas父节点。</summary>
+    private GameObject figureCanvas;
+
+    /// <summary>
+    /// 在飘字画布下生成数值文本，并按伤害或恢复类型设置颜色。
+    /// </summary>
+    /// <param name="num">要显示的数值。</param>
+    /// <param name="isRed">为 true 时使用受伤红色，为 false 时使用恢复绿色。</param>
     private void ShowFigure(float num, bool isRed)
     {
         Transform parent = figureCanvas.transform;
@@ -165,13 +220,24 @@ public class EnemyHealthSystem : MonoBehaviour
             tmp.color = new Color(0.4f, 1, 0.5f, 1);
     }
 
-    //玩家距离过远自销毁(Update)
-    bool isAllowStartDestroyTimer = false;      //是否允许激活自摧毁计时器
-    float destroyTimer;                         //自摧毁计时器
-    float destroyInterval = 5f;                 //自摧毁间隔
+    /// <summary>是否允许激活自摧毁计时器。</summary>
+    bool isAllowStartDestroyTimer = false;
 
-    float destroyDistance = 30f;                //与玩家距离多远以后允许进行自摧毁？
-    private SpawnPoint parentSpawnPoint;        //父重生脚本
+    /// <summary>自摧毁计时器。</summary>
+    float destroyTimer;
+
+    /// <summary>自摧毁间隔。</summary>
+    float destroyInterval = 5f;
+
+    /// <summary>与玩家距离多远以后允许进行自摧毁。</summary>
+    float destroyDistance = 30f;
+
+    /// <summary>父重生脚本。</summary>
+    private SpawnPoint parentSpawnPoint;
+
+    /// <summary>
+    /// 连续远离桌宠达到等待时长后销毁自身，并请求出生点延迟重置生成标记。
+    /// </summary>
     private void SelfDestroy()
     {
         //自毁允许条件
@@ -194,10 +260,13 @@ public class EnemyHealthSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 记录生成该敌人的出生点，用于敌人离场后的复活调度。
+    /// 记录生成此敌人的出生点，供远距离自动离场时重置生成状态。
     /// </summary>
+    /// <param name="spawnPoint">所属的敌人出生点；允许为空，此时不发出重置请求。</param>
     public void SetParentSpawnPoint(SpawnPoint spawnPoint)
     {
         parentSpawnPoint = spawnPoint;
     }
+
+    #endregion
 }

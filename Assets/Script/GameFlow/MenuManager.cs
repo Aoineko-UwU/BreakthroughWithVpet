@@ -5,43 +5,65 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// 管理主菜单的入场动画、面板切换、难度选择与开始游戏流程。
+/// 主菜单类
+/// - 管理菜单入场、面板切换、难度选择及进入游戏的过渡流程。
 /// </summary>
 public class MenuManager : MonoBehaviour
 {
-    [Tooltip("摄像机Transform")]
-    [SerializeField] private Transform cameraTransform;     //摄像机Transform
-    [Tooltip("过渡背景图")]
-    [SerializeField] private Image fadeBackgroundImage;     //过渡背景图
-    [Tooltip("标题Image")]
-    [SerializeField] private Image titleImage;              //标题Image
-    [Tooltip("版本文字")]
-    [SerializeField] private TextMeshProUGUI versionText;   //版本文字
+    #region 配置与运行状态
 
-    [Tooltip("开始按钮")]
-    [SerializeField] private Button _startBtn01;            //开始按钮
-    [Tooltip("设置按钮")]
-    [SerializeField] private Button _settingBtn02;          //设置按钮
-    [Tooltip("关于按钮")]
-    [SerializeField] private Button _aboutBtn03;            //关于按钮
-    [Tooltip("退出按钮")]
-    [SerializeField] private Button _quitBtn04;             //退出按钮
-    [Tooltip("教程按钮")]
-    [SerializeField] private Button _guideBtn05;            //教程按钮
+    [Tooltip("摄像机Transform。")]
+    [SerializeField] private Transform cameraTransform;
 
-    [Tooltip("关于面板")]
-    [SerializeField] private GameObject aboutPanel;         //关于面板
-    [Tooltip("设置面板")]
-    [SerializeField] private GameObject settingPanel;       //设置面板
-    [Tooltip("教程面板01")]
-    [SerializeField] private GameObject guidePanel01;       //教程面板01
-    [Tooltip("教程面板02")]
-    [SerializeField] private GameObject guidePanel02;       //教程面板02
-    [Tooltip("难度选择面板")]
-    [SerializeField] private GameObject difficultyPanel;    //难度选择面板
+    [Tooltip("过渡背景图。")]
+    [SerializeField] private Image fadeBackgroundImage;
 
+    [Tooltip("标题Image。")]
+    [SerializeField] private Image titleImage;
+
+    [Tooltip("版本文字。")]
+    [SerializeField] private TextMeshProUGUI versionText;
+
+    [Tooltip("开始按钮。")]
+    [SerializeField] private Button _startBtn01;
+
+    [Tooltip("设置按钮。")]
+    [SerializeField] private Button _settingBtn02;
+
+    [Tooltip("关于按钮。")]
+    [SerializeField] private Button _aboutBtn03;
+
+    [Tooltip("退出按钮。")]
+    [SerializeField] private Button _quitBtn04;
+
+    [Tooltip("教程按钮。")]
+    [SerializeField] private Button _guideBtn05;
+
+    [Tooltip("关于面板。")]
+    [SerializeField] private GameObject aboutPanel;
+
+    [Tooltip("设置面板。")]
+    [SerializeField] private GameObject settingPanel;
+
+    [Tooltip("教程面板01。")]
+    [SerializeField] private GameObject guidePanel01;
+
+    [Tooltip("教程面板02。")]
+    [SerializeField] private GameObject guidePanel02;
+
+    [Tooltip("难度选择面板。")]
+    [SerializeField] private GameObject difficultyPanel;
+
+    [Tooltip("主菜单中用于播放出发动画与移动过渡的桌宠对象。")]
     [SerializeField] private GameObject vpet;
 
+    #endregion
+
+    #region 初始化与入场表现
+
+    /// <summary>
+    /// 恢复时间缩放，初始化按钮和界面，并启动菜单入场动画。
+    /// </summary>
     private void Start()
     {
         Time.timeScale = 1f;
@@ -52,7 +74,9 @@ public class MenuManager : MonoBehaviour
         StartCoroutine(InitAnimation());
     }
 
-    //按钮初始化
+    /// <summary>
+    /// 将主菜单按钮设为透明并禁止点击交互。
+    /// </summary>
     private void InitButton()
     {
         //初始化按钮透明度
@@ -65,7 +89,10 @@ public class MenuManager : MonoBehaviour
         SetBtnInteractable(false);   //禁止按钮交互
     }
 
-    //设置按钮的可交互性
+    /// <summary>
+    /// 统一设置五个主菜单按钮的点击交互开关。
+    /// </summary>
+    /// <param name="isAllow">是否允许按钮响应点击。</param>
     private void SetBtnInteractable(bool isAllow)
     {
         _startBtn01.interactable = isAllow;
@@ -75,7 +102,10 @@ public class MenuManager : MonoBehaviour
         _guideBtn05.interactable = isAllow;
     }
 
-    //设置按钮的鼠标悬浮可交互性
+    /// <summary>
+    /// 统一设置五个主菜单按钮的悬停反馈开关。
+    /// </summary>
+    /// <param name="isAllow">是否允许按钮显示悬停反馈及播放音效。</param>
     private void SetBtnHoverActable(bool isAllow)
     {
         _startBtn01.gameObject.GetComponent<ButtonHover>().isAllowUse = isAllow;
@@ -85,7 +115,9 @@ public class MenuManager : MonoBehaviour
         _guideBtn05.gameObject.GetComponent<ButtonHover>().isAllowUse = isAllow;
     }
 
-    //初始化相关UI
+    /// <summary>
+    /// 关闭功能面板，并将版本文本设为透明。
+    /// </summary>
     private void InitUI()
     {
         aboutPanel.SetActive(false);
@@ -96,7 +128,10 @@ public class MenuManager : MonoBehaviour
         versionText.alpha = 0f;
     }
 
-    //初始动画
+    /// <summary>
+    /// 播放菜单镜头、标题与按钮入场动画，切换菜单音乐并在结束阶段启用交互。
+    /// </summary>
+    /// <returns>串联菜单入场等待阶段的协程迭代器。</returns>
     IEnumerator InitAnimation()
     {
         //初始化过渡背景
@@ -137,15 +172,23 @@ public class MenuManager : MonoBehaviour
         SetBtnHoverActable(true);
     }
 
+    #endregion
 
-    /// <summary>打开难度选择面板。</summary>
+    #region 开始游戏与难度选择
+
+    /// <summary>
+    /// 打开难度选择面板。
+    /// </summary>
     public void OnClickBtn_Start()
     {
         AudioManager.Instance.PlaySound("button_click");        //按钮音效
         difficultyPanel.SetActive(true);
     }
 
-    //开始动画
+    /// <summary>
+    /// 隐藏菜单，播放桌宠移动及白场过渡，淡出音乐后异步加载游戏场景。
+    /// </summary>
+    /// <returns>串联离开菜单过渡阶段的协程迭代器。</returns>
     IEnumerator StartAnimation()
     {
         //禁止按钮交互&按钮渐隐
@@ -191,7 +234,9 @@ public class MenuManager : MonoBehaviour
         asyncLoad.allowSceneActivation = true;
     }
 
-    /// <summary>选择简单难度并开始游戏。</summary>
+    /// <summary>
+    /// 选择简单难度并开始游戏。
+    /// </summary>
     public void OnClickBtn_SelectDif_Eazy()
     {
         AudioManager.Instance.PlaySound("button_click");
@@ -199,7 +244,9 @@ public class MenuManager : MonoBehaviour
         GameStart();    //开始游戏
     }
 
-    /// <summary>选择普通难度并开始游戏。</summary>
+    /// <summary>
+    /// 选择普通难度并开始游戏。
+    /// </summary>
     public void OnClickBtn_SelectDif_Normal()
     {
         AudioManager.Instance.PlaySound("button_click");
@@ -207,7 +254,9 @@ public class MenuManager : MonoBehaviour
         GameStart();    //开始游戏
     }
 
-    /// <summary>选择困难难度并开始游戏。</summary>
+    /// <summary>
+    /// 选择困难难度并开始游戏。
+    /// </summary>
     public void OnClickBtn_SelectDif_Hard()
     {
         AudioManager.Instance.PlaySound("button_click");
@@ -215,14 +264,18 @@ public class MenuManager : MonoBehaviour
         GameStart();    //开始游戏
     }
 
-    /// <summary>关闭难度选择面板。</summary>
+    /// <summary>
+    /// 关闭难度选择面板。
+    /// </summary>
     public void OnClickBtn_SelectDif_Close()
     {
         AudioManager.Instance.PlaySound("button_click");
         difficultyPanel.SetActive(false);
     }
 
-    //开始游戏逻辑(方法调用)
+    /// <summary>
+    /// 关闭难度面板，触发桌宠出发动画并启动进入游戏的过渡。
+    /// </summary>
     private void GameStart()
     {
         difficultyPanel.SetActive(false);
@@ -230,36 +283,49 @@ public class MenuManager : MonoBehaviour
         StartCoroutine(StartAnimation());   //开始动画(协程)
     }
 
+    #endregion
 
-    /// <summary>打开设置面板。</summary>
+    #region 菜单面板与退出
+
+    /// <summary>
+    /// 打开设置面板。
+    /// </summary>
     public void OnClickBtn_OpenSettingPanel()
     {
         settingPanel.SetActive(true);
         AudioManager.Instance.PlaySound("button_click");
     }
 
-    /// <summary>关闭设置面板。</summary>
+    /// <summary>
+    /// 关闭设置面板。
+    /// </summary>
     public void OnClickBtn_CloseSettingPanel()
     {
         settingPanel.SetActive(false);
         AudioManager.Instance.PlaySound("button_click");
     }
 
-    /// <summary>打开关于面板。</summary>
+    /// <summary>
+    /// 打开关于面板。
+    /// </summary>
     public void OnClickBtn_OpenAboutPanel()
     {
         AudioManager.Instance.PlaySound("button_click");
         aboutPanel.SetActive(true);
     }
 
-    /// <summary>关闭关于面板。</summary>
+    /// <summary>
+    /// 关闭关于面板。
+    /// </summary>
     public void OnClickBtn_CloseAboutPanel()
     {
         AudioManager.Instance.PlaySound("button_click");
         aboutPanel.SetActive(false);
     }
 
-    /// <summary>打开教程第一页。</summary>
+    /// <summary>
+    /// 打开教程第一页。
+    /// </summary>
     public void OnClickBtn_OpenGuidePanel()
     {
         AudioManager.Instance.PlaySound("button_click");
@@ -268,7 +334,9 @@ public class MenuManager : MonoBehaviour
         _guideBtn05.gameObject.SetActive(false);
     }
 
-    /// <summary>从教程第一页切换到第二页。</summary>
+    /// <summary>
+    /// 从教程第一页切换到第二页。
+    /// </summary>
     public void OnClickBtn_Guide1To2()
     {
         AudioManager.Instance.PlaySound("button_click");
@@ -277,7 +345,9 @@ public class MenuManager : MonoBehaviour
         _guideBtn05.gameObject.SetActive(false);
     }
 
-    /// <summary>关闭教程面板并恢复菜单按钮。</summary>
+    /// <summary>
+    /// 关闭教程面板并恢复菜单按钮。
+    /// </summary>
     public void OnClickBtn_CloseGuidePanel()
     {
         AudioManager.Instance.PlaySound("button_click");
@@ -286,13 +356,14 @@ public class MenuManager : MonoBehaviour
         _guideBtn05.gameObject.SetActive(true);
     }
 
-
-
-    /// <summary>退出应用程序。</summary>
+    /// <summary>
+    /// 退出应用程序。
+    /// </summary>
     public void OnClickBtn_Quit()
     {
         AudioManager.Instance.PlaySound("button_click");
         Application.Quit();     //关闭应用
     }
 
+    #endregion
 }

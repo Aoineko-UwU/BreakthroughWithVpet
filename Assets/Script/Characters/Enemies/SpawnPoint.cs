@@ -3,30 +3,55 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 在桌宠接近时生成敌人，并根据难度控制复活间隔。
+/// 敌人生成点类
+/// - 在桌宠附近生成敌人，并按难度调整敌人离场后的重生等待。
 /// </summary>
 public class SpawnPoint : MonoBehaviour
 {
-    [Tooltip("刷新的怪物")]
-    [SerializeField] private GameObject Enemy;       //刷新的怪物
-    private GameObject currentEnemy;                 //当前怪物
+    #region 配置与运行状态
+
+    [Tooltip("刷新的怪物。")]
+    [SerializeField] private GameObject Enemy;
+
+    /// <summary>当前怪物。</summary>
+    private GameObject currentEnemy;
+
+    /// <summary>生成的敌人实例所使用的父节点。</summary>
     private Transform parent;
 
+    /// <summary>用于交互或距离判断的桌宠对象。</summary>
     private GameObject vpet;
-    private bool isAllowSpawn = true;       //是否允许生成？
-    private bool isEnemySpawned = false;    //怪物是否已经生成
 
+    /// <summary>是否允许生成。</summary>
+    private bool isAllowSpawn = true;
+
+    /// <summary>怪物是否已经生成。</summary>
+    private bool isEnemySpawned = false;
+
+    #endregion
+
+    #region 初始化与范围更新
+
+    /// <summary>
+    /// 缓存桌宠对象，用于判断是否启用附近生成。
+    /// </summary>
     private void Awake()
     {
         vpet = GameObject.FindGameObjectWithTag("Vpet");  //获取桌宠的游戏对象
     }
 
+    /// <summary>
+    /// 将自身设为敌人实例的父节点，并初始化难度对应的重生时间修正。
+    /// </summary>
     private void Start()
     {
         parent = gameObject.transform;
         InitValueBasedDifficulty();     //初始化数值
     }
 
+    /// <summary>
+    /// 按桌宠距离更新生成许可，并推进生成与重生等待流程。
+    /// </summary>
     private void Update()
     {
         isAllowSpawn = Vector2.Distance(vpet.transform.position, transform.position) < 30f ? true : false;
@@ -34,7 +59,13 @@ public class SpawnPoint : MonoBehaviour
         CheckToSpawnEnemy();
     }
 
-    //根据难度初始化数值
+    #endregion
+
+    #region 难度配置与敌人生成
+
+    /// <summary>
+    /// 根据当前难度设置重生等待时间的增减量。
+    /// </summary>
     private void InitValueBasedDifficulty()
     {
         //获取游戏难度进行匹配
@@ -57,19 +88,30 @@ public class SpawnPoint : MonoBehaviour
         }
     }
 
-    [Tooltip("最小重生范围")]
-    [SerializeField] private float minSpawnRange = -3f;         //最小重生范围
-    [Tooltip("最大重生范围")]
-    [SerializeField] private float maxSpawnRange = 3f;          //最大重生范围
-    [Tooltip("怪物最短重生时间")]
-    [SerializeField] private float minRespawnTime = 15f;        //怪物最短重生时间
-    [Tooltip("怪物最长重生时间")]
-    [SerializeField] private float maxRespawnTime = 30f;        //怪物最长重生时间
-    private float spawnTimeFix = 0f;    //重生时间修正
+    [Tooltip("生成位置相对出生点的最小水平偏移。")]
+    [SerializeField] private float minSpawnRange = -3f;
 
-    private float respawnTimer;     //重生计时器
-    bool isRespawn = false;         //是否进入了重生
+    [Tooltip("生成位置相对出生点的最大水平偏移。")]
+    [SerializeField] private float maxSpawnRange = 3f;
 
+    [Tooltip("应用难度修正前的最短重生等待时间，单位为秒。")]
+    [SerializeField] private float minRespawnTime = 15f;
+
+    [Tooltip("应用难度修正前的最长重生等待时间，单位为秒。")]
+    [SerializeField] private float maxRespawnTime = 30f;
+
+    /// <summary>重生时间修正。</summary>
+    private float spawnTimeFix = 0f;
+
+    /// <summary>重生计时器。</summary>
+    private float respawnTimer;
+
+    /// <summary>是否进入了重生。</summary>
+    bool isRespawn = false;
+
+    /// <summary>
+    /// 在生成范围内处理首次生成、敌人消失后的随机等待以及计时结束后的重生。
+    /// </summary>
     private void CheckToSpawnEnemy()
     {
         if (!isAllowSpawn) return;  //若不允许重生则返回
@@ -98,7 +140,9 @@ public class SpawnPoint : MonoBehaviour
         }
     }
 
-    //怪物生成
+    /// <summary>
+    /// 在配置的水平偏移范围内生成敌人，并将自身登记为该敌人的出生点。
+    /// </summary>
     private void SpawnEnemy()
     {
         float rand = Random.Range(minSpawnRange, maxSpawnRange);                            //获取随机重生范围
@@ -107,19 +151,26 @@ public class SpawnPoint : MonoBehaviour
         currentEnemy.GetComponent<EnemyHealthSystem>().SetParentSpawnPoint(this);           //设置对象的重生点父类
     }
 
-    //延迟重置重生状态(外部调用)
+    #endregion
+
+    #region 离场重置
+
     /// <summary>
-    /// 延迟重置生成状态，给死亡特效和对象销毁留出过渡时间。
+    /// 延迟半秒清除生成与重生标记，供敌人远距离自动销毁时重新开放首次生成流程。
     /// </summary>
     public void DelayResetRespawnState()
     {
         Invoke("ResetRespawn", 0.5f);
     }
 
+    /// <summary>
+    /// 清除已生成及重生阶段标记，使下次允许生成时可重新创建敌人。
+    /// </summary>
     private void ResetRespawn()
     {
         isRespawn = false;     //重置重生状态
         isEnemySpawned = false;
     }
 
+    #endregion
 }

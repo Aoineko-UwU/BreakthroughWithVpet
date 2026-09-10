@@ -3,34 +3,56 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 /// <summary>
-/// 根据桌宠是否进入暗区，渐变调整目标 SpriteRenderer 的亮度。
+/// 暗区管理类
+/// - 统计桌宠触发暗区的次数，并平滑调整配置的 Tilemap 颜色亮度。
 /// </summary>
 public class DarkAreaManager : MonoBehaviour
 {
+    #region 配置与运行状态
+
+    [Tooltip("需要随暗区状态调整亮度的 Tilemap 列表。")]
     [SerializeField] private List<Tilemap> tilemaps;
 
-    private float darkestColor = 0.55f;    // 最低亮度
-    private float lightSpeed = 0.2f;       // 变亮速度
-    private float darkSpeed = 0.2f;        // 变暗速度
+    /// <summary>最低亮度。</summary>
+    private float darkestColor = 0.55f;
 
+    /// <summary>变亮速度。</summary>
+    private float lightSpeed = 0.2f;
+
+    /// <summary>变暗速度。</summary>
+    private float darkSpeed = 0.2f;
+
+    /// <summary>当前已登记且尚未退出的桌宠触发次数，用于支持重叠暗区。</summary>
     private int vpetTriggerCount = 0;
 
-    private bool colorNeedsUpdate = false;  // 是否颜色需要改变？
+    /// <summary>是否颜色需要改变。</summary>
+    private bool colorNeedsUpdate = false;
 
-    /// <summary>记录桌宠进入暗区。</summary>
+    #endregion
+
+    #region 区域计数与亮度渐变
+
+    /// <summary>
+    /// 增加桌宠进入计数，并请求重新计算暗区颜色。
+    /// </summary>
     public void RegisterVpetEnter()
     {
         vpetTriggerCount++;
         colorNeedsUpdate = true;
     }
 
-    /// <summary>记录桌宠离开暗区。</summary>
+    /// <summary>
+    /// 递减桌宠进入计数且最低为零，并请求重新计算暗区颜色。
+    /// </summary>
     public void RegisterVpetExit()
     {
         vpetTriggerCount = Mathf.Max(0, vpetTriggerCount - 1);
         colorNeedsUpdate = true;
     }
 
+    /// <summary>
+    /// 存在颜色更新请求时渐变调整各 Tilemap；全部停止变化后关闭更新。
+    /// </summary>
     private void Update()
     {
         if (!colorNeedsUpdate) return;      //颜色无需改变则不执行
@@ -52,7 +74,12 @@ public class DarkAreaManager : MonoBehaviour
         colorNeedsUpdate = stillChanging;
     }
 
-    //公共亮度颜色改变方法
+    /// <summary>
+    /// 将 RGB 分量逐步靠近暗区或正常亮度，并保留原透明度。
+    /// </summary>
+    /// <param name="original">本帧调整前的颜色。</param>
+    /// <param name="isDarkening">是否使用暗区目标亮度与变暗速度。</param>
+    /// <returns>向目标亮度推进一个帧间隔后的颜色。</returns>
     private Color AdjustColor(Color original, bool isDarkening)
     {
         float speed = isDarkening ? darkSpeed : lightSpeed;
@@ -64,4 +91,6 @@ public class DarkAreaManager : MonoBehaviour
 
         return new Color(r, g, b, original.a);
     }
+
+    #endregion
 }

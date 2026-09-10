@@ -3,20 +3,29 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 按预设权重抽取进食和扭蛋事件。
+/// 随机事件选择类
+/// - 按预置权重抽取食物和扭蛋事件编号。
 /// </summary>
 public class RandomSelector : Singleton<RandomSelector>
 {
-    // 定义一个结构体来存储效果名称和它的概率
+    #region 事件配置与权重表
+
+    /// <summary>
+    /// 随机事件配置类
+    /// - 存储事件编号和相对抽取权重。
+    /// </summary>
     [System.Serializable]
     private class RandomEvent
     {
-        public int eventIndex;     //效果编号
-        public float probability;  //对应的概率
+
+        /// <summary>抽取成功时返回的事件编号。</summary>
+        public int eventIndex;
+
+        /// <summary>事件的相对抽取权重，不要求总和为一或一百。</summary>
+        public float probability;
     }
 
-
-    //进食效果随机事件组(事件组ID为1)
+    /// <summary>食物随机事件组，组编号为 1；每个条目使用相对权重。</summary>
     private List<RandomEvent> eatEffect = new List<RandomEvent>()
     {
         //事件1： 回复生命
@@ -35,7 +44,7 @@ public class RandomSelector : Singleton<RandomSelector>
         new RandomEvent() { eventIndex = 7, probability = 15f }
     };
 
-    //扭蛋随机事件组(事件组ID为2)
+    /// <summary>扭蛋随机事件组，组编号为 2；每个条目使用相对权重。</summary>
     private List<RandomEvent> gachaEvent = new List<RandomEvent>()
     {
         //事件1： 生成数个可拾取的随机物品
@@ -44,17 +53,21 @@ public class RandomSelector : Singleton<RandomSelector>
         new RandomEvent() { eventIndex = 2, probability = 15f },
         //事件3： 生成数个炸弹
         new RandomEvent() { eventIndex = 3, probability = 15f },
-        //事件3： 生成数个弹簧
+        //事件4： 生成数个弹簧
         new RandomEvent() { eventIndex = 4, probability = 20f },
-        //事件4： 生成数个石锥
+        //事件5： 生成数个石锥
         new RandomEvent() { eventIndex = 5, probability = 20f },
     };
 
+    #endregion
+
+    #region 按权重抽取
+
     /// <summary>
-    /// 根据事件组编号和各事件权重抽取一个事件。
+    /// 按事件组的相对权重抽取一个事件编号。
     /// </summary>
-    /// <param name="eventGroupIndex">事件组编号：1 为进食，2 为扭蛋。</param>
-    /// <returns>抽取到的事件编号；事件组不存在时返回 0。</returns>
+    /// <param name="eventGroupIndex">事件组编号：1 为进食事件，2 为扭蛋事件。</param>
+    /// <returns>抽中的事件编号；组编号未知或未命中任何条目时返回 0。</returns>
     public int EventRandomSelector(int eventGroupIndex)
     {
         List<RandomEvent> eventGroups = new List<RandomEvent>();
@@ -76,7 +89,7 @@ public class RandomSelector : Singleton<RandomSelector>
         //若已选取到事件组
         if (eventGroups.Count >0)
         {
-            // 计算所有效果的总概率
+            // 累加所有事件的相对权重，无需将总和固定为一百。
             float totalProbability = 0f;
             foreach (var effect in eventGroups)
             {
@@ -103,4 +116,5 @@ public class RandomSelector : Singleton<RandomSelector>
 
     }
 
+    #endregion
 }

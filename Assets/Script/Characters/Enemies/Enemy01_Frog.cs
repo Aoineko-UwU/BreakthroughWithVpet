@@ -3,30 +3,56 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 控制青蛙敌人的巡逻、追击、跳跃、落地检测和攻击行为。
+/// 青蛙敌人行为类
+/// - 控制青蛙跳跃巡逻、追逐、落地判定和跳跃期间的接触攻击。
 /// </summary>
 public class Enemy01_Frog : MonoBehaviour
 {
+    #region 配置与运行状态
+
+    /// <summary>当前对象的动画器。</summary>
     private Animator animator;
+
+    /// <summary>当前对象的二维刚体组件。</summary>
     private Rigidbody2D rb;
 
-    private float jumpForceY = 5f; //垂直跳跃力
-    private float jumpForceX = 5f; //水平跳跃力
+    /// <summary>起跳时直接写入的垂直速度，而非施加的力。</summary>
+    private float jumpForceY = 5f;
 
-    [Tooltip("生命系统脚本")]
-    [SerializeField] private EnemyHealthSystem healthSystem;   //生命系统脚本
-    private Vector3 pointA;  //巡逻点1
-    private Vector3 pointB;  //巡逻点2
-    private float pointRange = 5f;      //巡逻点设置范围
+    /// <summary>沿水平方向施加的起跳冲量大小。</summary>
+    private float jumpForceX = 5f;
 
-    private bool isVpetInRange = false;    //桌宠是否在攻击范围内
+    [Tooltip("生命系统脚本。")]
+    [SerializeField] private EnemyHealthSystem healthSystem;
+
+    /// <summary>巡逻点1。</summary>
+    private Vector3 pointA;
+
+    /// <summary>巡逻点2。</summary>
+    private Vector3 pointB;
+
+    /// <summary>巡逻点设置范围。</summary>
+    private float pointRange = 5f;
+
+    /// <summary>桌宠横坐标是否位于巡逻区间内，用于决定追逐。</summary>
+    private bool isVpetInRange = false;
+
+    /// <summary>是否处于允许接触攻击的跳跃阶段；初始值为 true。</summary>
     private bool isAttacking = true;
-    private float faceDir;                 //唯一面向向量值
 
-    private GameObject vpet;               //桌宠对象
+    /// <summary>唯一面向向量值。</summary>
+    private float faceDir;
 
-    //生命周期函数--------------------------------------------------------------------------------------//
+    /// <summary>用于交互或距离判断的桌宠对象。</summary>
+    private GameObject vpet;
 
+    #endregion
+
+    #region 生命周期
+
+    /// <summary>
+    /// 缓存动画器、刚体及桌宠对象引用。
+    /// </summary>
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -34,6 +60,9 @@ public class Enemy01_Frog : MonoBehaviour
         vpet = GameObject.FindGameObjectWithTag("Vpet");  //获取桌宠的游戏对象
     }
 
+    /// <summary>
+    /// 记录初始朝向和巡逻边界，按难度设置伤害并随机选择跳跃间隔。
+    /// </summary>
     private void Start()
     {
         faceDir = transform.localScale.x;
@@ -45,6 +74,9 @@ public class Enemy01_Frog : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 更新落地与追逐判定、巡逻跳跃、音效及允许运行的冷却计时器。
+    /// </summary>
     private void Update()
     {
         if (healthSystem.isDead) return;    //若已死亡则不执行
@@ -66,15 +98,17 @@ public class Enemy01_Frog : MonoBehaviour
             frogYellTimer -= Time.deltaTime;
         }
 
-
         //与玩家距离超过20f后禁止播放音效
         isAllowAudioPlay = Vector2.Distance(vpet.transform.position, transform.position) > 20f ? false : true;
     }
 
+    #endregion
 
-    //功能函数-----------------------------------------------------------------------------------------//
+    #region 难度与巡逻跳跃
 
-    //根据难度初始化数值
+    /// <summary>
+    /// 根据当前难度设置接触攻击伤害。
+    /// </summary>
     private void InitValueBasedDifficulty()
     {
         //获取游戏难度进行匹配(伤害)
@@ -97,14 +131,24 @@ public class Enemy01_Frog : MonoBehaviour
         }
     }
 
-    private float jumpTimer;           //跳跃计时器
-    private float jumpCD;              //跳跃CD
+    /// <summary>跳跃计时器。</summary>
+    private float jumpTimer;
+
+    /// <summary>跳跃CD。</summary>
+    private float jumpCD;
+
+    /// <summary>是否允许递减跳跃及叫声计时器。</summary>
     private bool isAllowTimerWork = true;
+
+    /// <summary>当前巡逻或追逐选择的水平起跳方向。</summary>
     Vector2 jumpDir = Vector2.right;
 
-    private bool isAllowAudioPlay = true;   //是否允许播放音频
+    /// <summary>是否允许播放音频。</summary>
+    private bool isAllowAudioPlay = true;
 
-    //巡逻方法(Update)
+    /// <summary>
+    /// 在巡逻左右边界之间调整跳跃方向，并在冷却结束时尝试起跳。
+    /// </summary>
     private void Patrol()
     {
         //若超出了PointA的X轴范围，力方向更改为右侧
@@ -119,7 +163,9 @@ public class Enemy01_Frog : MonoBehaviour
 
     }
 
-    //追击方法(Update)
+    /// <summary>
+    /// 朝桌宠所在的水平方向移动，并在冷却结束时尝试起跳。
+    /// </summary>
     private void ChaseVpet()
     {
         if (vpet == null) return;
@@ -136,7 +182,10 @@ public class Enemy01_Frog : MonoBehaviour
             Jump(jumpDir);
     }
 
-    //跳跃方法(内部引用)
+    /// <summary>
+    /// 接地时设置垂直速度并施加水平冲量，暂停冷却计时并进入攻击阶段。
+    /// </summary>
+    /// <param name="jumpDir">本次起跳使用的水平施力方向。</param>
     private void Jump(Vector2 jumpDir)
     {
         if (!isGrounded) return;    //处于地面时才能跳跃
@@ -155,7 +204,9 @@ public class Enemy01_Frog : MonoBehaviour
             AudioManager.Instance.PlaySound3D("Enemy_frog_jump", transform.position);    //播放音效
     }
 
-    //监测桌宠是否进入范围(Update)
+    /// <summary>
+    /// 根据桌宠横坐标是否位于巡逻边界内更新追逐标记，不检测垂直距离。
+    /// </summary>
     private void CheckVpetEnter()
     {
         //若桌宠的X坐标在pointA与pointB区间
@@ -167,12 +218,25 @@ public class Enemy01_Frog : MonoBehaviour
         else isVpetInRange = false;
     }
 
-    private bool isGrounded = true;     //是否落地
+    #endregion
 
-    private float rayLength = 0.1f;                 //射线长度
-    private float halfWidth = 0.46f;                //射线半宽间隔
-    [Tooltip("地面&&敌人层")]
-    [SerializeField] private LayerMask Layer;       //地面&&敌人层
+    #region 落地判定与朝向
+
+    /// <summary>是否落地。</summary>
+    private bool isGrounded = true;
+
+    /// <summary>射线长度。</summary>
+    private float rayLength = 0.1f;
+
+    /// <summary>射线半宽间隔。</summary>
+    private float halfWidth = 0.46f;
+
+    [Tooltip("地面&&敌人层。")]
+    [SerializeField] private LayerMask Layer;
+
+    /// <summary>
+    /// 通过三条向下射线判断是否接近地面，并同步动画器的接地参数。
+    /// </summary>
     private void CheckIsGrounded()
     {
         // 三个射线起点：中、左、右
@@ -194,9 +258,12 @@ public class Enemy01_Frog : MonoBehaviour
         animator.SetBool("isGround", isGrounded);   //与动画器同步
     }
 
-    private bool isAllowCheckFall = false;  //是否允许检测坠落
+    /// <summary>是否允许检测坠落。</summary>
+    private bool isAllowCheckFall = false;
 
-    //坠落监测(Update)
+    /// <summary>
+    /// 起跳后在垂直速度低于阈值时触发下落动画，并开始等待落地。
+    /// </summary>
     private void CheckFall()
     {
         //若允许监测
@@ -212,9 +279,12 @@ public class Enemy01_Frog : MonoBehaviour
         }
     }
 
+    /// <summary>本轮下落是否已确认接地，用于恢复计时并关闭攻击阶段。</summary>
     private bool hasFallGround = true;
 
-    //是否已落地监测(内部引用)
+    /// <summary>
+    /// 确认下落后的首次接地，恢复冷却计时并关闭攻击标记。
+    /// </summary>
     private void CheckHasFallGround()
     {
         if (!hasFallGround)
@@ -229,7 +299,9 @@ public class Enemy01_Frog : MonoBehaviour
         }
     }
 
-    //翻转精灵图(内部引用)
+    /// <summary>
+    /// 根据当前跳跃方向和初始缩放翻转精灵朝向。
+    /// </summary>
     private void Flip()
     {
         if(jumpDir == Vector2.right)
@@ -238,9 +310,19 @@ public class Enemy01_Frog : MonoBehaviour
             transform.localScale = new Vector2(faceDir, transform.localScale.y);
     }
 
+    #endregion
+
+    #region 音效与接触攻击
+
+    /// <summary>距离下次待机叫声的剩余时间，单位为秒。</summary>
     private float frogYellTimer;
+
+    /// <summary>待机叫声的最短播放间隔，单位为秒。</summary>
     private float frogYellCD = 1.3f;
 
+    /// <summary>
+    /// 在跳跃间隔内按冷却播放待机叫声；远离桌宠时不播放。
+    /// </summary>
     private void FrogIdleAudio()
     {
         if (!isAllowAudioPlay) return;
@@ -256,9 +338,13 @@ public class Enemy01_Frog : MonoBehaviour
 
     }
 
-    private float attackDamage = 3f;        //攻击伤害
+    /// <summary>接触攻击造成的基础伤害。</summary>
+    private float attackDamage = 3f;
 
-    //碰撞行为
+    /// <summary>
+    /// 处于攻击阶段且未死亡时，对持续接触的桌宠请求伤害和水平击退。
+    /// </summary>
+    /// <param name="other">持续接触的碰撞信息。</param>
     private void OnCollisionStay2D(Collision2D other)
     {
         //攻击玩家
@@ -269,4 +355,6 @@ public class Enemy01_Frog : MonoBehaviour
             other.gameObject.GetComponent<VpetHealthSystem>().VpetGethurt(attackDamage, force * 200f);
         }
     }
+
+    #endregion
 }

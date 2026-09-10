@@ -2,27 +2,43 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 显示单个物品栏格子，并将用户点击转换为拖拽操作。
+/// 物品栏格子类
+/// - 显示单个格子的图标与选中框，并创建道具拖拽预览。
 /// </summary>
 public class SlotUI : MonoBehaviour
 {
+    #region 配置与运行状态
+
     [Tooltip("该格子对应物品栏列表的索引。")]
     public int index;
+
+    /// <summary>场景中的物品栏管理器。</summary>
     private InventoryManager inv;
+
+    /// <summary>当前创建或持有的半透明拖拽预览对象。</summary>
     private GameObject previewItem;
 
+    [Tooltip("显示当前格子物品图标的 Image。")]
     [SerializeField] private Image slotItemImage;
+
+    [Tooltip("当前格子的选中框对象。")]
     [SerializeField] private GameObject slotSelectedFrame;
 
+    #endregion
+
+    #region 初始化与预览创建
+
+    /// <summary>
+    /// 缓存物品栏管理器，并隐藏选中框。
+    /// </summary>
     private void Awake()
     {
         inv = FindObjectOfType<InventoryManager>();
         SetActiveOfSelectedFrame(false);
     }
 
-    // Button 绑定：点击格子
     /// <summary>
-    /// 响应物品栏格子点击并开始拖拽当前物品。
+    /// 在允许操作、格子有物品且尚未拖拽时，尝试为当前条目创建预览。
     /// </summary>
     public void ClickSlot()
     {
@@ -34,6 +50,10 @@ public class SlotUI : MonoBehaviour
         BeginDrag(inv.slots[index]);
     }
 
+    /// <summary>
+    /// 验证物品资源，复制精灵和多边形碰撞路径作为预览，并交给拖拽控制器。
+    /// </summary>
+    /// <param name="data">要预览的物品数据；数据或必需资源缺失时不创建预览。</param>
     private void BeginDrag(ItemData data)
     {
         if (data == null || data.prefab == null || data.entitySprite == null)
@@ -44,7 +64,7 @@ public class SlotUI : MonoBehaviour
         if (sourceRenderer == null || sourceCollider == null)
             return;
 
-        // 生成一个 preview（和你原来实现一致）
+        // 创建独立的半透明预览，避免修改物品预制体。
         previewItem = new GameObject("PreviewItem");
         SpriteRenderer previewRenderer = previewItem.AddComponent<SpriteRenderer>();
         previewRenderer.sortingLayerName = "TextUI";
@@ -73,10 +93,10 @@ public class SlotUI : MonoBehaviour
         // 缩放
         previewItem.transform.localScale = new Vector2(data.entityScale, data.entityScale);
 
-        // 用 Tag 忽略某些检测（你原来有这个）
+        // 标记为 Ignore，供现有交互检测排除预览对象。
         previewItem.tag = "Ignore";
 
-        // 启动拖动（DragController 订阅输入）
+        // 将预览交给拖拽控制器，由其逐帧处理输入。
         DragController.Instance.BeginDrag(previewItem, data);
         SetActiveOfSelectedFrame(true);
 
@@ -84,10 +104,14 @@ public class SlotUI : MonoBehaviour
         AudioManager.Instance.PlaySound("slot_select");
     }
 
-    // 外部调用：更新 slot 图标
+    #endregion
+
+    #region 图标与选中反馈
+
     /// <summary>
-    /// 更新格子图标；传入空值时隐藏图标。
+    /// 设置格子图标；数据为空时清空并隐藏图标对象。
     /// </summary>
+    /// <param name="data">格子对应的物品数据，传入 null 表示空格子。</param>
     public void SetItemImage(ItemData data)
     {
         if (slotItemImage == null)
@@ -106,11 +130,14 @@ public class SlotUI : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置格子选中框的显示状态。
+    /// 在选中框引用存在时更新其显示状态。
     /// </summary>
+    /// <param name="isActive">是否显示选中框。</param>
     public void SetActiveOfSelectedFrame(bool isActive)
     {
         if (slotSelectedFrame != null)
             slotSelectedFrame.SetActive(isActive);
     }
+
+    #endregion
 }

@@ -3,13 +3,27 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// 为难度选择按钮提供悬停视觉反馈和提示文案切换。
+/// 难度按钮悬停类
+/// - 响应指针进出，更新难度说明文本、颜色及悬停音效。
 /// </summary>
 public class BtnDifficultyHover : MonoBehaviour , IPointerEnterHandler, IPointerExitHandler
 {
+    #region 配置与运行状态
+
+    [Tooltip("响应悬停状态变化的文本组件。")]
     [SerializeField] private TextMeshProUGUI text;
+
+    [Tooltip("难度说明编号：1 简单、2 普通、3 困难。")]
     [SerializeField] private int level = 0;
 
+    #endregion
+
+    #region 难度说明反馈
+
+    /// <summary>
+    /// 播放悬停音效，并按配置的等级显示难度说明及对应颜色。
+    /// </summary>
+    /// <param name="eventData">事件系统提供的指针信息，本方法不读取其中的字段。</param>
     public void OnPointerEnter(PointerEventData eventData)
     {
         AudioManager.Instance.PlaySound("button_hover");
@@ -39,10 +53,15 @@ public class BtnDifficultyHover : MonoBehaviour , IPointerEnterHandler, IPointer
         }
     }
 
+    /// <summary>
+    /// 指针离开时清空难度说明文本。
+    /// </summary>
+    /// <param name="eventData">事件系统提供的指针信息，本方法不读取其中的字段。</param>
     public void OnPointerExit(PointerEventData eventData)
     {
         if (text != null)
             text.SetText("");
     }
 
+    #endregion
 }

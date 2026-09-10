@@ -2,20 +2,38 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 根据按钮是否可用控制半透明按钮的点击反馈和显示状态。
+/// 透明度点击控制类
+/// - 根据 Image 颜色的透明度阈值设置按钮是否可交互。
 /// </summary>
 public class AlphaButtonClick : MonoBehaviour
 {
-    private Image buttonImage;            //按钮的Image组件
-    private Button button;                //按钮组件
-    private float alphaThreshold = 0.5f;  //透明度阈值
+    #region 配置与运行状态
 
+    /// <summary>按钮的Image组件。</summary>
+    private Image buttonImage;
+
+    /// <summary>按钮组件。</summary>
+    private Button button;
+
+    /// <summary>透明度阈值。</summary>
+    private float alphaThreshold = 0.5f;
+
+    #endregion
+
+    #region 透明度与点击控制
+
+    /// <summary>
+    /// 缓存按钮组件与图像组件。
+    /// </summary>
     private void Awake()
     {
         button = GetComponent<Button>();
         buttonImage = GetComponent<Image>();
     }
 
+    /// <summary>
+    /// 根据图像颜色的透明度阈值覆盖按钮交互状态，不检测 CanvasGroup 的透明度。
+    /// </summary>
     private void Update()
     {
         // 获取按钮的当前 Alpha 值
@@ -31,4 +49,6 @@ public class AlphaButtonClick : MonoBehaviour
             button.interactable = true;
         }
     }
+
+    #endregion
 }

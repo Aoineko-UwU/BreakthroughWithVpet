@@ -3,25 +3,47 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 控制蝙蝠敌人的巡逻、追击、朝向和碰撞攻击行为。
+/// 蝙蝠敌人行为类
+/// - 控制蝙蝠在水平区间内巡逻、转向、播放振翅音效和接触攻击。
 /// </summary>
 public class Enemy02_Bat : MonoBehaviour
 {
+    #region 配置与运行状态
+
+    /// <summary>当前对象的二维刚体组件。</summary>
     private Rigidbody2D rb;
 
-    [Tooltip("生命系统脚本")]
-    [SerializeField] private EnemyHealthSystem healthSystem;   //生命系统脚本
-    private Vector3 pointA;  //巡逻点1
-    private Vector3 pointB;  //巡逻点2
-    private float pointRange = 5f;      //巡逻点设置范围
+    [Tooltip("生命系统脚本。")]
+    [SerializeField] private EnemyHealthSystem healthSystem;
 
-    private float faceDir;              //唯一面向向量值
+    /// <summary>巡逻点1。</summary>
+    private Vector3 pointA;
 
-    private float moveSpeed = 160f;     //移动速度
-    private float currentSpeed;         //当前移动速度
+    /// <summary>巡逻点2。</summary>
+    private Vector3 pointB;
 
-    private GameObject vpet;            //桌宠对象
+    /// <summary>巡逻点设置范围。</summary>
+    private float pointRange = 5f;
 
+    /// <summary>唯一面向向量值。</summary>
+    private float faceDir;
+
+    /// <summary>巡逻速度参数；写入刚体速度前会乘以物理帧间隔。</summary>
+    private float moveSpeed = 160f;
+
+    /// <summary>包含左右方向符号的当前巡逻速度参数。</summary>
+    private float currentSpeed;
+
+    /// <summary>用于交互或距离判断的桌宠对象。</summary>
+    private GameObject vpet;
+
+    #endregion
+
+    #region 生命周期
+
+    /// <summary>
+    /// 缓存刚体和桌宠对象引用。
+    /// </summary>
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
@@ -29,6 +51,9 @@ public class Enemy02_Bat : MonoBehaviour
         vpet = GameObject.FindGameObjectWithTag("Vpet");  //获取桌宠的游戏对象
     }
 
+    /// <summary>
+    /// 记录初始移动参数、朝向与巡逻范围，再加载难度配置。
+    /// </summary>
     private void Start()
     {
         currentSpeed = moveSpeed;
@@ -40,8 +65,12 @@ public class Enemy02_Bat : MonoBehaviour
 
     }
 
-    private bool isAllowAudioPlay = true;   //是否允许播放音频
+    /// <summary>是否允许播放音频。</summary>
+    private bool isAllowAudioPlay = true;
 
+    /// <summary>
+    /// 按桌宠距离更新音效开关，递减音效计时并处理巡逻转向。
+    /// </summary>
     private void Update()
     {
         //与玩家距离超过20f后禁止播放音效
@@ -50,13 +79,22 @@ public class Enemy02_Bat : MonoBehaviour
         Patrol();
     }
 
+    /// <summary>
+    /// 存活时将当前速度参数乘以物理帧间隔后写入水平速度，并将垂直速度设为零。
+    /// </summary>
     private void FixedUpdate()
     {
         if (!healthSystem.isDead)
             rb.velocity = new Vector2(currentSpeed * Time.fixedDeltaTime, 0f);
     }
 
-    //根据难度初始化数值
+    #endregion
+
+    #region 难度配置与巡逻
+
+    /// <summary>
+    /// 根据难度设置接触伤害与巡逻速度参数。
+    /// </summary>
     private void InitValueBasedDifficulty()
     {
         //获取游戏难度进行匹配(攻击伤害|飞行速度)
@@ -82,12 +120,15 @@ public class Enemy02_Bat : MonoBehaviour
         }
     }
 
-
-
+    /// <summary>距离下次音效播放的剩余时间，单位为秒。</summary>
     private float audioTimer;
+
+    /// <summary>相邻音效播放的间隔，单位为秒。</summary>
     private float audioCD = 0.9f;
 
-    //巡逻方法(Update)
+    /// <summary>
+    /// 超出巡逻边界时改变移动方向，并按间隔播放附近可听见的振翅音效。
+    /// </summary>
     private void Patrol()
     {
         //若超出了PointA的X轴范围，移动方向改为右侧
@@ -110,8 +151,9 @@ public class Enemy02_Bat : MonoBehaviour
 
     }
 
-
-    //翻转精灵图(内部引用)
+    /// <summary>
+    /// 依据当前水平移动方向翻转精灵。
+    /// </summary>
     private void Flip()
     {
         if (currentSpeed > 0)
@@ -120,9 +162,17 @@ public class Enemy02_Bat : MonoBehaviour
             transform.localScale = new Vector2(-faceDir, transform.localScale.y);
     }
 
+    #endregion
 
+    #region 接触攻击
+
+    /// <summary>接触攻击造成的基础伤害。</summary>
     private float attackDamage = 3f;
 
+    /// <summary>
+    /// 存活时对持续接触的桌宠请求伤害及水平击退。
+    /// </summary>
+    /// <param name="other">持续接触的碰撞信息。</param>
     private void OnCollisionStay2D(Collision2D other)
     {
         //攻击玩家
@@ -134,4 +184,5 @@ public class Enemy02_Bat : MonoBehaviour
         }
     }
 
+    #endregion
 }

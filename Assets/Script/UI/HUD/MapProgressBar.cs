@@ -4,21 +4,38 @@ using UnityEngine;
 using UnityEngine.UI;
 
 /// <summary>
-/// 根据桌宠的横向位置更新地图进度，并显示已到达的存档点。
+/// 地图进度条类
+/// - 按桌宠横坐标更新关卡进度，并标记已到达的重生点。
 /// </summary>
 public class MapProgressBar : Singleton<MapProgressBar>
 {
-    [Tooltip("桌宠的Transform")]
-    [SerializeField] private Transform vpet;        //桌宠的Transform
-    [Tooltip("存档点1的Image")]
-    [SerializeField] private Image checkPoint01;    //存档点1的Image
-    [Tooltip("存档点2的Image")]
-    [SerializeField] private Image checkPoint02;    //存档点2的Image
+    #region 配置与运行状态
 
-    private Slider slider;                 //滑动条
-    private float startPosX = -14f;        //开始位置
-    private float endPosX = 550f;          //结束位置
+    [Tooltip("用于交互或距离判断的桌宠对象。")]
+    [SerializeField] private Transform vpet;
 
+    [Tooltip("存档点1的Image。")]
+    [SerializeField] private Image checkPoint01;
+
+    [Tooltip("存档点2的Image。")]
+    [SerializeField] private Image checkPoint02;
+
+    /// <summary>滑动条。</summary>
+    private Slider slider;
+
+    /// <summary>开始位置。</summary>
+    private float startPosX = -14f;
+
+    /// <summary>结束位置。</summary>
+    private float endPosX = 550f;
+
+    #endregion
+
+    #region 地图进度与到达标记
+
+    /// <summary>
+    /// 注册单例；仅有效实例缓存进度滑条。
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
@@ -28,12 +45,17 @@ public class MapProgressBar : Singleton<MapProgressBar>
         slider = GetComponent<Slider>();
     }
 
+    /// <summary>
+    /// 更新当前地图进度。
+    /// </summary>
     private void Update()
     {
         SetProgressValue();
     }
 
-    //更新进度(Update)
+    /// <summary>
+    /// 根据桌宠横坐标计算起终点之间的进度，将其限制在零到一并同步滑条。
+    /// </summary>
     private void SetProgressValue()
     {
         if (vpet == null || slider == null)
@@ -45,10 +67,10 @@ public class MapProgressBar : Singleton<MapProgressBar>
         slider.value = progress;    //赋予value
     }
 
-    //设置到达情况
     /// <summary>
-    /// 标记指定序号的重生点已经到达。
+    /// 将指定重生点的图标设为已到达颜色。
     /// </summary>
+    /// <param name="index">重生点序号：1 或 2；其他值仅输出日志。</param>
     public void SetArrive(int index)
     {
         switch (index)
@@ -68,4 +90,5 @@ public class MapProgressBar : Singleton<MapProgressBar>
         }
     }
 
+    #endregion
 }

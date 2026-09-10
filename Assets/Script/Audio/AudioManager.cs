@@ -5,51 +5,74 @@ using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
-/// 统一管理 Addressables 音频的加载、播放、音量控制和句柄释放。
+/// 音频管理类
+/// - 管理 Addressables 音频加载、缓存、音源播放、音量设置与句柄释放。
 /// </summary>
 public class AudioManager : Singleton<AudioManager>
 {
-    #region Inspector Configuration
+    #region 音源配置与加载缓存
 
+    /// <summary>是否在切换场景时保留当前单例对象。</summary>
     protected override bool PersistAcrossScenes => true;
 
-    [Header("Audio Source Pools")]
     [Tooltip("用于播放短音效的 2D AudioSource 列表。请确保列表中的元素不重复。")]
+    [Header("Audio Source Pools")]
     [SerializeField] private List<AudioSource> audioSourcePool;
 
     [Tooltip("用于播放空间音效的 3D AudioSource 列表。请确保列表中的元素不重复。")]
     [SerializeField] private List<AudioSource> audioSources3DPool;
 
+    /// <summary>按资源地址缓存的已加载音频片段。</summary>
     private readonly Dictionary<string, AudioClip> loadedClips = new();
+
+    /// <summary>已加载音频的资源句柄，销毁管理器时释放。</summary>
     private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> loadedClipHandles = new();
+
+    /// <summary>正在加载的音频句柄，销毁管理器时用于释放未完成请求。</summary>
     private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> loadingClipHandles = new();
+
+    /// <summary>按资源地址汇总的加载完成回调列表。</summary>
     private readonly Dictionary<string, List<Action<AudioClip>>> pendingClipLoads = new();
 
+    /// <summary>已登记的 2D 音源与音频资源地址映射。</summary>
     private readonly Dictionary<AudioSource, string> playingSourceAddresses = new();
+
+    /// <summary>已登记的空间音源与音频资源地址映射。</summary>
     private readonly Dictionary<AudioSource, string> playing3DSourceAddresses = new();
 
-    [Header("Background Music")]
     [Tooltip("用于播放背景音乐的 AudioSource。该 Source 会随 AudioManager 跨场景保留。")]
+    [Header("Background Music")]
     [SerializeField] private AudioSource bgmAudioSource;
 
     #endregion
 
-    #region Volume State
+    #region 用户音量读取
 
+    /// <summary>当前音乐音量  (默认值)。</summary>
+    private float _currentBgmVolume = 0.5f;
 
-    private float _currentBgmVolume = 0.5f;   //当前音乐音量  (默认值)
-    private float _currentSfxVolume = 0.5f;   //当前音效音量  (默认值)
+    /// <summary>当前音效音量  (默认值)。</summary>
+    private float _currentSfxVolume = 0.5f;
 
-    /// <summary>获取当前背景音乐音量。</summary>
+    /// <summary>
+    /// 读取当前背景音乐的用户音量设置。
+    /// </summary>
+    /// <returns>零到一之间的用户音量，不包含临时淡入淡出倍率。</returns>
     public float GetCurrentBgmVolume() => _currentBgmVolume;
 
-    /// <summary>获取当前音效音量。</summary>
+    /// <summary>
+    /// 读取当前音效的用户音量设置。
+    /// </summary>
+    /// <returns>零到一之间的音效音量。</returns>
     public float GetCurrentSfxVolume() => _currentSfxVolume;
 
     #endregion
 
-    #region Lifecycle
+    #region 生命周期
 
+    /// <summary>
+    /// 注册跨场景音频单例，并让重复实例退出初始化。
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
@@ -57,6 +80,9 @@ public class AudioManager : Singleton<AudioManager>
             return;
     }
 
+    /// <summary>
+    /// 释放已加载及仍在加载的有效音频句柄，再清理单例引用。
+    /// </summary>
     protected override void OnDestroy()
     {
         foreach (AsyncOperationHandle<AudioClip> handle in loadedClipHandles.Values)
@@ -76,11 +102,13 @@ public class AudioManager : Singleton<AudioManager>
 
     #endregion
 
-    #region Clip Loading
+    #region 音频加载
 
     /// <summary>
-    /// 请求一个音频片段；相同地址在加载期间会合并请求，加载完成后通知所有调用方。
+    /// 优先返回缓存音频；同地址加载期间合并回调，成功后缓存并通知等待方。
     /// </summary>
+    /// <param name="address">非空的 Addressables 音频资源地址。</param>
+    /// <param name="onLoaded">资源可用时执行的回调；缓存命中时同步执行，加载失败时不调用。</param>
     private void RequestClip(string address, Action<AudioClip> onLoaded)
     {
         if (loadedClips.TryGetValue(address, out AudioClip cachedClip))
@@ -124,21 +152,31 @@ public class AudioManager : Singleton<AudioManager>
 
     #endregion
 
-    #region One-Shot Audio
+    #region 二维音效播放
 
-    /// <summary>异步加载并播放一个 2D 短音效。</summary>
+    /// <summary>
+    /// 请求加载并使用空闲音源播放 2D 音效。
+    /// </summary>
+    /// <param name="address">Addressables 音频资源地址。</param>
     public void PlaySound(string address)
     {
         RequestClip(address, clip => PlayClip(clip, address));
     }
 
-    /// <summary>停止指定地址对应的全部 2D 短音效。</summary>
+    /// <summary>
+    /// 停止当前已登记的指定地址的全部 2D 音效；不会取消尚未完成的加载。
+    /// </summary>
+    /// <param name="address">要停止播放的音频资源地址。</param>
     public void StopSound(string address)
     {
         StopSourcesForAddress(playingSourceAddresses, address);
     }
 
-    /// <summary>从 2D 音效池中取出一个空闲 Source 播放片段。</summary>
+    /// <summary>
+    /// 从 2D 音源池取得空闲源并播放片段，记录音源与资源地址的对应关系。
+    /// </summary>
+    /// <param name="clip">已加载的待播放音频片段。</param>
+    /// <param name="address">片段所属资源地址，用于后续停止播放。</param>
     private void PlayClip(AudioClip clip, string address)
     {
         AudioSource freeSource = GetFreeAudioSource();      //获取空闲音源池
@@ -156,7 +194,10 @@ public class AudioManager : Singleton<AudioManager>
         }
     }
 
-    /// <summary>清理已自然播放结束的 Source，并返回一个可用 Source。</summary>
+    /// <summary>
+    /// 清理已结束的 2D 播放记录，并查找未播放的有效音源。
+    /// </summary>
+    /// <returns>首个空闲音源；没有可用音源时返回 null。</returns>
     private AudioSource GetFreeAudioSource()
     {
         CleanupFinishedSources(playingSourceAddresses);
@@ -171,21 +212,33 @@ public class AudioManager : Singleton<AudioManager>
 
     #endregion
 
-    #region Spatial Audio
+    #region 空间音效与播放记录
 
-    /// <summary>异步加载并播放一个 3D 短音效。</summary>
+    /// <summary>
+    /// 请求加载并在指定世界位置播放空间音效。
+    /// </summary>
+    /// <param name="address">Addressables 音频资源地址。</param>
+    /// <param name="position">音源播放时采用的世界坐标。</param>
     public void PlaySound3D(string address, Vector3 position)
     {
         RequestClip(address, clip => PlayClip3D(clip, address, position));
     }
 
-    /// <summary>停止指定地址对应的全部 3D 短音效。</summary>
+    /// <summary>
+    /// 停止当前已登记的指定地址的全部 3D 音效；不会取消尚未完成的加载。
+    /// </summary>
+    /// <param name="address">要停止播放的音频资源地址。</param>
     public void StopSound3D(string address)
     {
         StopSourcesForAddress(playing3DSourceAddresses, address);
     }
 
-    /// <summary>从 3D 音效池中取出一个空闲 Source 播放片段。</summary>
+    /// <summary>
+    /// 从 3D 音源池取得空闲源，设置位置和音量后播放并登记资源地址。
+    /// </summary>
+    /// <param name="clip">已加载的待播放音频片段。</param>
+    /// <param name="address">片段所属资源地址，用于后续停止播放。</param>
+    /// <param name="position">音源应移动到的世界坐标。</param>
     private void PlayClip3D(AudioClip clip, string address, Vector3 position)
     {
         AudioSource source = GetFreeAudioSource3D();
@@ -205,7 +258,10 @@ public class AudioManager : Singleton<AudioManager>
         }
     }
 
-    /// <summary>清理已自然播放结束的 3D Source，并返回一个可用 Source。</summary>
+    /// <summary>
+    /// 清理已结束的空间音效记录，并查找未播放的有效音源。
+    /// </summary>
+    /// <returns>首个空闲空间音源；没有可用音源时返回 null。</returns>
     private AudioSource GetFreeAudioSource3D()
     {
         CleanupFinishedSources(playing3DSourceAddresses);
@@ -218,7 +274,11 @@ public class AudioManager : Singleton<AudioManager>
         return null;
     }
 
-    /// <summary>停止指定地址对应的 Source，并移除播放归属记录。</summary>
+    /// <summary>
+    /// 停止指定地址对应的已登记音源，清空其片段并移除播放记录。
+    /// </summary>
+    /// <param name="sourceAddresses">音源到资源地址的播放记录表，方法会移除匹配条目。</param>
+    /// <param name="address">要停止的资源地址。</param>
     private static void StopSourcesForAddress(Dictionary<AudioSource, string> sourceAddresses, string address)
     {
         List<AudioSource> sourcesToRemove = new();
@@ -241,6 +301,10 @@ public class AudioManager : Singleton<AudioManager>
             sourceAddresses.Remove(source);
     }
 
+    /// <summary>
+    /// 从播放记录表移除已销毁或不再播放的音源，不释放音频资源。
+    /// </summary>
+    /// <param name="sourceAddresses">需要清理的音源到资源地址映射。</param>
     private static void CleanupFinishedSources(Dictionary<AudioSource, string> sourceAddresses)
     {
         List<AudioSource> sourcesToRemove = new();
@@ -257,9 +321,12 @@ public class AudioManager : Singleton<AudioManager>
 
     #endregion
 
-    #region Background Music
+    #region 背景音乐与音量设置
 
-    /// <summary>异步加载并播放背景音乐。</summary>
+    /// <summary>
+    /// 请求加载背景音乐，在回调中设置用户音量并播放。
+    /// </summary>
+    /// <param name="address">Addressables 背景音乐资源地址。</param>
     public void PlayBGM(string address)
     {
         RequestClip(address, clip =>
@@ -273,7 +340,9 @@ public class AudioManager : Singleton<AudioManager>
         });
     }
 
-    /// <summary>停止并清空当前背景音乐。</summary>
+    /// <summary>
+    /// 停止并清空当前背景音乐。
+    /// </summary>
     public void ClearBGM()
     {
         if (bgmAudioSource == null)
@@ -283,14 +352,20 @@ public class AudioManager : Singleton<AudioManager>
         bgmAudioSource.clip = null;
     }
 
-    /// <summary>按当前背景音乐音量乘数调整播放音量。</summary>
+    /// <summary>
+    /// 将临时倍率乘以用户背景音乐音量后应用到音源，不修改用户设置。
+    /// </summary>
+    /// <param name="volumeMultiplier">临时音量倍率，使用前限制在零到一。</param>
     public void AdjustBGMVolume(float volumeMultiplier)
     {
         float adjustedVolume = Mathf.Clamp01(volumeMultiplier) * _currentBgmVolume;
         bgmAudioSource.volume = adjustedVolume;
     }
 
-    /// <summary>暂停或恢复当前背景音乐。</summary>
+    /// <summary>
+    /// 暂停当前背景音乐，或从暂停位置继续播放。
+    /// </summary>
+    /// <param name="isPause">为 true 时暂停，为 false 时继续。</param>
     public void PauseOrContinueBGM(bool isPause)
     {
         if (isPause)
@@ -299,14 +374,20 @@ public class AudioManager : Singleton<AudioManager>
             bgmAudioSource.UnPause();
     }
 
-    /// <summary>设置背景音乐音量。</summary>
+    /// <summary>
+    /// 保存用户背景音乐音量并立即应用到背景音乐源。
+    /// </summary>
+    /// <param name="volume">目标音量，使用前限制在零到一。</param>
     public void SetBgmVolume(float volume)
     {
         _currentBgmVolume = Mathf.Clamp01(volume);
         bgmAudioSource.volume = _currentBgmVolume;
     }
 
-    /// <summary>设置音效音量，并立即同步到音效池中的 Source。</summary>
+    /// <summary>
+    /// 保存用户音效音量，并同步到所有有效的 2D 和 3D 音源。
+    /// </summary>
+    /// <param name="volume">目标音量，使用前限制在零到一。</param>
     public void SetSfxVolume(float volume)
     {
         _currentSfxVolume = Mathf.Clamp01(volume);

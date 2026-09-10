@@ -3,28 +3,50 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// 管理可放置方块的生命值、受击反馈、破坏特效和掉落逻辑。
+/// 可放置方块类
+/// - 管理方块生命、自损、受击反馈与破坏表现。
 /// </summary>
 public class Item_Block : MonoBehaviour
 {
-    [Tooltip("血条UI绑定")]
-    [SerializeField] private SpriteRenderer healthBar;  //血条UI绑定
-    [Tooltip("生命值")]
-    [SerializeField] private float health = 100;        //生命值
-    [Tooltip("粒子预制体")]
-    [SerializeField] private GameObject particlePrefab; //粒子预制体
-    [Tooltip("物品ID")]
-    [SerializeField] private int item_id;               //物品ID
+    #region 配置与运行状态
 
-    private float currentHealth; //当前生命值
-    private float oringinWidth;  //血条初始宽度
+    [Tooltip("血条UI绑定。")]
+    [SerializeField] private SpriteRenderer healthBar;
 
-    private float hurtTimer;    //自损计时器
-    private float hurtCD = 1f;  //自损间隔时长(s)
-    private int damage = 2;     //单次自损伤害
-    private bool isAllowTimerWork = true;   //是否允许计时器工作？
+    [Tooltip("生命值。")]
+    [SerializeField] private float health = 100;
 
+    [Tooltip("粒子预制体。")]
+    [SerializeField] private GameObject particlePrefab;
 
+    [Tooltip("物品ID。")]
+    [SerializeField] private int item_id;
+
+    /// <summary>当前生命值。</summary>
+    private float currentHealth;
+
+    /// <summary>血条初始宽度。</summary>
+    private float oringinWidth;
+
+    /// <summary>自损计时器。</summary>
+    private float hurtTimer;
+
+    /// <summary>自损间隔时长(s)。</summary>
+    private float hurtCD = 1f;
+
+    /// <summary>单次自损伤害。</summary>
+    private int damage = 2;
+
+    /// <summary>是否允许递减跳跃及叫声计时器。</summary>
+    private bool isAllowTimerWork = true;
+
+    #endregion
+
+    #region 初始化与自损更新
+
+    /// <summary>
+    /// 初始化生命、自损计时、血条基准宽度和飘字画布。
+    /// </summary>
     private void Start()
     {
         currentHealth = health; //生命值初始化
@@ -34,6 +56,9 @@ public class Item_Block : MonoBehaviour
         figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
     }
 
+    /// <summary>
+    /// 在计时允许时递减自损计时器，更新血条并检查自损及破坏。
+    /// </summary>
     private void Update()
     {
         if (isAllowTimerWork)
@@ -48,7 +73,13 @@ public class Item_Block : MonoBehaviour
 
     }
 
-    //方块自损&生命监测
+    #endregion
+
+    #region 生命操作与受击表现
+
+    /// <summary>
+    /// 按间隔扣除方块生命，归零后销毁并播放粒子及按物品编号选择的破坏音效。
+    /// </summary>
     private void BlockHurtSelf()
     {
         if (hurtTimer <= 0)
@@ -73,7 +104,10 @@ public class Item_Block : MonoBehaviour
         }
     }
 
-    //受伤函数(外部调用)
+    /// <summary>
+    /// 扣除生命且最低保留为零，并播放受击飘字和变色反馈。
+    /// </summary>
+    /// <param name="damage">本次扣除的生命值。</param>
     public void GetHurt(float damage)
     {
         float newHealth = currentHealth - damage;  //受伤后的生命值
@@ -88,6 +122,10 @@ public class Item_Block : MonoBehaviour
         StartCoroutine(HurtEffect());   //受伤效果
     }
 
+    /// <summary>
+    /// 短暂将方块精灵染红，随后恢复白色。
+    /// </summary>
+    /// <returns>控制受击变色时长的协程迭代器。</returns>
     IEnumerator HurtEffect()
     {
         SpriteRenderer sprite = GetComponent<SpriteRenderer>();
@@ -96,12 +134,21 @@ public class Item_Block : MonoBehaviour
         sprite.color = new Color(1f, 1f, 1f, 1f);
     }
 
+    #endregion
 
-    [Tooltip("数字文本预制体")]
-    [SerializeField] private GameObject figureTextPrefab;   //数字文本预制体
-    private GameObject figureCanvas;                        //FigureCanvas父节点
+    #region 数值飘字
 
-    //显示UI数字
+    [Tooltip("数字文本预制体。")]
+    [SerializeField] private GameObject figureTextPrefab;
+
+    /// <summary>FigureCanvas父节点。</summary>
+    private GameObject figureCanvas;
+
+    /// <summary>
+    /// 在飘字画布下生成数值文本，并按伤害或恢复类型设置颜色。
+    /// </summary>
+    /// <param name="num">要显示的数值。</param>
+    /// <param name="isRed">为 true 时使用受伤红色，为 false 时使用恢复绿色。</param>
     private void ShowFigure(float num, bool isRed)
     {
         Transform parent = figureCanvas.transform;
@@ -119,4 +166,5 @@ public class Item_Block : MonoBehaviour
 
     }
 
+    #endregion
 }

@@ -3,18 +3,30 @@ using System.Collections.Generic;
 using UnityEngine;
 
 /// <summary>
-/// 表示可被桌宠拾取的场景物品，并负责将其写入物品栏。
+/// 可拾取物品类
+/// - 保存场景物品数据与图标，尝试加入物品栏并处理超时销毁。
 /// </summary>
 public class CanPickItem : MonoBehaviour
 {
-    [Tooltip("物品贴图渲染器")]
-    [SerializeField] SpriteRenderer icoSprite;      //物品贴图渲染器
-    [Tooltip("物品数据")]
-    [SerializeField] private ItemData itemData;     //物品数据
+    #region 配置与运行状态
+
+    [Tooltip("物品贴图渲染器。")]
+    [SerializeField] SpriteRenderer icoSprite;
+
+    [Tooltip("当前场景物品对应的物品数据。")]
+    [SerializeField] private ItemData itemData;
+
     [Tooltip("是否允许物品在超时后自动销毁。")]
     public bool isAllowSelfDestroy = true;
 
-    /// <summary>设置该场景物品对应的物品栏数据。</summary>
+    #endregion
+
+    #region 物品配置与拾取流程
+
+    /// <summary>
+    /// 记录物品数据，并在图标渲染器可用时更新图标。
+    /// </summary>
+    /// <param name="data">非空的物品数据，包含待显示图标。</param>
     public void SetItemData(ItemData data)
     {
         itemData = data;                //传递物品数据
@@ -22,6 +34,9 @@ public class CanPickItem : MonoBehaviour
             icoSprite.sprite = data.icon;   //设置贴图
     }
 
+    /// <summary>
+    /// 按配置安排随机超时销毁，并在图标未设置时尝试从物品数据补齐。
+    /// </summary>
     private void Start()
     {
         if (isAllowSelfDestroy)
@@ -37,7 +52,9 @@ public class CanPickItem : MonoBehaviour
         }
     }
 
-    /// <summary>尝试将物品加入物品栏，成功后销毁场景物品。</summary>
+    /// <summary>
+    /// 尝试将当前物品加入物品栏；成功后播放拾取音效并销毁场景对象。
+    /// </summary>
     public void ItemPickUpLogic()
     {
         if (InventoryManager.Instance.TryAddSpecificItem(itemData))
@@ -47,4 +64,6 @@ public class CanPickItem : MonoBehaviour
         }
 
     }
+
+    #endregion
 }

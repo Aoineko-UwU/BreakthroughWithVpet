@@ -7,60 +7,83 @@ using DG.Tweening;
 using TMPro;
 
 /// <summary>
-/// 管理游戏场景的开场、暂停、结算、重生和教程面板流程。
+/// 游戏流程管理类
+/// - 协调游戏开场、暂停、结算、重生和教程界面。
 /// </summary>
 public class GameManager : Singleton<GameManager>
 {
-    [Tooltip("摄像机缩放脚本")]
-    [SerializeField] private CameraScaleBar cameraScale;    //摄像机缩放脚本
-    [Tooltip("GUI画布组")]
-    [SerializeField] private CanvasGroup GUICanvasGroup;    //GUI画布组
-    [Tooltip("白场过渡图")]
-    [SerializeField] private Image whiteFade;               //白场过渡图
+    #region 配置与运行状态
 
-    [Tooltip("设置面板")]
-    [SerializeField] private GameObject settingPanel;       //设置面板
-    [Tooltip("胜利面板")]
-    [SerializeField] private GameObject winPanel;           //胜利面板
-    [Tooltip("失败面板")]
-    [SerializeField] private GameObject losePanel;          //失败面板
-    [Tooltip("游戏设置面板")]
-    [SerializeField] private GameObject gameSetPanel;       //游戏设置面板
-    [Tooltip("所有结算面板的CanvasGroup")]
-    [SerializeField] private CanvasGroup resultPanelCGroup; //所有结算面板的CanvasGroup
-    [Tooltip("开始文本")]
-    [SerializeField] private TextMeshProUGUI startText;     //开始文本
+    [Tooltip("摄像机缩放脚本。")]
+    [SerializeField] private CameraScaleBar cameraScale;
 
-    [Tooltip("胜利面板的Avatar")]
-    [SerializeField] private Image winAvatar;               //胜利面板的Avatar
-    [Tooltip("胜利图1")]
-    [SerializeField] private Sprite winPic01;               //胜利图1
-    [Tooltip("胜利图2")]
-    [SerializeField] private Sprite winPic02;               //胜利图2
-    [Tooltip("胜利图3")]
-    [SerializeField] private Sprite winPic03;               //胜利图3
-    [Tooltip("胜利文字01")]
-    [SerializeField] private TextMeshProUGUI winText01;     //胜利文字01
-    [Tooltip("胜利文字02s")]
-    [SerializeField] private TextMeshProUGUI winText02;     //胜利文字02s
+    [Tooltip("GUI画布组。")]
+    [SerializeField] private CanvasGroup GUICanvasGroup;
 
+    [Tooltip("白场过渡图。")]
+    [SerializeField] private Image whiteFade;
 
-    [Tooltip("胜利位置的Transform")]
-    [SerializeField] private Transform winPosTransform;     //胜利位置的Transform
+    [Tooltip("设置面板。")]
+    [SerializeField] private GameObject settingPanel;
 
-    [Tooltip("教程按钮")]
-    [SerializeField] private Button guideBtn;            //教程按钮
-    [Tooltip("教程面板01")]
-    [SerializeField] private GameObject guidePanel01;    //教程面板01
-    [Tooltip("教程面板02")]
-    [SerializeField] private GameObject guidePanel02;    //教程面板02
+    [Tooltip("胜利面板。")]
+    [SerializeField] private GameObject winPanel;
 
-    private GameObject vpet; //桌宠游戏对象
+    [Tooltip("失败面板。")]
+    [SerializeField] private GameObject losePanel;
 
-    public bool isAllowPlayerControl = true;  //是否允许角色操作
+    [Tooltip("游戏设置面板。")]
+    [SerializeField] private GameObject gameSetPanel;
 
-    //生命周期--------------------------------------------------------------------------------------------//
+    [Tooltip("所有结算面板的CanvasGroup。")]
+    [SerializeField] private CanvasGroup resultPanelCGroup;
 
+    [Tooltip("开始文本。")]
+    [SerializeField] private TextMeshProUGUI startText;
+
+    [Tooltip("胜利面板的Avatar。")]
+    [SerializeField] private Image winAvatar;
+
+    [Tooltip("胜利图1。")]
+    [SerializeField] private Sprite winPic01;
+
+    [Tooltip("胜利图2。")]
+    [SerializeField] private Sprite winPic02;
+
+    [Tooltip("胜利图3。")]
+    [SerializeField] private Sprite winPic03;
+
+    [Tooltip("胜利文字01。")]
+    [SerializeField] private TextMeshProUGUI winText01;
+
+    [Tooltip("胜利面板的第二行评价文本。")]
+    [SerializeField] private TextMeshProUGUI winText02;
+
+    [Tooltip("胜利位置的Transform。")]
+    [SerializeField] private Transform winPosTransform;
+
+    [Tooltip("教程按钮。")]
+    [SerializeField] private Button guideBtn;
+
+    [Tooltip("教程面板01。")]
+    [SerializeField] private GameObject guidePanel01;
+
+    [Tooltip("教程面板02。")]
+    [SerializeField] private GameObject guidePanel02;
+
+    /// <summary>用于交互或距离判断的桌宠对象。</summary>
+    private GameObject vpet;
+
+    [Tooltip("游戏流程是否允许玩家操作，由开场、结算及交互入口读取或更新。")]
+    public bool isAllowPlayerControl = true;
+
+    #endregion
+
+    #region 生命周期
+
+    /// <summary>
+    /// 注册场景单例；仅有效实例缓存桌宠对象。
+    /// </summary>
     protected override void Awake()
     {
         base.Awake();
@@ -70,6 +93,9 @@ public class GameManager : Singleton<GameManager>
         vpet = GameObject.FindGameObjectWithTag("Vpet");    //获取桌宠对象
     }
 
+    /// <summary>
+    /// 读取重生标记，启动开场流程，初始化面板并切换到游戏音乐。
+    /// </summary>
     private void Start()
     {
         InitRespawn();      //初始化重生标志
@@ -80,6 +106,9 @@ public class GameManager : Singleton<GameManager>
         AudioManager.Instance.PlayBGM("GameMusic");
     }
 
+    /// <summary>
+    /// 更新道具选择保护状态、处理退出键并检测终点到达。
+    /// </summary>
     private void Update()
     {
         SelectedStateHandle();      //选择状态处理(防按钮误触)
@@ -87,9 +116,13 @@ public class GameManager : Singleton<GameManager>
         CheckWin();                 //玩家胜利监测
     }
 
-    //功能函数--------------------------------------------------------------------------------------------//
+    #endregion
 
-    //处理ESC事件
+    #region 输入与界面初始化
+
+    /// <summary>
+    /// 允许玩家操作时响应退出键，优先关闭设置或教程，否则切换暂停状态。
+    /// </summary>
     private void HandleEscape()
     {
         if (!isAllowPlayerControl) return;
@@ -113,11 +146,18 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    private bool currentSelected = false;   //当前是否有Slot选中
-    private float selectTimer;              //计时器
-    private float selectInterval = 0.5f;    //物品栏物品放置后多久可以点击暂停按钮
+    /// <summary>当前是否有Slot选中。</summary>
+    private bool currentSelected = false;
 
-    //物品选中状态处理(针对暂停按钮，防止误触)
+    /// <summary>计时器。</summary>
+    private float selectTimer;
+
+    /// <summary>物品栏物品放置后多久可以点击暂停按钮。</summary>
+    private float selectInterval = 0.5f;
+
+    /// <summary>
+    /// 在拖拽物品期间及结束后的短暂间隔内保留选中标记，供按钮入口判断。
+    /// </summary>
     private void SelectedStateHandle()
     {
         //同步选中状态
@@ -137,7 +177,9 @@ public class GameManager : Singleton<GameManager>
             }
     }
 
-    //面板初始化(Start)
+    /// <summary>
+    /// 关闭各功能面板并设置开场过渡所需的透明度及初始激活状态。
+    /// </summary>
     private void InitPanel()
     {
         //面板默认关闭
@@ -157,10 +199,16 @@ public class GameManager : Singleton<GameManager>
         startText.gameObject.SetActive(false);          //开场文字默认关闭
     }
 
+    #endregion
 
-    public bool isRestart = false;      //是否是以重新开始游戏的状态进入的？
+    #region 开场过渡
 
-    //游戏开始初始化
+    [Tooltip("是否是以重新开始游戏的状态进入的。")]
+    public bool isRestart = false;
+
+    /// <summary>
+    /// 将桌宠放到当前重生位置，再根据重启标记选择首次开场或重生过渡。
+    /// </summary>
     private void GameStartInit()
     {
         vpet.transform.position = respawnPosition.position;  //设置桌宠的重生位置
@@ -173,6 +221,10 @@ public class GameManager : Singleton<GameManager>
 
     }
 
+    /// <summary>
+    /// 依次播放白场、镜头和文字开场，随后允许操作并让桌宠开始行走。
+    /// </summary>
+    /// <returns>控制首次开场各等待阶段的协程迭代器。</returns>
     IEnumerator FirstStart()
     {
         isAllowPlayerControl = false;           //禁止玩家操作
@@ -203,6 +255,10 @@ public class GameManager : Singleton<GameManager>
         startText.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// 播放重生白场过渡并显示界面，结束后将桌宠切换为行走状态。
+    /// </summary>
+    /// <returns>控制重生过渡等待的协程迭代器。</returns>
     IEnumerator RespawnStart()
     {
         whiteFade.DOFade(0, 2f);                //白场过渡
@@ -213,11 +269,19 @@ public class GameManager : Singleton<GameManager>
         vpet.GetComponent<VpetAction>().VpetStateSet(1);   //设置Vpet行走状态
     }
 
-    //桌宠相关进程函数--------------------------------------------------------------------------------------------//
+    #endregion
 
-    public Transform respawnPosition;            //当前重生点位置
-    private int currentRespawnOrder = -1;        //当前重生点优先级
+    #region 重生数据与结算
 
+    [Tooltip("当前重生点位置。")]
+    public Transform respawnPosition;
+
+    /// <summary>当前重生点优先级。</summary>
+    private int currentRespawnOrder = -1;
+
+    /// <summary>
+    /// 读取一次性重启标记、重生坐标与优先级，应用后删除对应 PlayerPrefs 键。
+    /// </summary>
     private void InitRespawn()
     {
         //读取PlayerPrefs中的复活标志
@@ -239,19 +303,27 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    /// <summary>设置当前重生点的优先级。</summary>
+    /// <summary>
+    /// 设置当前重生点优先级，不在此处比较新旧优先级。
+    /// </summary>
+    /// <param name="p">要记录的重生点优先级。</param>
     public void SetCurrentRespawnOrder(int p)
     {
         currentRespawnOrder = p;
     }
-    /// <summary>获取当前重生点的优先级。</summary>
+
+    /// <summary>
+    /// 读取当前重生点优先级。
+    /// </summary>
+    /// <returns>当前优先级；尚未激活重生点时默认值为 -1。</returns>
     public int GetCurrentRespawnOrder()
     {
         return currentRespawnOrder;
     }
 
-
-    /// <summary>启动桌宠死亡后的镜头、音乐和失败结算流程。</summary>
+    /// <summary>
+    /// 启动桌宠死亡后的镜头、音乐和失败结算流程。
+    /// </summary>
     public void VpetDeadHandle()
     {
         isAllowPlayerControl = false;                   //禁止玩家操作UI
@@ -261,6 +333,10 @@ public class GameManager : Singleton<GameManager>
         StartCoroutine(LoseMusicAndAnimation());        //开始播放失败动画
     }
 
+    /// <summary>
+    /// 等待死亡特写后播放失败音乐，并显示失败结算面板。
+    /// </summary>
+    /// <returns>控制失败结算等待阶段的协程迭代器。</returns>
     IEnumerator LoseMusicAndAnimation()
     {
         yield return new WaitForSeconds(2f);            //等待
@@ -271,9 +347,12 @@ public class GameManager : Singleton<GameManager>
 
     }
 
+    /// <summary>是否已触发终点到达判定，用于避免重复检测进入。</summary>
     private bool isWin = false;
 
-    //检查是否获胜
+    /// <summary>
+    /// 首次到达终点横坐标时标记胜利，并调用结算入口与桌宠胜利行为。
+    /// </summary>
     private void CheckWin()
     {
         if (vpet.transform.position.x >= winPosTransform.position.x && !isWin)
@@ -284,7 +363,9 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    /// <summary>启动桌宠胜利后的镜头、音乐和胜利结算流程。</summary>
+    /// <summary>
+    /// 启动桌宠胜利后的镜头、音乐和胜利结算流程。
+    /// </summary>
     public void VpetWinHandle()
     {
         isAllowPlayerControl = false;                   //禁止玩家操作UI
@@ -295,6 +376,10 @@ public class GameManager : Singleton<GameManager>
         StartCoroutine(WinMusicAndAnimation());         //开始播放胜利动画
     }
 
+    /// <summary>
+    /// 延迟播放胜利音乐，并显示胜利结算面板。
+    /// </summary>
+    /// <returns>控制胜利结算等待阶段的协程迭代器。</returns>
     IEnumerator WinMusicAndAnimation()
     {
         yield return new WaitForSeconds(2f);            //等待
@@ -303,7 +388,9 @@ public class GameManager : Singleton<GameManager>
         resultPanelCGroup.DOFade(1, 1f);                //结算面板渐出
     }
 
-    //设置胜利面板的信息
+    /// <summary>
+    /// 根据当前难度选择胜利头像与评价文本。
+    /// </summary>
     private void SetWinPanelInfo()
     {
         //根据游戏难度设置评价
@@ -332,11 +419,16 @@ public class GameManager : Singleton<GameManager>
         }
     }
 
-    //按钮---------------------------------------------------------------------------------------------------//
+    #endregion
 
+    #region 按钮交互
+
+    /// <summary>由暂停和教程入口维护的暂停标记。</summary>
     private bool isPaused = false;
 
-    /// <summary>暂停游戏并打开暂停面板。</summary>
+    /// <summary>
+    /// 暂停游戏并打开暂停面板。
+    /// </summary>
     public void OnClickBtn_Pause()
     {
         if (currentSelected && !isAllowPlayerControl) return;
@@ -346,7 +438,9 @@ public class GameManager : Singleton<GameManager>
         settingPanel.SetActive(true);
     }
 
-    /// <summary>恢复游戏并关闭暂停面板。</summary>
+    /// <summary>
+    /// 恢复游戏并关闭暂停面板。
+    /// </summary>
     public void OnClickBtn_Continue()
     {
         Time.timeScale = 1;     //继续游戏
@@ -355,21 +449,27 @@ public class GameManager : Singleton<GameManager>
         settingPanel.SetActive(false);
     }
 
-    /// <summary>打开游戏设置面板。</summary>
+    /// <summary>
+    /// 打开游戏设置面板。
+    /// </summary>
     public void OnClickBtn_GameSetOpen()
     {
         AudioManager.Instance.PlaySound("button_click");
         gameSetPanel.SetActive(true);   //打开设置面板
     }
 
-    /// <summary>关闭游戏设置面板。</summary>
+    /// <summary>
+    /// 关闭游戏设置面板。
+    /// </summary>
     public void OnClickBtn_GameSetClose()
     {
         AudioManager.Instance.PlaySound("button_click");
         gameSetPanel.SetActive(false);   //关闭设置面板
     }
 
-    /// <summary>停止当前流程并返回主菜单场景。</summary>
+    /// <summary>
+    /// 停止当前流程并返回主菜单场景。
+    /// </summary>
     public void OnClickBtn_BackToMenu()
     {
         AudioManager.Instance.PlaySound("button_click");                //播放音效
@@ -378,8 +478,9 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene("0_MainMenu");
     }
 
-
-    /// <summary>保存当前重生点并重新加载游戏场景。</summary>
+    /// <summary>
+    /// 保存当前重生点并重新加载游戏场景。
+    /// </summary>
     public void OnClickBtn_Respawn()
     {
         //将重启数据写入并保存
@@ -394,7 +495,9 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    /// <summary>清除当前流程并重新开始游戏场景。</summary>
+    /// <summary>
+    /// 停止补间动画及胜利音效后重新加载当前场景，不在此处写入重生数据。
+    /// </summary>
     public void OnClickBtn_Restart()
     {
         AudioManager.Instance.PlaySound("button_click");                //播放音效
@@ -404,7 +507,9 @@ public class GameManager : Singleton<GameManager>
         SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
     }
 
-    /// <summary>打开游戏内教程第一页并暂停游戏。</summary>
+    /// <summary>
+    /// 打开游戏内教程第一页并暂停游戏。
+    /// </summary>
     public void OnClickBtn_OpenGuidePanel()
     {
         if (currentSelected && !isAllowPlayerControl) return;
@@ -417,7 +522,9 @@ public class GameManager : Singleton<GameManager>
         guideBtn.gameObject.SetActive(false);
     }
 
-    /// <summary>从游戏内教程第一页切换到第二页。</summary>
+    /// <summary>
+    /// 从游戏内教程第一页切换到第二页。
+    /// </summary>
     public void OnClickBtn_Guide1To2()
     {
         AudioManager.Instance.PlaySound("button_click");
@@ -426,7 +533,9 @@ public class GameManager : Singleton<GameManager>
         guideBtn.gameObject.SetActive(false);
     }
 
-    /// <summary>关闭游戏内教程并恢复游戏。</summary>
+    /// <summary>
+    /// 关闭游戏内教程并恢复游戏。
+    /// </summary>
     public void OnClickBtn_CloseGuidePanel()
     {
 
@@ -439,5 +548,5 @@ public class GameManager : Singleton<GameManager>
         guideBtn.gameObject.SetActive(true);
     }
 
-
+    #endregion
 }
