@@ -13,41 +13,33 @@
 - 开发者B站个人链接：[@葵猫猫neko](https://space.bilibili.com/200696277?spm_id_from=333.788.0.0)
 - 开发者邮箱：2838116695@qq.com
 
-## 部分脚本功能介绍(Assets/Scrpits路径下)：
+## 脚本目录（Assets/Script）
 
-### ../(杂项)
- - [GameDifficultySystem.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/GameDifficultySystem.cs)  <br>  `游戏难度系统单例脚本`
- - [FullScreenToggle.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/FullScreenToggle.cs)   <br>  `全屏功能键脚本(含PlayerPrefs)`
+按功能职责分类，目录名不代表命名空间。移动脚本时必须同步保留对应的 .meta 文件及 GUID。
 
-### ../Menu/(主菜单相关)
- - [MenuManager.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Menu/MenuManager.cs)   <br>  `游戏主菜单逻辑脚本`
+| 目录 | 职责 |
+| --- | --- |
+| Core | 通用基础设施：Singleton |
+| GameFlow | 菜单与游戏流程、难度管理 |
+| Characters/Vpet | 桌宠行为与生命系统 |
+| Characters/Enemies | 敌人行为、生命系统和生成 |
+| Inventory | 物品数据、物品栏、拖拽和道具随机事件 |
+| Items/Pickups | 可拾取道具及拾取触发器 |
+| Items/Consumables | 食物、CD、扭蛋 |
+| Items/Placeables | 方块、炸弹、弹簧 |
+| Items/Projectiles | 传送珍珠 |
+| World/Checkpoints | 重生点交互 |
+| World/Hazards | 石锥等环境危险物 |
+| World/Water | 水域相关组件 |
+| UI/Common | 通用按钮与选中反馈 |
+| UI/Settings | 音量、全屏设置控件 |
+| UI/Inventory | 物品栏格子显示 |
+| UI/HUD | 地图进度显示 |
+| UI/Menu | 菜单专用控件 |
+| Camera | 镜头缩放、震动 |
+| Audio | 音频加载与播放 |
+| VisualEffects | 飘字、粒子生命周期、闪光、暗区和背景表现 |
 
-### ../Gaming/(游戏全局功能相关)
- - [AudioManager.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/AudioManager.cs)   <br>  `全局音效管理器(含字典缓存与Addressable)`
+主要入口：[游戏流程](Assets/Script/GameFlow/GameManager.cs)、[菜单流程](Assets/Script/GameFlow/MenuManager.cs)、[桌宠行为](Assets/Script/Characters/Vpet/VpetAction.cs)、[物品栏](Assets/Script/Inventory/InventoryManager.cs)、[音频](Assets/Script/Audio/AudioManager.cs)。
 
-### ../Gaming/Vpet(角色相关)
- - [VpetAction.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/Vpet/VpetAction.cs)   <br>  `角色行为主脚本(含角色动画和全逻辑控制)`
- - [VpetHealthSystem.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/Vpet/VpetHealthSystem.cs)   <br>  `角色生命系统脚本`
-   
-### ../Gaming/UI&Extra Function/(游戏功能相关)
- - [CameraScaleBar.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/UI%26Extra%20Function/CameraScaleBar.cs)   <br>  `摄像机缩放(含摄像机动画)`
- - [CameraShake.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/UI%26Extra%20Function/CameraShake.cs)   <br>  `摄像机晃动效果`
- - [TMP_Figure.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/UI%26Extra%20Function/TMP_Figure.cs)   <br>  `伤害/恢复数字UI(TextMesh Pro)`
- - [VpetRespawnPointObserver.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/UI%26Extra%20Function/VpetRespawnPointObserver.cs)   <br>  `重生点观察者(记录当前重生点)`
- - [MapProgressBar.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/UI%26Extra%20Function/MapProgressBar.cs)   <br>  `迷你地图进度条脚本`
-
-### ../Gaming/InventorySystem/(物品栏与道具相关)
- - [InventoryManager.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/InventorySystem/InventoryManager.cs)   <br>  `物品栏脚本(含道具生成)`
- - [DragController.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/InventorySystem/DragController.cs)   <br>  `物品拖拽控制器脚本`
- - [RandomSelector.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/InventorySystem/RandomSelector.cs)   <br>  `道具事件的随机选择器`
- - [SlotUI.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/InventorySystem/SlotUI.cs)   <br>  `点击物品格的处理脚本`
- - [ItemData.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/InventorySystem/ItemData.cs)   <br>  `可复用的可视化道具数据类脚本`
- - [Item_Block.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/InventorySystem/Item/Item_Block.cs)   <br>  `方块类道具`
- - [Item_Gacha.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/InventorySystem/Item/Item_Gacha.cs)   <br>  `扭蛋道具`
- - [Item_Food.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/InventorySystem/Item/Item_Food.cs)   <br>  `食物类道具`
-
-### ../Gaming/Enemy/(敌怪相关)
- - [Enemy01_Frog.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/Enemy/Enemy01_Frog.cs)   <br>  `怪物青蛙的AI逻辑`
- - [Enemy03_Bear.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/Enemy/Enemy03_Bear.cs)   <br>  `怪物熊的AI逻辑`
- - [EnemyHealthSystem.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/Enemy/EnemyHealthSystem.cs)   <br>  `所有怪物的生命系统脚本`
- - [SpawnPoint.cs](https://github.com/Aoineko-UwU/BreakthroughWithVpet/blob/main/Assets/Script/Gaming/Enemy/SpawnPoint.cs)   <br>  `怪物刷新点逻辑`
+后续桌宠运动控制器和状态机归入 Characters/Vpet，待实现时再创建 Movement、States 等子目录。RandomSelector 目前属于道具业务，通用工具目录待实际提取独立算法时再建立。
