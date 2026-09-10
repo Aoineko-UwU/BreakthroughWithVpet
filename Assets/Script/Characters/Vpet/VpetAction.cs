@@ -5,51 +5,75 @@ using UnityEngine;
 
 
 /// <summary>
-/// 定义桌宠在移动、进食、坠落和结算流程中的行为状态。
+/// 桌宠状态枚举
+/// - 定义桌宠行为及结算状态；编号同时供外部状态切换入口使用。
 /// </summary>
-public enum VpetState       //桌宠状态
+public enum VpetState
 {
-    Idle,           //0
-    Walking,        //1
-    Fall,           //2
-    Climb,          //3
-    Eat,            //4
-    Sleep,          //5
-    Dance,          //6
-    Die,            //7
-    Win             //8
+    /// <summary>待机状态，外部编号为 0。</summary>
+    Idle,
+    /// <summary>行走状态，外部编号为 1。</summary>
+    Walking,
+    /// <summary>飘飞状态，外部编号为 2。</summary>
+    Fall,
+    /// <summary>攀爬状态，外部编号为 3。</summary>
+    Climb,
+    /// <summary>进食状态，外部编号为 4。</summary>
+    Eat,
+    /// <summary>睡眠状态，外部编号为 5。</summary>
+    Sleep,
+    /// <summary>跳舞状态，外部编号为 6。</summary>
+    Dance,
+    /// <summary>死亡状态，外部编号为 7。</summary>
+    Die,
+    /// <summary>胜利状态，外部编号为 8。</summary>
+    Win
 }
 
 /// <summary>
-/// 控制桌宠的移动、交互、增益、坠落、死亡和胜利行为。
+/// 桌宠行为类
+/// - 协调桌宠的刚体运动、环境交互、进食增益、动画音效与死亡和胜利流程。
 /// </summary>
 public class VpetAction : MonoBehaviour
 {
-    //获取桌宠的动画器
+    #region 组件引用与运行状态
+
+    [Tooltip("桌宠主体动画器，驱动行走、攀爬、进食和结算动画。")]
     [SerializeField] private Animator _animatorVpet;
+    [Tooltip("桌宠手部动画器，与主体同步播放进食动画。")]
     [SerializeField] private Animator _animatorVpetHand;
+    [Tooltip("被食用物品的动画器，播放进食过程中的物品动画。")]
     [SerializeField] private Animator _animatorEatenItem;
 
     [Tooltip("炸弹预制体")]
-    [SerializeField] private GameObject bombPrefab;         //炸弹预制体
+    [SerializeField] private GameObject bombPrefab;
     [Tooltip("胜利触发粒子")]
-    [SerializeField] private GameObject winParticle;        //胜利触发粒子
+    [SerializeField] private GameObject winParticle;
     [Tooltip("加速Buff粒子")]
-    [SerializeField] private GameObject speedUpParticle;    //加速Buff粒子
+    [SerializeField] private GameObject speedUpParticle;
     [Tooltip("伤害Buff粒子")]
-    [SerializeField] private GameObject attackUpParticle;   //伤害Buff粒子
+    [SerializeField] private GameObject attackUpParticle;
 
     [Tooltip("一拳状态")]
-    [SerializeField] private GameObject onePunchState;      //一拳状态
+    [SerializeField] private GameObject onePunchState;
 
-    private Rigidbody2D rb;             //桌宠刚体
-    private ConstantForce2D force2D;    //桌宠2D持续力
-    private VpetHealthSystem health;    //桌宠生命系统
+    /// <summary>桌宠刚体。</summary>
+    private Rigidbody2D rb;
+    /// <summary>桌宠2D持续力。</summary>
+    private ConstantForce2D force2D;
+    /// <summary>桌宠生命系统。</summary>
+    private VpetHealthSystem health;
 
-    private VpetState currentState;  //桌宠状态
+    /// <summary>桌宠状态。</summary>
+    private VpetState currentState;
 
-    //生命周期--------------------------------------------------------------------------------------------//
+    #endregion
 
+    #region 生命周期
+
+    /// <summary>
+    /// 缓存刚体、生命系统、碰撞体和提示画布，并初始化为待机状态。
+    /// </summary>
     private void Awake()
     {
         rb = GetComponent<Rigidbody2D>();           //获取刚体
@@ -60,6 +84,9 @@ public class VpetAction : MonoBehaviour
         figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
     }
 
+    /// <summary>
+    /// 初始化碰撞体形状、接触过滤器及当前难度对应的战斗数值。
+    /// </summary>
     private void Start()
     {
         VpetColliderChange();               //初始化碰撞箱
@@ -68,6 +95,9 @@ public class VpetAction : MonoBehaviour
         InitValueBasedDifficulty();         //初始化难度相关数值
     }
 
+    /// <summary>
+    /// 在物理帧内更新行走、攀爬和飘飞水平驱动力；结算停用后不再执行。
+    /// </summary>
     private void FixedUpdate()
     {
 
@@ -77,6 +107,9 @@ public class VpetAction : MonoBehaviour
         VpetFallHorSpeedSet();  //桌宠飘飞水平力
     }
 
+    /// <summary>
+    /// 逐帧更新飘飞流程、地面探测、跳舞效果和各行为计时器。
+    /// </summary>
     private void Update()
     {
         if (health.isVpetDead) return;      //桌宠死亡则不执行
@@ -87,9 +120,13 @@ public class VpetAction : MonoBehaviour
         TimerWork();        //计时器工作
     }
 
-    //走动行为--------------------------------------------------------------------------------------- -----//
+    #endregion
 
-    //根据难度初始化数值(攻击伤害 | 攻击频率 | 尖刺伤害
+    #region 难度配置
+
+    /// <summary>
+    /// 根据当前难度设置普通攻击伤害、攻击间隔和尖刺伤害。
+    /// </summary>
     private void InitValueBasedDifficulty()
     {
         //获取游戏难度进行匹配
@@ -118,14 +155,24 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    //走动行为--------------------------------------------------------------------------------------- -----//
+    #endregion
 
-    private float speedUpBuffFix = 1f;      //加速Buff移速修正
-    private float _vpetWalkSpeed = 5.5f;    //行走速度
-    private float forceMultiplier = 2f;     //行走力放大倍率
+    #region 行走与地面接触
+
+    /// <summary>行走及飘飞水平驱动力的增益倍率。</summary>
+    private float speedUpBuffFix = 1f;
+    /// <summary>沿接触面切线的目标行走速度。</summary>
+    private float _vpetWalkSpeed = 5.5f;
+    /// <summary>行走力放大倍率。</summary>
+    private float forceMultiplier = 2f;
+    /// <summary>行走或游泳音效距离下次播放的剩余时间，单位为秒。</summary>
     private float walkAudioTimer;
+    /// <summary>行走或游泳音效的播放间隔，单位为秒。</summary>
     private float walkAudioCD = 0.62f;
-
+    /// <summary>
+    /// 仅在行走状态下沿接触面切线施加驱动力，并同步行走动画与音效。
+    /// <para>水面探测、地面接触和加速增益共同影响施力大小；该增益不直接修改目标速度。</para>
+    /// </summary>
     private void VpetWalk()
     {
         //桌宠状态为行走时执行移动
@@ -157,10 +204,10 @@ public class VpetAction : MonoBehaviour
             float gAlong = Vector2.Dot(gravityForce, tangent);      //重力在切线方向上的分量
             Vector2 compensationForce = -gAlong * tangent;          //补偿力：反方向抵消
 
-            //若Vpet上坡
+            // 按法线的竖直分量选择补偿比例；此判断本身不能区分上坡与下坡。
             if (avgNormal.y > 0)
                 rb.AddForce(compensationForce * 0.6f, ForceMode2D.Force);  //保留一部分重力给Vpet带来的影响
-            //若Vpet下坡
+            // 法线朝下时采用完整补偿。
             else if(avgNormal.y < 0)
                 rb.AddForce(compensationForce, ForceMode2D.Force);         //施加全力抵消重力加速度
 
@@ -180,16 +227,22 @@ public class VpetAction : MonoBehaviour
     }
 
     [Tooltip("仅地面层级")]
-    [SerializeField] LayerMask groundLayer;                             //仅地面层级
-    private ContactFilter2D groundContactFilter;                        //地面接触过滤器
-    private ContactPoint2D[] contactPoints = new ContactPoint2D[10];    //接触点数组
+    [SerializeField] LayerMask groundLayer;
+    /// <summary>地面接触过滤器。</summary>
+    private ContactFilter2D groundContactFilter;
+    /// <summary>用于累计地面法线的接触点缓冲区，最多读取十个接触点。</summary>
+    private ContactPoint2D[] contactPoints = new ContactPoint2D[10];
 
     [Tooltip("所有地面有关层级")]
-    [SerializeField] LayerMask allGroundLayer;                          //所有地面有关层级
-    private ContactFilter2D allGroundContactFilter;                     //全地面接触过滤器
-    private ContactPoint2D[] allContactPoints = new ContactPoint2D[1];  //接触点数组
-
-    // 获取平均法线
+    [SerializeField] LayerMask allGroundLayer;
+    /// <summary>全地面接触过滤器。</summary>
+    private ContactFilter2D allGroundContactFilter;
+    /// <summary>仅用于确认存在接触的单元素缓冲区。</summary>
+    private ContactPoint2D[] allContactPoints = new ContactPoint2D[1];
+    /// <summary>
+    /// 计算地面过滤器命中的接触点平均法线。
+    /// </summary>
+    /// <returns>归一化后的平均法线；没有接触点时返回向上方向。</returns>
     private Vector2 GetAverageGroundNormal()
     {
         // 获取所有接触点
@@ -203,7 +256,10 @@ public class VpetAction : MonoBehaviour
         return (sum / count).normalized;
     }
 
-    //是否与地面碰撞箱接触
+    /// <summary>
+    /// 检查刚体是否接触全地面层掩码中的非触发碰撞体。
+    /// </summary>
+    /// <returns>存在任意匹配接触点时为 true；不区分接触面是否可站立。</returns>
     private bool isTouchGround()
     {
         // 获取所有接触点
@@ -214,7 +270,9 @@ public class VpetAction : MonoBehaviour
             return false;
     }
 
-    //初始化地面接触过滤器
+    /// <summary>
+    /// 配置用于计算行走法线的地面接触过滤器，并排除触发器。
+    /// </summary>
     private void InitGroundContactFilter()
     {
         groundContactFilter = new ContactFilter2D();
@@ -222,7 +280,9 @@ public class VpetAction : MonoBehaviour
         groundContactFilter.useTriggers = false;
     }
 
-    //初始化全地面接触过滤器
+    /// <summary>
+    /// 配置用于判断地面接触的完整层掩码，并排除触发器。
+    /// </summary>
     private void InitAllGroundContactFilter()
     {
         allGroundContactFilter = new ContactFilter2D();
@@ -230,14 +290,24 @@ public class VpetAction : MonoBehaviour
         allGroundContactFilter.useTriggers = false;
     }
 
-    //攀爬行为--------------------------------------------------------------------------------------------//
+    #endregion
 
-    private float _vpetClimbSpeed = 7f;                     //攀爬速度
-    private float climbForceMultiplier = 2f;                //攀爬力放大倍率
-    private bool isClimbing = false;                        //是否正在攀爬？
+    #region 攀爬行为
 
-    private float climbAudioTimer;                          //攀爬音效计时器
-    private float climbAudioCD = 0.62f;                     //攀爬音效间隔
+    /// <summary>攀爬速度。</summary>
+    private float _vpetClimbSpeed = 7f;
+    /// <summary>攀爬力放大倍率。</summary>
+    private float climbForceMultiplier = 2f;
+    /// <summary>是否正在攀爬。</summary>
+    private bool isClimbing = false;
+
+    /// <summary>攀爬音效计时器。</summary>
+    private float climbAudioTimer;
+    /// <summary>攀爬音效间隔。</summary>
+    private float climbAudioCD = 0.62f;
+    /// <summary>
+    /// 在攀爬状态下施加向上驱动力，并处理攀爬动画切换与间隔音效。
+    /// </summary>
     private void VpetClimb()
     {
         _animatorVpet.SetBool("isClimbing", isClimbing);    //动画机状态同步
@@ -276,16 +346,21 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    //进食行为---------------------------------------------------------------------------------------//
-    [Tooltip("进食道具Sprite渲染器绑定")]
-    [SerializeField] SpriteRenderer eatenItemSprite;    //进食道具Sprite渲染器绑定
-    [Tooltip("一拳状态粒子")]
-    [SerializeField] GameObject onePunchEffect;         //一拳状态粒子
-    public bool isAllowEat = true;                      //是否允许进食？
+    #endregion
 
+    #region 进食与食物效果
+
+    [Tooltip("进食道具Sprite渲染器绑定")]
+    [SerializeField] SpriteRenderer eatenItemSprite;
+    [Tooltip("一拳状态粒子")]
+    [SerializeField] GameObject onePunchEffect;
+    /// <summary>是否允许开始新的进食流程；由当前行为阶段控制。</summary>
+    [Tooltip("是否允许开始新的进食流程；运行时由行为阶段更新。")]
+    public bool isAllowEat = true;
     /// <summary>
-    /// 启动桌宠进食流程，并根据物品数据触发对应事件。
+    /// 在桌宠存活且允许进食时播放进食表现，并延迟执行食物效果。
     /// </summary>
+    /// <param name="item">待食用的物品数据；为空时不启动进食流程。</param>
     public void VpetEat(ItemData item)
     {
         if (health.isVpetDead) return;      //桌宠死亡则不执行
@@ -319,6 +394,12 @@ public class VpetAction : MonoBehaviour
 
         }
     }
+
+    /// <summary>
+    /// 等待进食动画阶段结束，再按物品编号分派恢复、睡眠、增益或随机事件。
+    /// </summary>
+    /// <param name="item">由进食入口传入的非空物品数据。</param>
+    /// <returns>包含进食等待阶段的协程迭代器。</returns>
     IEnumerator StartFoodJudge(ItemData item)
     {
         yield return new WaitForSeconds(0.8f);
@@ -447,10 +528,20 @@ public class VpetAction : MonoBehaviour
 
     }
 
-    float speedUpBuffMultiplier = 1.7f;         //加速Buff给予的加速倍率
-    float speedUpBuffDuration = 12f;            //加速持续时间
-    private Coroutine speedUpBuffCoroutine;     //加速Buff协程
+    #endregion
 
+    #region 限时增益
+
+    /// <summary>加速Buff给予的加速倍率。</summary>
+    float speedUpBuffMultiplier = 1.7f;
+    /// <summary>加速持续时间。</summary>
+    float speedUpBuffDuration = 12f;
+    /// <summary>加速Buff协程。</summary>
+    private Coroutine speedUpBuffCoroutine;
+    /// <summary>
+    /// 启用行走与飘飞水平施力增益，生成提示和粒子，并在持续时间结束后还原倍率。
+    /// </summary>
+    /// <returns>控制加速增益持续时间的协程迭代器。</returns>
     IEnumerator Eat_SpeedUp()
     {
         ShowText("速度提升↑↑");
@@ -465,11 +556,18 @@ public class VpetAction : MonoBehaviour
         speedUpBuffCoroutine = null;    //清理本协程
     }
 
-    float attackBuffDamageMultiplier = 2f;      //攻击Buff给予的攻击倍率
-    float attackBuffTimeMultiplier = 0.5f;      //攻击Buff给予的攻击间隔倍率
-    float attackBuffDuration = 12f;             //攻击Buff的持续时间
-    private Coroutine AttackUpBuffCoroutine;    //攻击Buff协程
-
+    /// <summary>攻击Buff给予的攻击倍率。</summary>
+    float attackBuffDamageMultiplier = 2f;
+    /// <summary>攻击Buff给予的攻击间隔倍率。</summary>
+    float attackBuffTimeMultiplier = 0.5f;
+    /// <summary>攻击Buff的持续时间。</summary>
+    float attackBuffDuration = 12f;
+    /// <summary>攻击Buff协程。</summary>
+    private Coroutine AttackUpBuffCoroutine;
+    /// <summary>
+    /// 临时提高普通攻击伤害、缩短攻击间隔并禁止受击击退，结束后恢复默认修正。
+    /// </summary>
+    /// <returns>控制攻击增益持续时间的协程迭代器。</returns>
     IEnumerator Eat_AttackUp()
     {
         AudioManager.Instance.PlaySound("getBuff");
@@ -490,11 +588,18 @@ public class VpetAction : MonoBehaviour
         AttackUpBuffCoroutine = null;   //清理本协程
     }
 
+    #endregion
 
-    private float teleportRange = 12f;     // 最大瞬移范围
-    private int maxSearchAttempts = 10;    // 最大查找次数
+    #region 随机瞬移
 
-    //瞬移方法效果
+    /// <summary>最大瞬移范围。</summary>
+    private float teleportRange = 12f;
+    /// <summary>最大查找次数。</summary>
+    private int maxSearchAttempts = 10;
+    /// <summary>
+    /// 在限定范围和尝试次数内寻找可用瞬移位置，并播放音效。
+    /// <para>若所有候选位置均被拒绝，则将当前位置向上移动 0.5 个世界单位。</para>
+    /// </summary>
     private void Teleport()
     {
         Vector2 targetPosition = Vector2.zero;
@@ -514,7 +619,7 @@ public class VpetAction : MonoBehaviour
                 break;  // 退出查找
             }
         }
-        // 如果找到有效位置，则瞬移，否则原地瞬移
+        // 找到候选位置则移动到该位置；查找失败时向上偏移 0.5 个单位。
         if (foundValidPosition)
             transform.position = targetPosition;
         else
@@ -523,7 +628,12 @@ public class VpetAction : MonoBehaviour
         AudioManager.Instance.PlaySound("teleport");
     }
 
-    // 检查目标位置是否有效
+    /// <summary>
+    /// 使用缩小后的胶囊范围检查候选位置是否可接受。
+    /// <para>仅依据单次重叠查询返回的碰撞体判断，不代表完整的落点安全性检查。</para>
+    /// </summary>
+    /// <param name="targetPosition">待检查的世界坐标。</param>
+    /// <returns>未查询到碰撞体，或返回的碰撞体带有 Ignore 标签时为 true。</returns>
     private bool CanTeleportTo(Vector2 targetPosition)
     {
         Collider2D hit = Physics2D.OverlapCapsule(targetPosition,capsuleCollider.size*0.2f,capsuleCollider.direction,0f);
@@ -541,17 +651,27 @@ public class VpetAction : MonoBehaviour
     //    Gizmos.DrawWireSphere(transform.position, teleportRange);  // 绘制绿色的圆形区域
     //}
 
+    #endregion
 
-    //睡觉行为---------------------------------------------------------------------------------------//
+    #region 睡眠行为
 
-    private float sleepTime = 7.5f;  //实际睡眠时间(+2.5s)
+    /// <summary>进入睡眠循环后的持续时间，不含入睡和起身动画等待。</summary>
+    private float sleepTime = 7.5f;
+    /// <summary>睡眠音效距离下次播放的剩余时间，单位为秒。</summary>
     private float sleepAudioTimer;
+    /// <summary>睡眠音效的播放间隔，单位为秒。</summary>
     private float sleepAudioTimerCD = 2.3f;
 
-    private float sleepRecoverTimer;        //睡眠恢复计时器
-    private float sleepRecoverCD = 1f;      //睡眠恢复间隔
-    private float sleepRecoverRate = 1f;    //每次生命恢复量
-
+    /// <summary>睡眠恢复计时器。</summary>
+    private float sleepRecoverTimer;
+    /// <summary>睡眠恢复间隔。</summary>
+    private float sleepRecoverCD = 1f;
+    /// <summary>每次生命恢复量。</summary>
+    private float sleepRecoverRate = 1f;
+    /// <summary>
+    /// 播放入睡和起身动画，在睡眠期间定时恢复生命，结束后恢复行走及进食权限。
+    /// </summary>
+    /// <returns>串联入睡、睡眠和起身阶段的协程迭代器。</returns>
     IEnumerator VpetSleep()
     {
         currentState = VpetState.Sleep;
@@ -590,18 +710,29 @@ public class VpetAction : MonoBehaviour
         isAllowEat = true;                              //允许进食
     }
 
-    //飘飞行为---------------------------------------------------------------------------------------//
+    #endregion
 
-    private bool isGrounded = false;    //是否落地
-    private bool isInWater = false;     //是否处于水中
+    #region 地面探测与飘飞
 
-    private bool isAllowFallCheckTimer = false; //是否允许坠落监测计时器工作
+    /// <summary>向下探测射线是否命中全地面层，而非实际刚体接触状态。</summary>
+    private bool isGrounded = false;
+    /// <summary>首条命中射线对应的碰撞体是否带有 Water 标签。</summary>
+    private bool isInWater = false;
+
+    /// <summary>是否允许坠落监测计时器工作。</summary>
+    private bool isAllowFallCheckTimer = false;
+    /// <summary>离地确认的剩余等待时间，单位为秒。</summary>
     private float fallConfirmTimer;
-    private float fallConfirmInterval = 0.2f;   //坠落监测间隔(超过这个时间不处于地面则判定为坠落中)
-    private float rayLength = 1.6f;             //射线长度
-    private float halfWidth = 0.38f;            //射线半宽间隔
-
-    //桌宠坠落行为监测(Update)
+    /// <summary>坠落监测间隔(超过这个时间不处于地面则判定为坠落中)。</summary>
+    private float fallConfirmInterval = 0.2f;
+    /// <summary>射线长度。</summary>
+    private float rayLength = 1.6f;
+    /// <summary>射线半宽间隔。</summary>
+    private float halfWidth = 0.38f;
+    /// <summary>
+    /// 依次向下探测中、左、右三个位置，并通过延迟确认切换飘飞状态。
+    /// <para>地面和水面标记以首条命中射线为准，不等同于刚体接触或浸水检测。</para>
+    /// </summary>
     private void VpetFallCheck()
     {
         // 三个射线起点：中、左、右
@@ -654,13 +785,18 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    private float flyingForceVer = 7.4f;  //垂直飘飞力
-    private bool isFalling = false;     //是否正在坠落
+    /// <summary>垂直飘飞力。</summary>
+    private float flyingForceVer = 7.4f;
+    /// <summary>是否正在坠落。</summary>
+    private bool isFalling = false;
 
-    private float fallAudioTimer;       //飘飞音效计时器
-    private float fallAudioCD = 1f;     //飘飞音效间隔
-
-    //桌宠坠落(Update)
+    /// <summary>飘飞音效计时器。</summary>
+    private float fallAudioTimer;
+    /// <summary>飘飞音效间隔。</summary>
+    private float fallAudioCD = 1f;
+    /// <summary>
+    /// 处理飘飞开始时的持续升力与表现，并在落地后启动起身等待。
+    /// </summary>
     private void VpetFall()
     {
         //桌宠状态为坠落时触发
@@ -694,11 +830,15 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    private float flyingSpeedHor = 4f;             //水平飘飞速度
-    private float fallHorForceMultiplier = 2f;     //正常向右校正系数
-    private float negativeVelMultiplier = 0.08f;   //负向速度校正系数
-
-    //桌宠坠落水平速度设置(FixUpdate)
+    /// <summary>水平飘飞速度。</summary>
+    private float flyingSpeedHor = 4f;
+    /// <summary>正常向右校正系数。</summary>
+    private float fallHorForceMultiplier = 2f;
+    /// <summary>负向速度校正系数。</summary>
+    private float negativeVelMultiplier = 0.08f;
+    /// <summary>
+    /// 在空中飘飞时依据水平速度差施力；向左运动时减弱向右修正。
+    /// </summary>
     private void VpetFallHorSpeedSet()
     {
         if (currentState == VpetState.Fall && !isGrounded && isFalling)
@@ -718,9 +858,12 @@ public class VpetAction : MonoBehaviour
         }
     }
 
+    /// <summary>起身协程是否正在等待，用于防止重复启动。</summary>
     bool isGetUpCoroutineWork = false;
-
-    //桌宠起身延迟
+    /// <summary>
+    /// 等待落地起身阶段结束，再恢复行走状态和进食权限。
+    /// </summary>
+    /// <returns>控制起身等待及流程标记的协程迭代器。</returns>
     IEnumerator VpetGetUp()
     {
         isGetUpCoroutineWork = true;
@@ -730,7 +873,9 @@ public class VpetAction : MonoBehaviour
         isGetUpCoroutineWork = false;
     }
 
-    //坠落停止逻辑
+    /// <summary>
+    /// 清除飘飞标记、落地确认计时开关、持续力以及飘飞动画和循环音效。
+    /// </summary>
     private void StopFallingLogic()
     {
         isFalling = false;                              //变更为不在掉落中
@@ -740,19 +885,32 @@ public class VpetAction : MonoBehaviour
         AudioManager.Instance.StopSound("fall");      //终止音效播放
     }
 
-    //跳舞行为---------------------------------------------------------------------------------------//
-    private bool isVpetDancing = false;     //是否正在跳舞
-    private float vpetDanceRecoverTimer;    //跳舞生命回复计时器
-    private float vpetDanceRecoverCD = 1f;  //计时器CD
-    private float recoverPerDance = 1f;     //每次恢复量
+    #endregion
 
-    private float vpetDanceAttackTimer;     //跳舞伤害计时器
-    private float vpetDanceAttackCD = 0.5f; //计时器CD
-    private float damagePerDance = 3f;      //每次伤害量
-    private float damagePerDanceRadius = 2f;//伤害半径
+    #region 跳舞行为
+
+    /// <summary>是否正在跳舞。</summary>
+    private bool isVpetDancing = false;
+    /// <summary>跳舞生命回复计时器。</summary>
+    private float vpetDanceRecoverTimer;
+    /// <summary>计时器CD。</summary>
+    private float vpetDanceRecoverCD = 1f;
+    /// <summary>每次恢复量。</summary>
+    private float recoverPerDance = 1f;
+
+    /// <summary>跳舞伤害计时器。</summary>
+    private float vpetDanceAttackTimer;
+    /// <summary>计时器CD。</summary>
+    private float vpetDanceAttackCD = 0.5f;
+    /// <summary>每次伤害量。</summary>
+    private float damagePerDance = 3f;
+    /// <summary>伤害半径。</summary>
+    private float damagePerDanceRadius = 2f;
     [Tooltip("敌人层")]
-    [SerializeField] private LayerMask enemyLayer;  //敌人层
-
+    [SerializeField] private LayerMask enemyLayer;
+    /// <summary>
+    /// 在跳舞状态下启用无敌，并按间隔恢复生命、对附近敌人造成范围伤害。
+    /// </summary>
     private void VpetDance()
     {
         if(currentState == VpetState.Dance)
@@ -795,6 +953,10 @@ public class VpetAction : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// 等待跳舞持续阶段，淡出舞蹈音乐，再恢复行走、游戏音乐和进食权限并解除无敌。
+    /// </summary>
+    /// <returns>串联舞蹈等待、音乐淡出和收尾阶段的协程迭代器。</returns>
     IEnumerator DanceTime()
     {
         yield return new WaitForSeconds(13f);
@@ -821,10 +983,13 @@ public class VpetAction : MonoBehaviour
         health.isVpetInvincible = false;                //关闭无敌状态
     }
 
+    #endregion
 
-    //计时器-----------------------------------------------------------------------------------------//
+    #region 计时器更新
 
-    //计时器工作(Update)
+    /// <summary>
+    /// 逐帧递减行为冷却计时器；仅在坠落确认启用时递减其计时器。
+    /// </summary>
     private void TimerWork()
     {
         walkAudioTimer -= Time.deltaTime;
@@ -838,10 +1003,14 @@ public class VpetAction : MonoBehaviour
         if (isAllowFallCheckTimer) fallConfirmTimer -= Time.deltaTime;
     }
 
-    //设置状态-----------------------------------------------------------------------------------------//
+    #endregion
 
-    /// <summary>根据状态编号切换桌宠当前行为。</summary>
+    #region 状态入口与结算
 
+    /// <summary>
+    /// 根据外部编号更新当前状态；不在此入口统一执行状态进入或退出清理。
+    /// </summary>
+    /// <param name="state">状态编号：0 待机、1 行走、2 飘飞、3 攀爬、4 进食、5 睡眠、6 跳舞、7 死亡、8 胜利；其他值仅输出日志。</param>
     public void VpetStateSet(int state)
     {
         switch (state)
@@ -879,10 +1048,9 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    //桌宠死亡处理---------------------------------------------------------------------------------------//
-
-    /// <summary>进入桌宠死亡状态并通知游戏管理器。</summary>
-
+    /// <summary>
+    /// 切换死亡状态，停止协程和飘飞表现，更新碰撞体并通知游戏管理器处理死亡。
+    /// </summary>
     public void VpetDead()
     {
         currentState = VpetState.Die;   //更改状态
@@ -897,9 +1065,9 @@ public class VpetAction : MonoBehaviour
 
     }
 
-    //桌宠胜利处理---------------------------------------------------------------------------------------//
-
-    /// <summary>进入桌宠胜利状态并通知游戏管理器。</summary>
+    /// <summary>
+    /// 切换胜利状态并停用常规行为更新，播放终点表现并通知游戏管理器处理胜利。
+    /// </summary>
     public void VpetWin()
     {
         currentState = VpetState.Win;   //更改状态
@@ -913,14 +1081,19 @@ public class VpetAction : MonoBehaviour
         AudioManager.Instance.PlaySound3D("setRespawnPoint", transform.position);   //音效播放
         Instantiate(winParticle, transform.position, Quaternion.identity);          //粒子效果
         _animatorVpet.SetTrigger("Win");                    //设置动画
-        GameManager.Instance.VpetWinHandle();               //通知进行死亡处理
+        GameManager.Instance.VpetWinHandle();               //通知游戏管理器进行胜利处理
 
     }
 
-    //桌宠碰撞箱改变---------------------------------------------------------------------------------------//
+    #endregion
 
+    #region 碰撞体形状
+
+    /// <summary>随行为状态调整形状的桌宠胶囊碰撞体。</summary>
     private CapsuleCollider2D capsuleCollider;
-
+    /// <summary>
+    /// 为睡眠或死亡状态设置横向胶囊，其他状态恢复竖向胶囊。
+    /// </summary>
     private void VpetColliderChange()
     {
         //睡眠和死亡状态的碰撞箱
@@ -940,13 +1113,18 @@ public class VpetAction : MonoBehaviour
 
     }
 
-    //文字效果---------------------------------------------------------------------------------------//
+    #endregion
+
+    #region 提示文本
 
     [Tooltip("文本预制体")]
-    [SerializeField] private GameObject TextPrefab;   //文本预制体
-    private GameObject figureCanvas;                  //FigureCanvas父节点
-
-    //显示UI数字
+    [SerializeField] private GameObject TextPrefab;
+    /// <summary>FigureCanvas父节点。</summary>
+    private GameObject figureCanvas;
+    /// <summary>
+    /// 在提示画布下创建文本实例，并以浅黄色显示增益提示。
+    /// </summary>
+    /// <param name="text">要显示的提示文本。</param>
     private void ShowText(string text)
     {
         Transform parent = figureCanvas.transform;
@@ -958,10 +1136,16 @@ public class VpetAction : MonoBehaviour
         tmp.color = new Color(1f, 1f, 0.4f, 1f);
     }
 
-    //碰撞事件---------------------------------------------------------------------------------------//
+    #endregion
 
-    private float spikeDamage = 3f;     //尖刺伤害
+    #region 碰撞交互与攻击
 
+    /// <summary>尖刺伤害。</summary>
+    private float spikeDamage = 3f;
+    /// <summary>
+    /// 持续接触梯子时按当前状态进入攀爬，接触尖刺触发器时请求受伤。
+    /// </summary>
+    /// <param name="other">当前持续重叠的触发碰撞体。</param>
     private void OnTriggerStay2D(Collider2D other)
     {
         if (health.isVpetDead) return;      //桌宠死亡则不执行
@@ -989,6 +1173,10 @@ public class VpetAction : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 攀爬期间离开梯子时施加向上推力，并切换回行走状态。
+    /// </summary>
+    /// <param name="other">刚刚结束重叠的触发碰撞体。</param>
     private void OnTriggerExit2D(Collider2D other)
     {
         if (health.isVpetDead) return;      //桌宠死亡则不执行
@@ -1001,15 +1189,24 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    private float vpetAttackDamage = 3f;      //桌宠攻击伤害
-    private float vpetAttackTimer;            //桌宠攻击计时器
-    private float vpetAttackCD = 1.5f;        //桌宠攻击频率
+    /// <summary>桌宠攻击伤害。</summary>
+    private float vpetAttackDamage = 3f;
+    /// <summary>桌宠攻击计时器。</summary>
+    private float vpetAttackTimer;
+    /// <summary>普通攻击的基础冷却间隔，单位为秒。</summary>
+    private float vpetAttackCD = 1.5f;
 
-    private float attackBuffDamageFix = 1f;   //攻击Buff伤害修正
-    private float attackBuffTimeFix = 1f;     //攻击Buff攻击频率修正
+    /// <summary>攻击Buff伤害修正。</summary>
+    private float attackBuffDamageFix = 1f;
+    /// <summary>普通攻击冷却间隔的修正倍率。</summary>
+    private float attackBuffTimeFix = 1f;
 
-    private bool isOnePunch = false;          //是否一拳?
-
+    /// <summary>是否一拳。</summary>
+    private bool isOnePunch = false;
+    /// <summary>
+    /// 处理实体尖刺伤害，并在行走状态及攻击冷却允许时攻击接触的敌人。
+    /// </summary>
+    /// <param name="other">当前持续接触的碰撞信息，包含对方碰撞体与对象。</param>
     private void OnCollisionStay2D(Collision2D other)
     {
         if (health.isVpetDead) return;      //桌宠死亡则不执行
@@ -1045,4 +1242,5 @@ public class VpetAction : MonoBehaviour
         }
 
     }
+    #endregion
 }
