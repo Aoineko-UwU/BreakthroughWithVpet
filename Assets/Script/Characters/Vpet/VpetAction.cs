@@ -62,6 +62,12 @@ public class VpetAction : MonoBehaviour
     /// <summary>负责施力、位置和碰撞体操作的协作对象。</summary>
     private VpetRigMotion rigMotion;
 
+    /// <summary>负责普通攻击、跳舞攻击与攻击冷却的协作对象。</summary>
+    private VpetAttack attack;
+
+    /// <summary>负责限时增益数值状态的协作对象。</summary>
+    private VpetEffect effect;
+
     /// <summary>桌宠生命系统。</summary>
     private VpetHealthSystem health;
 
@@ -86,6 +92,8 @@ public class VpetAction : MonoBehaviour
         // 协作对象只执行显式调用，不引入额外的 Unity 生命周期顺序。
         environmentSensor = new VpetEnvironmentSensor(body, capsule);
         rigMotion = new VpetRigMotion(body, floatingForce, capsule);
+        attack = new VpetAttack();
+        effect = new VpetEffect();
         figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
     }
 
@@ -138,22 +146,19 @@ public class VpetAction : MonoBehaviour
         {
             //简单难度
             case GameDifficultyLevel.Easy:
-                vpetAttackDamage = 4f;
-                vpetAttackCD = 1.2f;
+                attack.ConfigureBaseValues(4f, 1.2f);
                 spikeDamage = 2f;
                 break;
 
             //正常难度
             case GameDifficultyLevel.Normal:
-                vpetAttackDamage = 3f;
-                vpetAttackCD = 1.3f;
+                attack.ConfigureBaseValues(3f, 1.3f);
                 spikeDamage = 3f;
                 break;
 
             //困难难度
             case GameDifficultyLevel.Hard:
-                vpetAttackDamage = 2f;
-                vpetAttackCD = 1.4f;
+                attack.ConfigureBaseValues(2f, 1.4f);
                 spikeDamage = 4f;
                 break;
         }
@@ -162,9 +167,6 @@ public class VpetAction : MonoBehaviour
     #endregion
 
     #region 行走与地面接触
-
-    /// <summary>行走及飘飞水平驱动力的增益倍率。</summary>
-    private float speedUpBuffFix = 1f;
 
     /// <summary>行走或游泳音效距离下次播放的剩余时间，单位为秒。</summary>
     private float walkAudioTimer;
@@ -197,7 +199,7 @@ public class VpetAction : MonoBehaviour
                 environmentSensor.IsInWater,
                 environmentSensor.IsInWater ? false : environmentSensor.HasGroundContact(),
                 environmentSensor.IsGrounded,
-                speedUpBuffFix);
+                effect.SpeedForceMultiplier);
         }
         else
         {
@@ -340,7 +342,7 @@ public class VpetAction : MonoBehaviour
 
             //肾宝
             case 2:
-                isOnePunch = true;              //强化下一次攻击
+                attack.GrantOnePunch();          //强化下一次攻击
                 onePunchState.SetActive(true);  //设置Effect状态图
                 Instantiate(onePunchEffect, transform.position, Quaternion.identity);
                 AudioManager.Instance.PlaySound("OnePunchState");
@@ -446,10 +448,6 @@ public class VpetAction : MonoBehaviour
 
     #region 限时增益
 
-    /// <summary>加速Buff给予的加速倍率。</summary>
-    float speedUpBuffMultiplier = 1.7f;
-    /// <summary>加速持续时间。</summary>
-    float speedUpBuffDuration = 12f;
     /// <summary>加速Buff协程。</summary>
     private Coroutine speedUpBuffCoroutine;
     /// <summary>
@@ -460,22 +458,16 @@ public class VpetAction : MonoBehaviour
     {
         ShowText("速度提升↑↑");
         AudioManager.Instance.PlaySound("getBuff");
-        speedUpBuffFix = speedUpBuffMultiplier; //更改加速倍率
+        effect.ActivateSpeedBuff();             //更改加速倍率
         var par = Instantiate(speedUpParticle, transform.position, Quaternion.identity, transform); //粒子生成
-        Destroy(par, speedUpBuffDuration);
+        Destroy(par, VpetEffect.SpeedBuffDuration);
         //等待效果持续时间
-        yield return new WaitForSeconds(speedUpBuffDuration);
+        yield return new WaitForSeconds(VpetEffect.SpeedBuffDuration);
 
-        speedUpBuffFix = 1f;            //恢复默认倍率
+        effect.ClearSpeedBuff();        //恢复默认倍率
         speedUpBuffCoroutine = null;    //清理本协程
     }
 
-    /// <summary>攻击Buff给予的攻击倍率。</summary>
-    float attackBuffDamageMultiplier = 2f;
-    /// <summary>攻击Buff给予的攻击间隔倍率。</summary>
-    float attackBuffTimeMultiplier = 0.5f;
-    /// <summary>攻击Buff的持续时间。</summary>
-    float attackBuffDuration = 12f;
     /// <summary>攻击Buff协程。</summary>
     private Coroutine AttackUpBuffCoroutine;
     /// <summary>
@@ -488,15 +480,13 @@ public class VpetAction : MonoBehaviour
         ShowText("攻击提升↑↑");
         health.SetKnockBack(false);     //不可击退状态
         var par = Instantiate(attackUpParticle, transform.position, Quaternion.identity, transform); //粒子生成
-        Destroy(par, speedUpBuffDuration);
+        Destroy(par, VpetEffect.SpeedBuffDuration);
         //更改倍率
-        attackBuffDamageFix = attackBuffDamageMultiplier;
-        attackBuffTimeFix = attackBuffTimeMultiplier;
+        effect.ActivateAttackBuff(attack);
         //等待效果持续时间
-        yield return new WaitForSeconds(attackBuffDuration);
+        yield return new WaitForSeconds(VpetEffect.AttackBuffDuration);
         //恢复默认倍率
-        attackBuffDamageFix = 1f;
-        attackBuffTimeFix = 1f;
+        effect.ClearAttackBuff(attack);
         health.SetKnockBack(true);      //可击退状态
 
         AttackUpBuffCoroutine = null;   //清理本协程
@@ -701,7 +691,7 @@ public class VpetAction : MonoBehaviour
     {
         if (currentState == VpetState.Fall && !environmentSensor.IsGrounded && isFalling)
         {
-            rigMotion.DriveFloatingHorizontal(speedUpBuffFix);
+            rigMotion.DriveFloatingHorizontal(effect.SpeedForceMultiplier);
 
         }
     }
@@ -746,14 +736,6 @@ public class VpetAction : MonoBehaviour
     /// <summary>每次恢复量。</summary>
     private float recoverPerDance = 1f;
 
-    /// <summary>跳舞伤害计时器。</summary>
-    private float vpetDanceAttackTimer;
-    /// <summary>计时器CD。</summary>
-    private float vpetDanceAttackCD = 0.5f;
-    /// <summary>每次伤害量。</summary>
-    private float damagePerDance = 3f;
-    /// <summary>伤害半径。</summary>
-    private float damagePerDanceRadius = 2f;
     [Tooltip("敌人层")]
     [SerializeField] private LayerMask enemyLayer;
     /// <summary>
@@ -781,23 +763,7 @@ public class VpetAction : MonoBehaviour
                 health.VpetRecover(recoverPerDance);
             }
             //造成伤害
-            if(vpetDanceAttackTimer <= 0)
-            {
-                bool isHurt = false;
-                Collider2D[] colliders = Physics2D.OverlapCircleAll(transform.position, damagePerDanceRadius, enemyLayer);
-
-                foreach (Collider2D col in colliders)
-                {
-                    if (col != null)
-                    {
-                        col.gameObject.GetComponent<EnemyHealthSystem>().GetHurt(damagePerDance,transform.position,3f);   //造成伤害
-                        isHurt = true;
-                    }
-                }
-                if (isHurt)
-                    vpetDanceAttackTimer = vpetDanceAttackCD;   //造成伤害则刷新CD
-
-            }
+            attack.TryPerformDanceAttack(transform.position, enemyLayer);
         }
     }
 
@@ -844,9 +810,8 @@ public class VpetAction : MonoBehaviour
         climbAudioTimer -= Time.deltaTime;
         fallAudioTimer -= Time.deltaTime;
         sleepAudioTimer -= Time.deltaTime;
-        vpetAttackTimer -= Time.deltaTime;
+        attack.Tick(Time.deltaTime);
         sleepRecoverTimer -= Time.deltaTime;
-        vpetDanceAttackTimer -= Time.deltaTime;
         vpetDanceRecoverTimer -= Time.deltaTime;
         if (isAllowFallCheckTimer) fallConfirmTimer -= Time.deltaTime;
     }
@@ -1021,20 +986,6 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    /// <summary>桌宠攻击伤害。</summary>
-    private float vpetAttackDamage = 3f;
-    /// <summary>桌宠攻击计时器。</summary>
-    private float vpetAttackTimer;
-    /// <summary>普通攻击的基础冷却间隔，单位为秒。</summary>
-    private float vpetAttackCD = 1.5f;
-
-    /// <summary>攻击Buff伤害修正。</summary>
-    private float attackBuffDamageFix = 1f;
-    /// <summary>普通攻击冷却间隔的修正倍率。</summary>
-    private float attackBuffTimeFix = 1f;
-
-    /// <summary>是否一拳。</summary>
-    private bool isOnePunch = false;
     /// <summary>
     /// 处理实体尖刺伤害，并在行走状态及攻击冷却允许时攻击接触的敌人。
     /// </summary>
@@ -1051,25 +1002,20 @@ public class VpetAction : MonoBehaviour
         }
 
         //若碰到敌人
-        if (other.collider.CompareTag("Enemy") && vpetAttackTimer <= 0 && currentState == VpetState.Walking)
+        if (other.collider.CompareTag("Enemy") && attack.CanStartNormalAttack() && currentState == VpetState.Walking)
         {
-            vpetAttackTimer = vpetAttackCD * attackBuffTimeFix;     //攻击CD重置
+            attack.StartNormalAttackCooldown();     //攻击CD重置
             var enemyHealth = other.gameObject.GetComponent<EnemyHealthSystem>();
 
             if (enemyHealth != null)
             {
-                //若处于肾宝状态
-                if (isOnePunch)
+                // 一拳状态只在实际找到敌人生命系统后消耗，保持旧调用顺序。
+                if (attack.ApplyNormalAttack(enemyHealth, transform.position))
                 {
-                    isOnePunch = false;
                     onePunchState.SetActive(false);  //关闭Effect状态图
                     AudioManager.Instance.PlaySound("OnePunch");
-                    enemyHealth.GetHurt(vpetAttackDamage * 999 * attackBuffDamageFix, transform.position,25f);
                     CameraShake.Instance.ShakeScreen();
                 }
-                else
-                    enemyHealth.GetHurt(vpetAttackDamage * attackBuffDamageFix, transform.position,5f);
-
             }
         }
 
