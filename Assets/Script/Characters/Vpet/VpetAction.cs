@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
-
 /// <summary>
 /// 桌宠状态枚举
 /// - 定义桌宠行为及结算状态；编号同时供外部状态切换入口使用。
@@ -32,7 +31,7 @@ public enum VpetState
 
 /// <summary>
 /// 桌宠行为类
-/// - 协调桌宠的刚体运动、环境交互、进食增益、动画音效与死亡和胜利流程。
+/// - 保留外部入口与行为协调，将环境查询和物理操作委托给专用对象。
 /// </summary>
 public class VpetAction : MonoBehaviour
 {
@@ -57,10 +56,12 @@ public class VpetAction : MonoBehaviour
     [Tooltip("一拳状态")]
     [SerializeField] private GameObject onePunchState;
 
-    /// <summary>桌宠刚体。</summary>
-    private Rigidbody2D rb;
-    /// <summary>桌宠2D持续力。</summary>
-    private ConstantForce2D force2D;
+    /// <summary>负责地面接触、射线与瞬移重叠查询的协作对象。</summary>
+    private VpetEnvironmentSensor environmentSensor;
+
+    /// <summary>负责施力、位置和碰撞体操作的协作对象。</summary>
+    private VpetRigMotion rigMotion;
+
     /// <summary>桌宠生命系统。</summary>
     private VpetHealthSystem health;
 
@@ -72,15 +73,19 @@ public class VpetAction : MonoBehaviour
     #region 生命周期
 
     /// <summary>
-    /// 缓存刚体、生命系统、碰撞体和提示画布，并初始化为待机状态。
+    /// 缓存组件并创建环境与运动协作对象，初始化待机状态和提示画布。
     /// </summary>
     private void Awake()
     {
-        rb = GetComponent<Rigidbody2D>();           //获取刚体
-        health = GetComponent<VpetHealthSystem>();  //获取生命系统
-        force2D = GetComponent<ConstantForce2D>();  //获取持续2D力
-        currentState = VpetState.Idle;      //初始化状态
-        capsuleCollider = GetComponent<CapsuleCollider2D>();    //获取胶囊碰撞箱
+        Rigidbody2D body = GetComponent<Rigidbody2D>();
+        ConstantForce2D floatingForce = GetComponent<ConstantForce2D>();
+        CapsuleCollider2D capsule = GetComponent<CapsuleCollider2D>();
+        health = GetComponent<VpetHealthSystem>();
+        currentState = VpetState.Idle;
+
+        // 协作对象只执行显式调用，不引入额外的 Unity 生命周期顺序。
+        environmentSensor = new VpetEnvironmentSensor(body, capsule);
+        rigMotion = new VpetRigMotion(body, floatingForce, capsule);
         figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
     }
 
@@ -90,8 +95,7 @@ public class VpetAction : MonoBehaviour
     private void Start()
     {
         VpetColliderChange();               //初始化碰撞箱
-        InitGroundContactFilter();          //初始化地面接触过滤器
-        InitAllGroundContactFilter();       //初始化全地面接触过滤器
+        environmentSensor.InitializeContactFilters(groundLayer, allGroundLayer);
         InitValueBasedDifficulty();         //初始化难度相关数值
     }
 
@@ -161,10 +165,7 @@ public class VpetAction : MonoBehaviour
 
     /// <summary>行走及飘飞水平驱动力的增益倍率。</summary>
     private float speedUpBuffFix = 1f;
-    /// <summary>沿接触面切线的目标行走速度。</summary>
-    private float _vpetWalkSpeed = 5.5f;
-    /// <summary>行走力放大倍率。</summary>
-    private float forceMultiplier = 2f;
+
     /// <summary>行走或游泳音效距离下次播放的剩余时间，单位为秒。</summary>
     private float walkAudioTimer;
     /// <summary>行走或游泳音效的播放间隔，单位为秒。</summary>
@@ -182,7 +183,7 @@ public class VpetAction : MonoBehaviour
             if (walkAudioTimer <= 0)
             {
                 walkAudioTimer = walkAudioCD;
-                if (isInWater)
+                if (environmentSensor.IsInWater)
                     AudioManager.Instance.PlaySound("swim");
                 else
                     AudioManager.Instance.PlaySound("walk");
@@ -190,35 +191,13 @@ public class VpetAction : MonoBehaviour
 
             _animatorVpet.SetBool("isWalk", true);
 
-            Vector2 avgNormal = GetAverageGroundNormal();                           //取平均法线
-            Vector2 tangent = new Vector2(avgNormal.y, -avgNormal.x).normalized;    //计算切线方向
-
-            // 如果 avgNormal 表示“垂直墙面”（法线几乎水平），就强制往右走
-            if (Mathf.Abs(avgNormal.x) > 0.9f && Mathf.Abs(avgNormal.y) < 0.1f)
-            {
-                tangent = Vector2.right;
-            }
-
-            //重力补偿
-            Vector2 gravityForce = rb.mass * Physics2D.gravity;     //计算重力 G=mg
-            float gAlong = Vector2.Dot(gravityForce, tangent);      //重力在切线方向上的分量
-            Vector2 compensationForce = -gAlong * tangent;          //补偿力：反方向抵消
-
-            // 按法线的竖直分量选择补偿比例；此判断本身不能区分上坡与下坡。
-            if (avgNormal.y > 0)
-                rb.AddForce(compensationForce * 0.6f, ForceMode2D.Force);  //保留一部分重力给Vpet带来的影响
-            // 法线朝下时采用完整补偿。
-            else if(avgNormal.y < 0)
-                rb.AddForce(compensationForce, ForceMode2D.Force);         //施加全力抵消重力加速度
-
-
-            forceMultiplier = isInWater ? 0.8f : isTouchGround() ? 2f :
-                          isGrounded ? 0.6f : 0f;                    //移动力倍率
-
-
-            Vector2 desiredVel = tangent * _vpetWalkSpeed;                                   //推动沿切线匀速
-            Vector2 force = (desiredVel - rb.velocity) * forceMultiplier * speedUpBuffFix;   //移动力最终计算
-            rb.AddForce(force, ForceMode2D.Force);
+            // 探测器提供环境信息，运动对象只负责沿用现有施力算法。
+            rigMotion.Walk(
+                environmentSensor.GetAverageGroundNormal(),
+                environmentSensor.IsInWater,
+                environmentSensor.IsInWater ? false : environmentSensor.HasGroundContact(),
+                environmentSensor.IsGrounded,
+                speedUpBuffFix);
         }
         else
         {
@@ -228,76 +207,14 @@ public class VpetAction : MonoBehaviour
 
     [Tooltip("仅地面层级")]
     [SerializeField] LayerMask groundLayer;
-    /// <summary>地面接触过滤器。</summary>
-    private ContactFilter2D groundContactFilter;
-    /// <summary>用于累计地面法线的接触点缓冲区，最多读取十个接触点。</summary>
-    private ContactPoint2D[] contactPoints = new ContactPoint2D[10];
 
     [Tooltip("所有地面有关层级")]
     [SerializeField] LayerMask allGroundLayer;
-    /// <summary>全地面接触过滤器。</summary>
-    private ContactFilter2D allGroundContactFilter;
-    /// <summary>仅用于确认存在接触的单元素缓冲区。</summary>
-    private ContactPoint2D[] allContactPoints = new ContactPoint2D[1];
-    /// <summary>
-    /// 计算地面过滤器命中的接触点平均法线。
-    /// </summary>
-    /// <returns>归一化后的平均法线；没有接触点时返回向上方向。</returns>
-    private Vector2 GetAverageGroundNormal()
-    {
-        // 获取所有接触点
-        int count = rb.GetContacts(groundContactFilter, contactPoints);
-        if (count == 0)
-            return Vector2.up;
-
-        Vector2 sum = Vector2.zero;
-        for (int i = 0; i < count; i++)
-            sum += contactPoints[i].normal;
-        return (sum / count).normalized;
-    }
-
-    /// <summary>
-    /// 检查刚体是否接触全地面层掩码中的非触发碰撞体。
-    /// </summary>
-    /// <returns>存在任意匹配接触点时为 true；不区分接触面是否可站立。</returns>
-    private bool isTouchGround()
-    {
-        // 获取所有接触点
-        int count = rb.GetContacts(allGroundContactFilter, allContactPoints);
-        if (count > 0)
-            return true;
-        else
-            return false;
-    }
-
-    /// <summary>
-    /// 配置用于计算行走法线的地面接触过滤器，并排除触发器。
-    /// </summary>
-    private void InitGroundContactFilter()
-    {
-        groundContactFilter = new ContactFilter2D();
-        groundContactFilter.SetLayerMask(groundLayer);
-        groundContactFilter.useTriggers = false;
-    }
-
-    /// <summary>
-    /// 配置用于判断地面接触的完整层掩码，并排除触发器。
-    /// </summary>
-    private void InitAllGroundContactFilter()
-    {
-        allGroundContactFilter = new ContactFilter2D();
-        allGroundContactFilter.SetLayerMask(allGroundLayer);
-        allGroundContactFilter.useTriggers = false;
-    }
 
     #endregion
 
     #region 攀爬行为
 
-    /// <summary>攀爬速度。</summary>
-    private float _vpetClimbSpeed = 7f;
-    /// <summary>攀爬力放大倍率。</summary>
-    private float climbForceMultiplier = 2f;
     /// <summary>是否正在攀爬。</summary>
     private bool isClimbing = false;
 
@@ -320,13 +237,11 @@ public class VpetAction : MonoBehaviour
             if (!isClimbing)
             {
                 isClimbing = true;
-                rb.velocity = Vector2.zero;
+                rigMotion.ResetVelocity();
                 _animatorVpet.SetTrigger("ClimbStart");
             }
 
-            Vector2 desiredVel = Vector2.up * _vpetClimbSpeed;  //期望速度：向上匀速
-            Vector2 climbForce = (desiredVel - rb.velocity) * climbForceMultiplier; //计算驱动力
-            rb.AddForce(climbForce, ForceMode2D.Force);         //施加力
+            rigMotion.Climb();
 
             //攀爬音效播放(随机)
             if (climbAudioTimer <= 0)
@@ -520,7 +435,6 @@ public class VpetAction : MonoBehaviour
                 isAllowEat = true;
                 break;
 
-
             default:
                 Debug.Log("未知食物类型");
                 break;
@@ -613,7 +527,7 @@ public class VpetAction : MonoBehaviour
             targetPosition = (Vector2)transform.position + randomDirection;
 
             // 检查目标位置是否有效
-            if (CanTeleportTo(targetPosition))
+            if (environmentSensor.CanTeleportTo(targetPosition))
             {
                 foundValidPosition = true;  // 找到了有效的目标位置
                 break;  // 退出查找
@@ -621,27 +535,11 @@ public class VpetAction : MonoBehaviour
         }
         // 找到候选位置则移动到该位置；查找失败时向上偏移 0.5 个单位。
         if (foundValidPosition)
-            transform.position = targetPosition;
+            rigMotion.TeleportTo(targetPosition);
         else
-            transform.position += Vector3.up * 0.5f;
+            rigMotion.TeleportTo(transform.position + Vector3.up * 0.5f);
 
         AudioManager.Instance.PlaySound("teleport");
-    }
-
-    /// <summary>
-    /// 使用缩小后的胶囊范围检查候选位置是否可接受。
-    /// <para>仅依据单次重叠查询返回的碰撞体判断，不代表完整的落点安全性检查。</para>
-    /// </summary>
-    /// <param name="targetPosition">待检查的世界坐标。</param>
-    /// <returns>未查询到碰撞体，或返回的碰撞体带有 Ignore 标签时为 true。</returns>
-    private bool CanTeleportTo(Vector2 targetPosition)
-    {
-        Collider2D hit = Physics2D.OverlapCapsule(targetPosition,capsuleCollider.size*0.2f,capsuleCollider.direction,0f);
-        // 如果目标位置有碰撞体，则不能瞬移
-        if (hit != null && !hit.CompareTag("Ignore"))
-            return false;
-
-        return true;
     }
 
     //// 使用Gizmo绘制出目标地点的监测半径
@@ -714,58 +612,26 @@ public class VpetAction : MonoBehaviour
 
     #region 地面探测与飘飞
 
-    /// <summary>向下探测射线是否命中全地面层，而非实际刚体接触状态。</summary>
-    private bool isGrounded = false;
-    /// <summary>首条命中射线对应的碰撞体是否带有 Water 标签。</summary>
-    private bool isInWater = false;
-
     /// <summary>是否允许坠落监测计时器工作。</summary>
     private bool isAllowFallCheckTimer = false;
     /// <summary>离地确认的剩余等待时间，单位为秒。</summary>
     private float fallConfirmTimer;
     /// <summary>坠落监测间隔(超过这个时间不处于地面则判定为坠落中)。</summary>
     private float fallConfirmInterval = 0.2f;
-    /// <summary>射线长度。</summary>
-    private float rayLength = 1.6f;
-    /// <summary>射线半宽间隔。</summary>
-    private float halfWidth = 0.38f;
+
     /// <summary>
     /// 依次向下探测中、左、右三个位置，并通过延迟确认切换飘飞状态。
     /// <para>地面和水面标记以首条命中射线为准，不等同于刚体接触或浸水检测。</para>
     /// </summary>
     private void VpetFallCheck()
     {
-        // 三个射线起点：中、左、右
-        Vector2 centerOrigin = transform.position;
-        Vector2 leftOrigin = centerOrigin + Vector2.left * halfWidth;
-        Vector2 rightOrigin = centerOrigin + Vector2.right * halfWidth;
-        isGrounded = false;
-        isInWater = false;
-
-        // 依次发射三条向下射线，使用 allGroundLayer 过滤
-        foreach (Vector2 origin in new[] { centerOrigin, leftOrigin, rightOrigin })
-        {
-            RaycastHit2D hit = Physics2D.Raycast(origin, Vector2.down, rayLength, allGroundLayer);
-            if (hit.collider != null)
-            {
-                isGrounded = true;
-                // 检查碰撞体是否是水
-                if (hit.collider.CompareTag("Water"))
-                    isInWater = true;
-
-                break;
-            }
-        }
-
-        //Debug.DrawRay(centerOrigin, Vector2.down * rayLength, isGrounded ? Color.green : Color.red);
-        //Debug.DrawRay(leftOrigin, Vector2.down * rayLength, isGrounded ? Color.green : Color.red);
-        //Debug.DrawRay(rightOrigin, Vector2.down * rayLength, isGrounded ? Color.green : Color.red);
+        environmentSensor.RefreshGround(transform.position, allGroundLayer);
 
         // 从行走切到坠落
         if (currentState == VpetState.Walking || currentState == VpetState.Idle)
         {
             //启用掉落状态监测
-            if (!isAllowFallCheckTimer && !isGrounded)
+            if (!isAllowFallCheckTimer && !environmentSensor.IsGrounded)
             {
                 fallConfirmTimer = fallConfirmInterval; //赋予时间
                 isAllowFallCheckTimer = true;           //开始进行监测
@@ -775,7 +641,7 @@ public class VpetAction : MonoBehaviour
         if (isAllowFallCheckTimer && fallConfirmTimer <= 0)
         {
             //计时结束时若还处在空中
-            if (!isGrounded)
+            if (!environmentSensor.IsGrounded)
             {
                 currentState = VpetState.Fall;      //确认转换为飘飞状态
                 isAllowFallCheckTimer = false;      //停止计时器使用
@@ -785,8 +651,6 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    /// <summary>垂直飘飞力。</summary>
-    private float flyingForceVer = 7.4f;
     /// <summary>是否正在坠落。</summary>
     private bool isFalling = false;
 
@@ -800,7 +664,7 @@ public class VpetAction : MonoBehaviour
     private void VpetFall()
     {
         //桌宠状态为坠落时触发
-        if(currentState == VpetState.Fall && !isGrounded && !isGetUpCoroutineWork)
+        if(currentState == VpetState.Fall && !environmentSensor.IsGrounded && !isGetUpCoroutineWork)
         {
             //执行一次
             if (!isFalling)
@@ -809,7 +673,7 @@ public class VpetAction : MonoBehaviour
                 _animatorVpet.SetBool("isFalling", isFalling);  //更新动画器参数
                 _animatorVpet.SetTrigger("FallStart");          //播放一次动画
                 AudioManager.Instance.PlaySound("startFall");   //播放一次音效
-                force2D.force = Vector2.up * flyingForceVer;    //设置悬浮力
+                rigMotion.StartFloating();
             }
 
             //飘飞音效播放
@@ -821,7 +685,7 @@ public class VpetAction : MonoBehaviour
         }
 
         //若已落地
-        if(isGrounded && isFalling && currentState == VpetState.Fall && !isGetUpCoroutineWork)
+        if(environmentSensor.IsGrounded && isFalling && currentState == VpetState.Fall && !isGetUpCoroutineWork)
         {
             isAllowEat = false;                         //禁止进食
             StopFallingLogic();                         //坠落停止逻辑
@@ -830,30 +694,14 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    /// <summary>水平飘飞速度。</summary>
-    private float flyingSpeedHor = 4f;
-    /// <summary>正常向右校正系数。</summary>
-    private float fallHorForceMultiplier = 2f;
-    /// <summary>负向速度校正系数。</summary>
-    private float negativeVelMultiplier = 0.08f;
     /// <summary>
     /// 在空中飘飞时依据水平速度差施力；向左运动时减弱向右修正。
     /// </summary>
     private void VpetFallHorSpeedSet()
     {
-        if (currentState == VpetState.Fall && !isGrounded && isFalling)
+        if (currentState == VpetState.Fall && !environmentSensor.IsGrounded && isFalling)
         {
-            float vx = rb.velocity.x;               //获取X轴当前速度
-            float speedDiff = flyingSpeedHor - vx;  //速度差
-
-            //当移速处于不同方向时，选用不同系数
-            float k = vx < 0
-                ? fallHorForceMultiplier * negativeVelMultiplier
-                : fallHorForceMultiplier;
-
-            // 施加力
-            float forceX = speedDiff * k * speedUpBuffFix;
-            rb.AddForce(Vector2.right * forceX, ForceMode2D.Force);
+            rigMotion.DriveFloatingHorizontal(speedUpBuffFix);
 
         }
     }
@@ -881,7 +729,7 @@ public class VpetAction : MonoBehaviour
         isFalling = false;                              //变更为不在掉落中
         _animatorVpet.SetBool("isFalling", isFalling);  //更新动画器参数
         isAllowFallCheckTimer = false;
-        force2D.force = Vector2.zero;                 //终止力的施加
+        rigMotion.StopFloating();                     //仅停止持续力，保留当前速度
         AudioManager.Instance.StopSound("fall");      //终止音效播放
     }
 
@@ -1089,28 +937,12 @@ public class VpetAction : MonoBehaviour
 
     #region 碰撞体形状
 
-    /// <summary>随行为状态调整形状的桌宠胶囊碰撞体。</summary>
-    private CapsuleCollider2D capsuleCollider;
     /// <summary>
     /// 为睡眠或死亡状态设置横向胶囊，其他状态恢复竖向胶囊。
     /// </summary>
     private void VpetColliderChange()
     {
-        //睡眠和死亡状态的碰撞箱
-        if(currentState == VpetState.Sleep || currentState == VpetState.Die)
-        {
-            capsuleCollider.offset = new Vector2(0, -2.67f);            //碰撞箱偏移量
-            capsuleCollider.size = new Vector2(9f, 3.6f);               //碰撞箱尺寸
-            capsuleCollider.direction = CapsuleDirection2D.Horizontal;  //碰撞箱方向
-        }
-        //常规碰撞箱
-        else
-        {
-            capsuleCollider.offset = Vector2.zero;                      //碰撞箱偏移量
-            capsuleCollider.size = new Vector2(3.67f, 9.2f);            //碰撞箱尺寸
-            capsuleCollider.direction = CapsuleDirection2D.Vertical;    //碰撞箱方向
-        }
-
+        rigMotion.SetLyingCollider(currentState == VpetState.Sleep || currentState == VpetState.Die);
     }
 
     #endregion
@@ -1184,7 +1016,7 @@ public class VpetAction : MonoBehaviour
         //离开梯子时
         if (other.CompareTag("Ladder") && isClimbing)
         {
-            rb.AddForce(Vector2.up * 200f,ForceMode2D.Force);       //施加一个向上的推力
+            rigMotion.PushOffLadder();
             currentState = VpetState.Walking;     //更改状态
         }
     }
