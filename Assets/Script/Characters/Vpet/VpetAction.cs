@@ -4,32 +4,6 @@ using TMPro;
 using UnityEngine;
 
 /// <summary>
-/// 桌宠状态枚举
-/// - 定义桌宠行为及结算状态；编号同时供外部状态切换入口使用。
-/// </summary>
-public enum VpetState
-{
-    /// <summary>待机状态，外部编号为 0。</summary>
-    Idle,
-    /// <summary>行走状态，外部编号为 1。</summary>
-    Walking,
-    /// <summary>飘飞状态，外部编号为 2。</summary>
-    Fall,
-    /// <summary>攀爬状态，外部编号为 3。</summary>
-    Climb,
-    /// <summary>进食状态，外部编号为 4。</summary>
-    Eat,
-    /// <summary>睡眠状态，外部编号为 5。</summary>
-    Sleep,
-    /// <summary>跳舞状态，外部编号为 6。</summary>
-    Dance,
-    /// <summary>死亡状态，外部编号为 7。</summary>
-    Die,
-    /// <summary>胜利状态，外部编号为 8。</summary>
-    Win
-}
-
-/// <summary>
 /// 桌宠行为类
 /// - 保留外部入口与行为协调，将环境查询和物理操作委托给专用对象。
 /// </summary>
@@ -71,8 +45,8 @@ public class VpetAction : MonoBehaviour
     /// <summary>桌宠生命系统。</summary>
     private VpetHealthSystem health;
 
-    /// <summary>桌宠状态。</summary>
-    private VpetState currentState;
+    /// <summary>负责状态注册、当前状态维护和状态进入退出回调的状态机。</summary>
+    private VpetStateMachine stateMachine;
 
     #endregion
 
@@ -87,7 +61,7 @@ public class VpetAction : MonoBehaviour
         ConstantForce2D floatingForce = GetComponent<ConstantForce2D>();
         CapsuleCollider2D capsule = GetComponent<CapsuleCollider2D>();
         health = GetComponent<VpetHealthSystem>();
-        currentState = VpetState.Idle;
+        stateMachine = new VpetStateMachine(VpetState.Idle);
 
         // 协作对象只执行显式调用，不引入额外的 Unity 生命周期顺序。
         environmentSensor = new VpetEnvironmentSensor(body, capsule);
@@ -179,7 +153,7 @@ public class VpetAction : MonoBehaviour
     private void VpetWalk()
     {
         //桌宠状态为行走时执行移动
-        if (currentState == VpetState.Walking)
+        if (stateMachine.CurrentState == VpetState.Walking)
         {
             //走路音效播放
             if (walkAudioTimer <= 0)
@@ -231,7 +205,7 @@ public class VpetAction : MonoBehaviour
     {
         _animatorVpet.SetBool("isClimbing", isClimbing);    //动画机状态同步
         //桌宠状态为攀爬时执行
-        if (currentState == VpetState.Climb)
+        if (stateMachine.CurrentState == VpetState.Climb)
         {
             _animatorVpet.ResetTrigger("ClimbEnd");         //重置ClimbEnd Trigger
 
@@ -289,7 +263,7 @@ public class VpetAction : MonoBehaviour
 
             isAllowEat = false;                     //更改为不允许再进食
             eatenItemSprite.sprite = item.icon;     //改变食物精灵图
-            currentState = VpetState.Eat;           //改变桌宠当前状态
+            stateMachine.SetState(VpetState.Eat);           //改变桌宠当前状态
 
             //播放进食动画
             _animatorVpet.SetTrigger("Eat");
@@ -331,7 +305,7 @@ public class VpetAction : MonoBehaviour
             //金苹果
             case 0:
                 health.VpetRecover(10f);   //回复生命
-                currentState = VpetState.Walking;                   //更新桌宠状态
+                stateMachine.SetState(VpetState.Walking);                   //更新桌宠状态
                 isAllowEat = true;
                 break;
 
@@ -346,7 +320,7 @@ public class VpetAction : MonoBehaviour
                 onePunchState.SetActive(true);  //设置Effect状态图
                 Instantiate(onePunchEffect, transform.position, Quaternion.identity);
                 AudioManager.Instance.PlaySound("OnePunchState");
-                currentState = VpetState.Walking;
+                stateMachine.SetState(VpetState.Walking);
                 isAllowEat = true;
                 break;
 
@@ -358,12 +332,12 @@ public class VpetAction : MonoBehaviour
                     //生命恢复事件
                     case 1:
                         health.VpetRecover(20f);
-                        currentState = VpetState.Walking;
+                        stateMachine.SetState(VpetState.Walking);
                         break;
                     //瞬间死亡
                     case 2:
                         health.VpetGethurt(999f, Vector2.up * 100f);
-                        currentState = VpetState.Die;
+                        stateMachine.SetState(VpetState.Die);
                         break;
                     //移动加速
                     case 3:
@@ -375,7 +349,7 @@ public class VpetAction : MonoBehaviour
                         else
                             speedUpBuffCoroutine = StartCoroutine(Eat_SpeedUp());
 
-                        currentState = VpetState.Walking;
+                        stateMachine.SetState(VpetState.Walking);
                         break;
                     //普通攻击伤害增加，攻击频率加快
                     case 4:
@@ -387,23 +361,23 @@ public class VpetAction : MonoBehaviour
                         else
                             AttackUpBuffCoroutine = StartCoroutine(Eat_AttackUp());
 
-                        currentState = VpetState.Walking;
+                        stateMachine.SetState(VpetState.Walking);
                         break;
                     //扣除生命
                     case 5:
                         health.VpetGethurt(10f, Vector2.up * 100f);
-                        currentState = VpetState.Walking;
+                        stateMachine.SetState(VpetState.Walking);
                         break;
                     //瞬移
                     case 6:
                         Teleport();
-                        currentState = VpetState.Walking;
+                        stateMachine.SetState(VpetState.Walking);
                         break;
                     //瞬间爆炸
                     case 7:
                         var bomb = Instantiate(bombPrefab, transform.position, Quaternion.identity);
                         bomb.GetComponent<Item_Block_bomb>().isInstanctlyExplode = true;
-                        currentState = VpetState.Walking;
+                        stateMachine.SetState(VpetState.Walking);
                         break;
                 };
 
@@ -420,7 +394,7 @@ public class VpetAction : MonoBehaviour
                 else
                     AttackUpBuffCoroutine = StartCoroutine(Eat_AttackUp());
 
-                currentState = VpetState.Walking;
+                stateMachine.SetState(VpetState.Walking);
                 isAllowEat = true;
                 break;
 
@@ -433,7 +407,7 @@ public class VpetAction : MonoBehaviour
                 }
                 else
                     speedUpBuffCoroutine = StartCoroutine(Eat_SpeedUp());
-                currentState = VpetState.Walking;
+                stateMachine.SetState(VpetState.Walking);
                 isAllowEat = true;
                 break;
 
@@ -562,7 +536,7 @@ public class VpetAction : MonoBehaviour
     /// <returns>串联入睡、睡眠和起身阶段的协程迭代器。</returns>
     IEnumerator VpetSleep()
     {
-        currentState = VpetState.Sleep;
+        stateMachine.SetState(VpetState.Sleep);
         AudioManager.Instance.PlaySound("startSleep");  //音效播放
         _animatorVpet.SetTrigger("SleepStart");         //睡眠动作播放
 
@@ -593,7 +567,7 @@ public class VpetAction : MonoBehaviour
         _animatorVpet.SetTrigger("SleepEnd");           //起身动作播放
         yield return new WaitForSeconds(0.9f);          //等待动作播放
 
-        currentState = VpetState.Walking;               //更改为行走状态
+        stateMachine.SetState(VpetState.Walking);               //更改为行走状态
         VpetColliderChange();                           //更改碰撞箱
         isAllowEat = true;                              //允许进食
     }
@@ -618,7 +592,7 @@ public class VpetAction : MonoBehaviour
         environmentSensor.RefreshGround(transform.position, allGroundLayer);
 
         // 从行走切到坠落
-        if (currentState == VpetState.Walking || currentState == VpetState.Idle)
+        if (stateMachine.CurrentState == VpetState.Walking || stateMachine.CurrentState == VpetState.Idle)
         {
             //启用掉落状态监测
             if (!isAllowFallCheckTimer && !environmentSensor.IsGrounded)
@@ -633,7 +607,7 @@ public class VpetAction : MonoBehaviour
             //计时结束时若还处在空中
             if (!environmentSensor.IsGrounded)
             {
-                currentState = VpetState.Fall;      //确认转换为飘飞状态
+                stateMachine.SetState(VpetState.Fall);      //确认转换为飘飞状态
                 isAllowFallCheckTimer = false;      //停止计时器使用
             }
             else
@@ -654,7 +628,7 @@ public class VpetAction : MonoBehaviour
     private void VpetFall()
     {
         //桌宠状态为坠落时触发
-        if(currentState == VpetState.Fall && !environmentSensor.IsGrounded && !isGetUpCoroutineWork)
+        if(stateMachine.CurrentState == VpetState.Fall && !environmentSensor.IsGrounded && !isGetUpCoroutineWork)
         {
             //执行一次
             if (!isFalling)
@@ -675,7 +649,7 @@ public class VpetAction : MonoBehaviour
         }
 
         //若已落地
-        if(environmentSensor.IsGrounded && isFalling && currentState == VpetState.Fall && !isGetUpCoroutineWork)
+        if(environmentSensor.IsGrounded && isFalling && stateMachine.CurrentState == VpetState.Fall && !isGetUpCoroutineWork)
         {
             isAllowEat = false;                         //禁止进食
             StopFallingLogic();                         //坠落停止逻辑
@@ -689,7 +663,7 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     private void VpetFallHorSpeedSet()
     {
-        if (currentState == VpetState.Fall && !environmentSensor.IsGrounded && isFalling)
+        if (stateMachine.CurrentState == VpetState.Fall && !environmentSensor.IsGrounded && isFalling)
         {
             rigMotion.DriveFloatingHorizontal(effect.SpeedForceMultiplier);
 
@@ -707,7 +681,7 @@ public class VpetAction : MonoBehaviour
         isGetUpCoroutineWork = true;
         yield return new WaitForSeconds(2.5f);
         isAllowEat = true;
-        currentState = VpetState.Walking;
+        stateMachine.SetState(VpetState.Walking);
         isGetUpCoroutineWork = false;
     }
 
@@ -743,7 +717,7 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     private void VpetDance()
     {
-        if(currentState == VpetState.Dance)
+        if(stateMachine.CurrentState == VpetState.Dance)
         {
             isAllowEat = false;                 //禁止进食
             health.isVpetInvincible = true;     //无敌效果
@@ -787,7 +761,7 @@ public class VpetAction : MonoBehaviour
             yield return null;
         }
         AudioManager.Instance.PauseOrContinueBGM(true); //暂停BGM
-        currentState = VpetState.Walking;               //状态转变
+        stateMachine.SetState(VpetState.Walking);               //状态转变
         _animatorVpet.SetTrigger("DanceEnd");           //播放动画
         yield return new WaitForSeconds(0.5f);          //短暂等待
         AudioManager.Instance.AdjustBGMVolume(1);       //恢复BGM音源音量
@@ -821,7 +795,7 @@ public class VpetAction : MonoBehaviour
     #region 状态入口与结算
 
     /// <summary>
-    /// 根据外部编号更新当前状态；不在此入口统一执行状态进入或退出清理。
+    /// 根据外部编号请求状态机切换当前状态；具体状态生命周期由状态机处理。
     /// </summary>
     /// <param name="state">状态编号：0 待机、1 行走、2 飘飞、3 攀爬、4 进食、5 睡眠、6 跳舞、7 死亡、8 胜利；其他值仅输出日志。</param>
     public void VpetStateSet(int state)
@@ -829,31 +803,31 @@ public class VpetAction : MonoBehaviour
         switch (state)
         {
             case 0:
-                currentState = VpetState.Idle;
+                stateMachine.SetState(VpetState.Idle);
                 break;
             case 1:
-                currentState = VpetState.Walking;
+                stateMachine.SetState(VpetState.Walking);
                 break;
             case 2:
-                currentState = VpetState.Fall;
+                stateMachine.SetState(VpetState.Fall);
                 break;
             case 3:
-                currentState = VpetState.Climb;
+                stateMachine.SetState(VpetState.Climb);
                 break;
             case 4:
-                currentState = VpetState.Eat;
+                stateMachine.SetState(VpetState.Eat);
                 break;
             case 5:
-                currentState = VpetState.Sleep;
+                stateMachine.SetState(VpetState.Sleep);
                 break;
             case 6:
-                currentState = VpetState.Dance;
+                stateMachine.SetState(VpetState.Dance);
                 break;
             case 7:
-                currentState = VpetState.Die;
+                stateMachine.SetState(VpetState.Die);
                 break;
             case 8:
-                currentState = VpetState.Win;
+                stateMachine.SetState(VpetState.Win);
                 break;
             default:
                 Debug.Log("未知状态设置");
@@ -866,7 +840,7 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     public void VpetDead()
     {
-        currentState = VpetState.Die;   //更改状态
+        stateMachine.SetState(VpetState.Die);   //更改状态
         StopAllCoroutines();            //停止其他所有协程
         VpetColliderChange();           //改变碰撞箱
         StopFallingLogic();             //进行一次坠落停止逻辑
@@ -883,7 +857,7 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     public void VpetWin()
     {
-        currentState = VpetState.Win;   //更改状态
+        stateMachine.SetState(VpetState.Win);   //更改状态
         health.isVpetDead = true;       //防止执行其他操作
         StopAllCoroutines();            //停止其他所有协程
         VpetColliderChange();           //更新碰撞箱
@@ -907,7 +881,7 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     private void VpetColliderChange()
     {
-        rigMotion.SetLyingCollider(currentState == VpetState.Sleep || currentState == VpetState.Die);
+        rigMotion.SetLyingCollider(stateMachine.CurrentState == VpetState.Sleep || stateMachine.CurrentState == VpetState.Die);
     }
 
     #endregion
@@ -950,14 +924,14 @@ public class VpetAction : MonoBehaviour
         //接触到梯子时
         if (other.CompareTag("Ladder"))
         {
-            if (currentState == VpetState.Dance) return;
-            if(currentState == VpetState.Idle || currentState == VpetState.Walking)
-                currentState = VpetState.Climb;     //更改状态
-            if(currentState == VpetState.Fall)
+            if (stateMachine.CurrentState == VpetState.Dance) return;
+            if(stateMachine.CurrentState == VpetState.Idle || stateMachine.CurrentState == VpetState.Walking)
+                stateMachine.SetState(VpetState.Climb);     //更改状态
+            if(stateMachine.CurrentState == VpetState.Fall)
             {
                 StopFallingLogic();                 //停止坠落
                 isAllowEat = true;                  //允许进食
-                currentState = VpetState.Climb;     //更改状态
+                stateMachine.SetState(VpetState.Climb);     //更改状态
 
             }
         }
@@ -982,7 +956,7 @@ public class VpetAction : MonoBehaviour
         if (other.CompareTag("Ladder") && isClimbing)
         {
             rigMotion.PushOffLadder();
-            currentState = VpetState.Walking;     //更改状态
+            stateMachine.SetState(VpetState.Walking);     //更改状态
         }
     }
 
@@ -1002,7 +976,7 @@ public class VpetAction : MonoBehaviour
         }
 
         //若碰到敌人
-        if (other.collider.CompareTag("Enemy") && attack.CanStartNormalAttack() && currentState == VpetState.Walking)
+        if (other.collider.CompareTag("Enemy") && attack.CanStartNormalAttack() && stateMachine.CurrentState == VpetState.Walking)
         {
             attack.StartNormalAttackCooldown();     //攻击CD重置
             var enemyHealth = other.gameObject.GetComponent<EnemyHealthSystem>();
