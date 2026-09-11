@@ -107,80 +107,70 @@ public abstract class VpetStateBase : IVpetStateHandler
 /// 桌宠待机状态
 /// - 作为状态机中的待机状态处理器占位。
 /// </summary>
-public sealed class VpetIdleState : VpetStateBase
+public sealed class VpetState_Idle : VpetStateBase
 {
     /// <summary>创建待机状态处理器。</summary>
-    public VpetIdleState() : base(VpetState.Idle) { }
+    public VpetState_Idle() : base(VpetState.Idle) { }
 }
 
 /// <summary>
 /// 桌宠飘飞状态
 /// - 作为状态机中的飘飞状态处理器占位。
 /// </summary>
-public sealed class VpetFallState : VpetStateBase
+public sealed class VpetState_Fall : VpetStateBase
 {
     /// <summary>创建飘飞状态处理器。</summary>
-    public VpetFallState() : base(VpetState.Fall) { }
-}
-
-/// <summary>
-/// 桌宠攀爬状态
-/// - 作为状态机中的攀爬状态处理器占位。
-/// </summary>
-public sealed class VpetClimbState : VpetStateBase
-{
-    /// <summary>创建攀爬状态处理器。</summary>
-    public VpetClimbState() : base(VpetState.Climb) { }
+    public VpetState_Fall() : base(VpetState.Fall) { }
 }
 
 /// <summary>
 /// 桌宠进食状态
 /// - 作为状态机中的进食状态处理器占位。
 /// </summary>
-public sealed class VpetEatState : VpetStateBase
+public sealed class VpetState_Eat : VpetStateBase
 {
     /// <summary>创建进食状态处理器。</summary>
-    public VpetEatState() : base(VpetState.Eat) { }
+    public VpetState_Eat() : base(VpetState.Eat) { }
 }
 
 /// <summary>
 /// 桌宠睡眠状态
 /// - 作为状态机中的睡眠状态处理器占位。
 /// </summary>
-public sealed class VpetSleepState : VpetStateBase
+public sealed class VpetState_Sleep : VpetStateBase
 {
     /// <summary>创建睡眠状态处理器。</summary>
-    public VpetSleepState() : base(VpetState.Sleep) { }
+    public VpetState_Sleep() : base(VpetState.Sleep) { }
 }
 
 /// <summary>
 /// 桌宠跳舞状态
 /// - 作为状态机中的跳舞状态处理器占位。
 /// </summary>
-public sealed class VpetDanceState : VpetStateBase
+public sealed class VpetState_Dance : VpetStateBase
 {
     /// <summary>创建跳舞状态处理器。</summary>
-    public VpetDanceState() : base(VpetState.Dance) { }
+    public VpetState_Dance() : base(VpetState.Dance) { }
 }
 
 /// <summary>
 /// 桌宠死亡状态
 /// - 作为状态机中的死亡状态处理器占位。
 /// </summary>
-public sealed class VpetDieState : VpetStateBase
+public sealed class VpetState_Die : VpetStateBase
 {
     /// <summary>创建死亡状态处理器。</summary>
-    public VpetDieState() : base(VpetState.Die) { }
+    public VpetState_Die() : base(VpetState.Die) { }
 }
 
 /// <summary>
 /// 桌宠胜利状态
 /// - 作为状态机中的胜利状态处理器占位。
 /// </summary>
-public sealed class VpetWinState : VpetStateBase
+public sealed class VpetState_Win : VpetStateBase
 {
     /// <summary>创建胜利状态处理器。</summary>
-    public VpetWinState() : base(VpetState.Win) { }
+    public VpetState_Win() : base(VpetState.Win) { }
 }
 
 /// <summary>
@@ -208,15 +198,15 @@ public sealed class VpetStateMachine
     /// <param name="overrides">用于替换默认处理器的状态实现，可为空。</param>
     public VpetStateMachine(VpetState initialState, params IVpetStateHandler[] overrides)
     {
-        Register(new VpetIdleState());
-        Register(new VpetWalkingState());
-        Register(new VpetFallState());
-        Register(new VpetClimbState());
-        Register(new VpetEatState());
-        Register(new VpetSleepState());
-        Register(new VpetDanceState());
-        Register(new VpetDieState());
-        Register(new VpetWinState());
+        Register(new VpetState_Idle());
+        Register(new VpetState_Walking());
+        Register(new VpetState_Fall());
+        Register(new VpetState_Climb());
+        Register(new VpetState_Eat());
+        Register(new VpetState_Sleep());
+        Register(new VpetState_Dance());
+        Register(new VpetState_Die());
+        Register(new VpetState_Win());
 
         if (overrides != null)
         {

@@ -4,7 +4,7 @@ using UnityEngine;
 /// 桌宠行走状态
 /// - 作为状态机中的行走状态处理器，执行行走表现、环境读取和刚体施力。
 /// </summary>
-public sealed class VpetWalkingState : VpetStateBase
+public sealed class VpetState_Walking : VpetStateBase
 {
     /// <summary>负责读取地面与水面信息的环境探测器。</summary>
     private readonly VpetEnvironmentSensor environmentSensor;
@@ -27,7 +27,7 @@ public sealed class VpetWalkingState : VpetStateBase
     #region 初始化与状态行为
 
     /// <summary>创建不绑定外部依赖的行走状态占位处理器。</summary>
-    public VpetWalkingState() : this(null, null, null, null)
+    public VpetState_Walking() : this(null, null, null, null)
     {
     }
 
@@ -38,7 +38,7 @@ public sealed class VpetWalkingState : VpetStateBase
     /// <param name="environmentSensor">用于读取地面与水面信息的环境探测器。</param>
     /// <param name="rigMotion">用于执行 Rigidbody2D 行走施力的运动对象。</param>
     /// <param name="effect">用于读取当前速度增益倍率的效果对象。</param>
-    public VpetWalkingState(
+    public VpetState_Walking(
         Animator animator,
         VpetEnvironmentSensor environmentSensor,
         VpetRigMotion rigMotion,

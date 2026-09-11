@@ -69,7 +69,8 @@ public class VpetAction : MonoBehaviour
         effect = new VpetEffect();
         stateMachine = new VpetStateMachine(
             VpetState.Idle,
-            new VpetWalkingState(_animatorVpet, environmentSensor, rigMotion, effect));
+            new VpetState_Walking(_animatorVpet, environmentSensor, rigMotion, effect),
+            new VpetState_Climb(_animatorVpet, rigMotion));
         figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
     }
 
@@ -91,7 +92,6 @@ public class VpetAction : MonoBehaviour
 
         if (health.isVpetDead) return;      //桌宠死亡则不执行
         stateMachine.FixedUpdate(); //由当前状态执行物理帧行为
-        VpetClimb();    //桌宠攀爬行为
         VpetFallHorSpeedSet();  //桌宠飘飞水平力
     }
 
@@ -153,56 +153,6 @@ public class VpetAction : MonoBehaviour
 
     #endregion
 
-    #region 攀爬行为
-
-    /// <summary>是否正在攀爬。</summary>
-    private bool isClimbing = false;
-
-    /// <summary>攀爬音效计时器。</summary>
-    private float climbAudioTimer;
-    /// <summary>攀爬音效间隔。</summary>
-    private float climbAudioCD = 0.62f;
-    /// <summary>
-    /// 在攀爬状态下施加向上驱动力，并处理攀爬动画切换与间隔音效。
-    /// </summary>
-    private void VpetClimb()
-    {
-        _animatorVpet.SetBool("isClimbing", isClimbing);    //动画机状态同步
-        //桌宠状态为攀爬时执行
-        if (stateMachine.CurrentState == VpetState.Climb)
-        {
-            _animatorVpet.ResetTrigger("ClimbEnd");         //重置ClimbEnd Trigger
-
-            //若此时不是正在攀爬，则执行一次动画
-            if (!isClimbing)
-            {
-                isClimbing = true;
-                rigMotion.ResetVelocity();
-                _animatorVpet.SetTrigger("ClimbStart");
-            }
-
-            rigMotion.Climb();
-
-            //攀爬音效播放(随机)
-            if (climbAudioTimer <= 0)
-            {
-                climbAudioTimer = climbAudioCD;
-                int rand = Random.Range(1, 5);
-                AudioManager.Instance.PlaySound($"Assets/Audio/Vpet/climb/ladder" + rand + ".wav");
-            }
-        }
-        else
-        {
-            if (isClimbing)
-            {
-                isClimbing = false;
-                _animatorVpet.SetTrigger("ClimbEnd");
-            }
-        }
-    }
-
-    #endregion
-
     #region 进食与食物效果
 
     [Tooltip("进食道具Sprite渲染器绑定")]
@@ -238,10 +188,6 @@ public class VpetAction : MonoBehaviour
 
             //启用协程延迟时间后判断食物类型
             StartCoroutine(StartFoodJudge(item));
-
-            //重置攀爬状态
-            if (isClimbing)
-                isClimbing = false;
 
             //重置飘飞状态
             if (isFalling)
@@ -744,7 +690,6 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     private void TimerWork()
     {
-        climbAudioTimer -= Time.deltaTime;
         fallAudioTimer -= Time.deltaTime;
         sleepAudioTimer -= Time.deltaTime;
         attack.Tick(Time.deltaTime);
@@ -916,7 +861,7 @@ public class VpetAction : MonoBehaviour
         if (health.isVpetDead) return;      //桌宠死亡则不执行
 
         //离开梯子时
-        if (other.CompareTag("Ladder") && isClimbing)
+        if (other.CompareTag("Ladder") && stateMachine.CurrentState == VpetState.Climb)
         {
             rigMotion.PushOffLadder();
             stateMachine.SetState(VpetState.Walking);     //更改状态
