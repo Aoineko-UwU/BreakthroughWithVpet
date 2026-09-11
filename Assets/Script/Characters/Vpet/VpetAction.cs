@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using TMPro;
 using UnityEngine;
 
 /// <summary>
@@ -30,6 +27,9 @@ public class VpetAction : MonoBehaviour
     [Tooltip("一拳状态")]
     [SerializeField] private GameObject onePunchState;
 
+    [Tooltip("敌人层")]
+    [SerializeField] private LayerMask enemyLayer;
+
     /// <summary>负责地面接触、射线与瞬移重叠查询的协作对象。</summary>
     private VpetEnvironmentSensor environmentSensor;
 
@@ -47,6 +47,15 @@ public class VpetAction : MonoBehaviour
 
     /// <summary>负责状态注册、当前状态维护和状态进入退出回调的状态机。</summary>
     private VpetStateMachine stateMachine;
+
+    /// <summary>负责飘飞行为及落地起身流程的状态处理器。</summary>
+    private VpetState_Fall fallState;
+
+    /// <summary>负责睡眠协程的状态处理器。</summary>
+    private VpetState_Sleep sleepState;
+
+    /// <summary>负责进食和食物效果分派的状态处理器。</summary>
+    private VpetState_Eat eatState;
 
     #endregion
 
@@ -67,11 +76,88 @@ public class VpetAction : MonoBehaviour
         rigMotion = new VpetRigMotion(body, floatingForce, capsule);
         attack = new VpetAttack();
         effect = new VpetEffect();
+        figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
+
+        // 先创建状态对象，再创建状态机；回调捕获的状态机引用会在下一步完成赋值。
+        fallState = new VpetState_Fall(
+            _animatorVpet,
+            environmentSensor,
+            rigMotion,
+            effect,
+            this,
+            nextState => stateMachine.SetState(nextState),
+            allow => isAllowEat = allow);
+        sleepState = new VpetState_Sleep(
+            this,
+            _animatorVpet,
+            health,
+            rigMotion,
+            nextState => stateMachine.SetState(nextState),
+            allow => isAllowEat = allow);
+        eatState = new VpetState_Eat(
+            this,
+            _animatorVpet,
+            _animatorVpetHand,
+            _animatorEatenItem,
+            eatenItemSprite,
+            health,
+            attack,
+            effect,
+            environmentSensor,
+            rigMotion,
+            transform,
+            nextState => stateMachine.SetState(nextState),
+            () =>
+            {
+                if (fallState.IsFalling)
+                    fallState.StopFallingLogic();
+            },
+            () => sleepState.BeginSleep(),
+            () => isAllowEat,
+            allow => isAllowEat = allow,
+            TextPrefab,
+            figureCanvas,
+            speedUpParticle,
+            attackUpParticle,
+            onePunchState,
+            onePunchEffect,
+            bombPrefab);
+
+        VpetState_Dance danceState = new VpetState_Dance(
+            this,
+            _animatorVpet,
+            health,
+            attack,
+            transform,
+            nextState => stateMachine.SetState(nextState),
+            allow => isAllowEat = allow,
+            enemyLayer);
+        VpetState_Die dieState = new VpetState_Die(
+            this,
+            rigMotion,
+            _animatorVpet,
+            () => fallState.StopFallingLogic(),
+            () => GameManager.Instance.VpetDeadHandle());
+        VpetState_Win winState = new VpetState_Win(
+            this,
+            rigMotion,
+            _animatorVpet,
+            health,
+            () => fallState.StopFallingLogic(),
+            transform,
+            winParticle,
+            () => GameManager.Instance.VpetWinHandle());
+
         stateMachine = new VpetStateMachine(
             VpetState.Idle,
             new VpetState_Walking(_animatorVpet, environmentSensor, rigMotion, effect),
-            new VpetState_Climb(_animatorVpet, rigMotion));
-        figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
+            new VpetState_Climb(_animatorVpet, rigMotion),
+            fallState,
+            eatState,
+            sleepState,
+            danceState,
+            dieState,
+            winState);
     }
 
     /// <summary>
@@ -92,7 +178,6 @@ public class VpetAction : MonoBehaviour
 
         if (health.isVpetDead) return;      //桌宠死亡则不执行
         stateMachine.FixedUpdate(); //由当前状态执行物理帧行为
-        VpetFallHorSpeedSet();  //桌宠飘飞水平力
     }
 
     /// <summary>
@@ -102,9 +187,7 @@ public class VpetAction : MonoBehaviour
     {
         if (health.isVpetDead) return;      //桌宠死亡则不执行
 
-        VpetFall();         //桌宠飘飞行为
         VpetFallCheck();    //桌宠飘飞行为监测
-        VpetDance();        //桌宠跳舞行为
         stateMachine.Update(Time.deltaTime); //由当前状态执行普通帧行为
         TimerWork();        //计时器工作
     }
@@ -168,321 +251,13 @@ public class VpetAction : MonoBehaviour
     /// <param name="item">待食用的物品数据；为空时不启动进食流程。</param>
     public void VpetEat(ItemData item)
     {
-        if (health.isVpetDead) return;      //桌宠死亡则不执行
-
-        //非空检查
-        if (item != null && isAllowEat)
-        {
-            if (isFalling) StopFallingLogic();      //若处于坠落状态，则停止坠落逻辑
-
-            isAllowEat = false;                     //更改为不允许再进食
-            eatenItemSprite.sprite = item.icon;     //改变食物精灵图
-            stateMachine.SetState(VpetState.Eat);           //改变桌宠当前状态
-
-            //播放进食动画
-            _animatorVpet.SetTrigger("Eat");
-            _animatorVpetHand.SetTrigger("Eat");
-            _animatorEatenItem.SetTrigger("Eat");
-
-            AudioManager.Instance.PlaySound("pickItem");    //播放音效
-
-            //启用协程延迟时间后判断食物类型
-            StartCoroutine(StartFoodJudge(item));
-
-            //重置飘飞状态
-            if (isFalling)
-                isFalling = false;
-
-        }
-    }
-
-    /// <summary>
-    /// 等待进食动画阶段结束，再按物品编号分派恢复、睡眠、增益或随机事件。
-    /// </summary>
-    /// <param name="item">由进食入口传入的非空物品数据。</param>
-    /// <returns>包含进食等待阶段的协程迭代器。</returns>
-    IEnumerator StartFoodJudge(ItemData item)
-    {
-        yield return new WaitForSeconds(0.8f);
-        AudioManager.Instance.PlaySound("eating");  //播放吃东西音效
-        yield return new WaitForSeconds(1.6f);
-
-        int index = item.itemID;    //获取物品ID
-
-        //根据物品ID判断执行不同效果
-        switch (index)
-        {
-            //金苹果
-            case 0:
-                health.VpetRecover(10f);   //回复生命
-                stateMachine.SetState(VpetState.Walking);                   //更新桌宠状态
-                isAllowEat = true;
-                break;
-
-            //昏睡红茶
-            case 1:
-                StartCoroutine(VpetSleep());    //桌宠睡眠
-                break;
-
-            //肾宝
-            case 2:
-                attack.GrantOnePunch();          //强化下一次攻击
-                onePunchState.SetActive(true);  //设置Effect状态图
-                Instantiate(onePunchEffect, transform.position, Quaternion.identity);
-                AudioManager.Instance.PlaySound("OnePunchState");
-                stateMachine.SetState(VpetState.Walking);
-                isAllowEat = true;
-                break;
-
-            //地球
-            case 3:
-                int eventIndex = RandomSelector.Instance.EventRandomSelector(1);    //获取随机的事件
-                switch(eventIndex)
-                {
-                    //生命恢复事件
-                    case 1:
-                        health.VpetRecover(20f);
-                        stateMachine.SetState(VpetState.Walking);
-                        break;
-                    //瞬间死亡
-                    case 2:
-                        health.VpetGethurt(999f, Vector2.up * 100f);
-                        stateMachine.SetState(VpetState.Die);
-                        break;
-                    //移动加速
-                    case 3:
-                        if(speedUpBuffCoroutine != null)
-                        {
-                            StopCoroutine(speedUpBuffCoroutine);
-                            speedUpBuffCoroutine = StartCoroutine(Eat_SpeedUp());
-                        }
-                        else
-                            speedUpBuffCoroutine = StartCoroutine(Eat_SpeedUp());
-
-                        stateMachine.SetState(VpetState.Walking);
-                        break;
-                    //普通攻击伤害增加，攻击频率加快
-                    case 4:
-                        if(AttackUpBuffCoroutine != null)
-                        {
-                            StopCoroutine(AttackUpBuffCoroutine);
-                            AttackUpBuffCoroutine = StartCoroutine(Eat_AttackUp());
-                        }
-                        else
-                            AttackUpBuffCoroutine = StartCoroutine(Eat_AttackUp());
-
-                        stateMachine.SetState(VpetState.Walking);
-                        break;
-                    //扣除生命
-                    case 5:
-                        health.VpetGethurt(10f, Vector2.up * 100f);
-                        stateMachine.SetState(VpetState.Walking);
-                        break;
-                    //瞬移
-                    case 6:
-                        Teleport();
-                        stateMachine.SetState(VpetState.Walking);
-                        break;
-                    //瞬间爆炸
-                    case 7:
-                        var bomb = Instantiate(bombPrefab, transform.position, Quaternion.identity);
-                        bomb.GetComponent<Item_Block_bomb>().isInstanctlyExplode = true;
-                        stateMachine.SetState(VpetState.Walking);
-                        break;
-                };
-
-                isAllowEat = true;
-                break;
-
-            //可乐(加伤害)
-            case 4:
-                if (AttackUpBuffCoroutine != null)
-                {
-                    StopCoroutine(AttackUpBuffCoroutine);
-                    AttackUpBuffCoroutine = StartCoroutine(Eat_AttackUp());
-                }
-                else
-                    AttackUpBuffCoroutine = StartCoroutine(Eat_AttackUp());
-
-                stateMachine.SetState(VpetState.Walking);
-                isAllowEat = true;
-                break;
-
-            //雪碧(加速)
-            case 5:
-                if (speedUpBuffCoroutine != null)
-                {
-                    StopCoroutine(speedUpBuffCoroutine);
-                    speedUpBuffCoroutine = StartCoroutine(Eat_SpeedUp());
-                }
-                else
-                    speedUpBuffCoroutine = StartCoroutine(Eat_SpeedUp());
-                stateMachine.SetState(VpetState.Walking);
-                isAllowEat = true;
-                break;
-
-            default:
-                Debug.Log("未知食物类型");
-                break;
-        }
-
+        eatState.TryEat(item);
     }
 
     #endregion
 
-    #region 限时增益
 
-    /// <summary>加速Buff协程。</summary>
-    private Coroutine speedUpBuffCoroutine;
-    /// <summary>
-    /// 启用行走与飘飞水平施力增益，生成提示和粒子，并在持续时间结束后还原倍率。
-    /// </summary>
-    /// <returns>控制加速增益持续时间的协程迭代器。</returns>
-    IEnumerator Eat_SpeedUp()
-    {
-        ShowText("速度提升↑↑");
-        AudioManager.Instance.PlaySound("getBuff");
-        effect.ActivateSpeedBuff();             //更改加速倍率
-        var par = Instantiate(speedUpParticle, transform.position, Quaternion.identity, transform); //粒子生成
-        Destroy(par, VpetEffect.SpeedBuffDuration);
-        //等待效果持续时间
-        yield return new WaitForSeconds(VpetEffect.SpeedBuffDuration);
 
-        effect.ClearSpeedBuff();        //恢复默认倍率
-        speedUpBuffCoroutine = null;    //清理本协程
-    }
-
-    /// <summary>攻击Buff协程。</summary>
-    private Coroutine AttackUpBuffCoroutine;
-    /// <summary>
-    /// 临时提高普通攻击伤害、缩短攻击间隔并禁止受击击退，结束后恢复默认修正。
-    /// </summary>
-    /// <returns>控制攻击增益持续时间的协程迭代器。</returns>
-    IEnumerator Eat_AttackUp()
-    {
-        AudioManager.Instance.PlaySound("getBuff");
-        ShowText("攻击提升↑↑");
-        health.SetKnockBack(false);     //不可击退状态
-        var par = Instantiate(attackUpParticle, transform.position, Quaternion.identity, transform); //粒子生成
-        Destroy(par, VpetEffect.SpeedBuffDuration);
-        //更改倍率
-        effect.ActivateAttackBuff(attack);
-        //等待效果持续时间
-        yield return new WaitForSeconds(VpetEffect.AttackBuffDuration);
-        //恢复默认倍率
-        effect.ClearAttackBuff(attack);
-        health.SetKnockBack(true);      //可击退状态
-
-        AttackUpBuffCoroutine = null;   //清理本协程
-    }
-
-    #endregion
-
-    #region 随机瞬移
-
-    /// <summary>最大瞬移范围。</summary>
-    private float teleportRange = 12f;
-    /// <summary>最大查找次数。</summary>
-    private int maxSearchAttempts = 10;
-    /// <summary>
-    /// 在限定范围和尝试次数内寻找可用瞬移位置，并播放音效。
-    /// <para>若所有候选位置均被拒绝，则将当前位置向上移动 0.5 个世界单位。</para>
-    /// </summary>
-    private void Teleport()
-    {
-        Vector2 targetPosition = Vector2.zero;
-        bool foundValidPosition = false;
-
-        // 尝试查找最多 maxSearchAttempts 次
-        for (int i = 0; i < maxSearchAttempts; i++)
-        {
-            // 随机选择一个目标位置（在指定范围内）
-            Vector2 randomDirection = Random.insideUnitCircle * teleportRange;  // 在一个圆形范围内随机
-            targetPosition = (Vector2)transform.position + randomDirection;
-
-            // 检查目标位置是否有效
-            if (environmentSensor.CanTeleportTo(targetPosition))
-            {
-                foundValidPosition = true;  // 找到了有效的目标位置
-                break;  // 退出查找
-            }
-        }
-        // 找到候选位置则移动到该位置；查找失败时向上偏移 0.5 个单位。
-        if (foundValidPosition)
-            rigMotion.TeleportTo(targetPosition);
-        else
-            rigMotion.TeleportTo(transform.position + Vector3.up * 0.5f);
-
-        AudioManager.Instance.PlaySound("teleport");
-    }
-
-    //// 使用Gizmo绘制出目标地点的监测半径
-    //private void OnDrawGizmos()
-    //{
-    //    Gizmos.color = Color.red; // 监测范围的颜色
-    //    Gizmos.DrawWireSphere(transform.position, teleportRange);  // 绘制绿色的圆形区域
-    //}
-
-    #endregion
-
-    #region 睡眠行为
-
-    /// <summary>进入睡眠循环后的持续时间，不含入睡和起身动画等待。</summary>
-    private float sleepTime = 7.5f;
-    /// <summary>睡眠音效距离下次播放的剩余时间，单位为秒。</summary>
-    private float sleepAudioTimer;
-    /// <summary>睡眠音效的播放间隔，单位为秒。</summary>
-    private float sleepAudioTimerCD = 2.3f;
-
-    /// <summary>睡眠恢复计时器。</summary>
-    private float sleepRecoverTimer;
-    /// <summary>睡眠恢复间隔。</summary>
-    private float sleepRecoverCD = 1f;
-    /// <summary>每次生命恢复量。</summary>
-    private float sleepRecoverRate = 1f;
-    /// <summary>
-    /// 播放入睡和起身动画，在睡眠期间定时恢复生命，结束后恢复行走及进食权限。
-    /// </summary>
-    /// <returns>串联入睡、睡眠和起身阶段的协程迭代器。</returns>
-    IEnumerator VpetSleep()
-    {
-        stateMachine.SetState(VpetState.Sleep);
-        AudioManager.Instance.PlaySound("startSleep");  //音效播放
-        _animatorVpet.SetTrigger("SleepStart");         //睡眠动作播放
-
-        yield return new WaitForSeconds(2.5f);          //等待动作播放
-
-        VpetColliderChange();                           //改变碰撞箱
-
-        float elapsedTime = 0f;     //经过时间
-        while (elapsedTime < sleepTime)
-        {
-            elapsedTime += Time.deltaTime;
-            if (sleepAudioTimer <= 0)
-            {
-                sleepAudioTimer = sleepAudioTimerCD;
-                AudioManager.Instance.PlaySound("sleeping");
-            }
-
-            if (sleepRecoverTimer <= 0)
-            {
-                sleepRecoverTimer = sleepRecoverCD;
-                health.VpetRecover(sleepRecoverRate);
-            }
-
-            yield return null; // 等待下一帧，保持循环活跃
-        }
-
-        AudioManager.Instance.StopSound("sleeping");
-        _animatorVpet.SetTrigger("SleepEnd");           //起身动作播放
-        yield return new WaitForSeconds(0.9f);          //等待动作播放
-
-        stateMachine.SetState(VpetState.Walking);               //更改为行走状态
-        VpetColliderChange();                           //更改碰撞箱
-        isAllowEat = true;                              //允许进食
-    }
-
-    #endregion
 
     #region 地面探测与飘飞
 
@@ -525,163 +300,8 @@ public class VpetAction : MonoBehaviour
         }
     }
 
-    /// <summary>是否正在坠落。</summary>
-    private bool isFalling = false;
-
-    /// <summary>飘飞音效计时器。</summary>
-    private float fallAudioTimer;
-    /// <summary>飘飞音效间隔。</summary>
-    private float fallAudioCD = 1f;
-    /// <summary>
-    /// 处理飘飞开始时的持续升力与表现，并在落地后启动起身等待。
-    /// </summary>
-    private void VpetFall()
-    {
-        //桌宠状态为坠落时触发
-        if(stateMachine.CurrentState == VpetState.Fall && !environmentSensor.IsGrounded && !isGetUpCoroutineWork)
-        {
-            //执行一次
-            if (!isFalling)
-            {
-                isFalling = true;                               //设置为正在下落
-                _animatorVpet.SetBool("isFalling", isFalling);  //更新动画器参数
-                _animatorVpet.SetTrigger("FallStart");          //播放一次动画
-                AudioManager.Instance.PlaySound("startFall");   //播放一次音效
-                rigMotion.StartFloating();
-            }
-
-            //飘飞音效播放
-            if (fallAudioTimer <= 0 && isFalling)
-            {
-                fallAudioTimer = fallAudioCD;
-                AudioManager.Instance.PlaySound("fall");
-            }
-        }
-
-        //若已落地
-        if(environmentSensor.IsGrounded && isFalling && stateMachine.CurrentState == VpetState.Fall && !isGetUpCoroutineWork)
-        {
-            isAllowEat = false;                         //禁止进食
-            StopFallingLogic();                         //坠落停止逻辑
-            StartCoroutine(VpetGetUp());                //起身延迟
-            AudioManager.Instance.PlaySound("fallen");  //音效播放
-        }
-    }
-
-    /// <summary>
-    /// 在空中飘飞时依据水平速度差施力；向左运动时减弱向右修正。
-    /// </summary>
-    private void VpetFallHorSpeedSet()
-    {
-        if (stateMachine.CurrentState == VpetState.Fall && !environmentSensor.IsGrounded && isFalling)
-        {
-            rigMotion.DriveFloatingHorizontal(effect.SpeedForceMultiplier);
-
-        }
-    }
-
-    /// <summary>起身协程是否正在等待，用于防止重复启动。</summary>
-    bool isGetUpCoroutineWork = false;
-    /// <summary>
-    /// 等待落地起身阶段结束，再恢复行走状态和进食权限。
-    /// </summary>
-    /// <returns>控制起身等待及流程标记的协程迭代器。</returns>
-    IEnumerator VpetGetUp()
-    {
-        isGetUpCoroutineWork = true;
-        yield return new WaitForSeconds(2.5f);
-        isAllowEat = true;
-        stateMachine.SetState(VpetState.Walking);
-        isGetUpCoroutineWork = false;
-    }
-
-    /// <summary>
-    /// 清除飘飞标记、落地确认计时开关、持续力以及飘飞动画和循环音效。
-    /// </summary>
-    private void StopFallingLogic()
-    {
-        isFalling = false;                              //变更为不在掉落中
-        _animatorVpet.SetBool("isFalling", isFalling);  //更新动画器参数
-        isAllowFallCheckTimer = false;
-        rigMotion.StopFloating();                     //仅停止持续力，保留当前速度
-        AudioManager.Instance.StopSound("fall");      //终止音效播放
-    }
-
     #endregion
 
-    #region 跳舞行为
-
-    /// <summary>是否正在跳舞。</summary>
-    private bool isVpetDancing = false;
-    /// <summary>跳舞生命回复计时器。</summary>
-    private float vpetDanceRecoverTimer;
-    /// <summary>计时器CD。</summary>
-    private float vpetDanceRecoverCD = 1f;
-    /// <summary>每次恢复量。</summary>
-    private float recoverPerDance = 1f;
-
-    [Tooltip("敌人层")]
-    [SerializeField] private LayerMask enemyLayer;
-    /// <summary>
-    /// 在跳舞状态下启用无敌，并按间隔恢复生命、对附近敌人造成范围伤害。
-    /// </summary>
-    private void VpetDance()
-    {
-        if(stateMachine.CurrentState == VpetState.Dance)
-        {
-            isAllowEat = false;                 //禁止进食
-            health.isVpetInvincible = true;     //无敌效果
-
-            if (!isVpetDancing)
-            {
-                isVpetDancing = true;
-                _animatorVpet.SetTrigger("Dance");                  //触发动作
-                AudioManager.Instance.PlayBGM("DanceMusic");        //播放音乐
-                StartCoroutine(DanceTime());
-            }
-
-            //生命恢复
-            if (vpetDanceRecoverTimer <= 0)
-            {
-                vpetDanceRecoverTimer = vpetDanceRecoverCD;
-                health.VpetRecover(recoverPerDance);
-            }
-            //造成伤害
-            attack.TryPerformDanceAttack(transform.position, enemyLayer);
-        }
-    }
-
-    /// <summary>
-    /// 等待跳舞持续阶段，淡出舞蹈音乐，再恢复行走、游戏音乐和进食权限并解除无敌。
-    /// </summary>
-    /// <returns>串联舞蹈等待、音乐淡出和收尾阶段的协程迭代器。</returns>
-    IEnumerator DanceTime()
-    {
-        yield return new WaitForSeconds(13f);
-        float duration = 2f;
-        float elapsed = 0f;
-        float startVolume = 1f;
-
-        while (elapsed < duration)
-        {
-            elapsed += Time.deltaTime;
-            float t = elapsed / duration;
-            float currentVolume = Mathf.Lerp(startVolume, 0f, t);
-            AudioManager.Instance.AdjustBGMVolume(currentVolume);
-            yield return null;
-        }
-        AudioManager.Instance.PauseOrContinueBGM(true); //暂停BGM
-        stateMachine.SetState(VpetState.Walking);               //状态转变
-        _animatorVpet.SetTrigger("DanceEnd");           //播放动画
-        yield return new WaitForSeconds(0.5f);          //短暂等待
-        AudioManager.Instance.AdjustBGMVolume(1);       //恢复BGM音源音量
-        AudioManager.Instance.PlayBGM("GameMusic");     //播放游戏BGM
-        isAllowEat = true;                              //允许进食
-        isVpetDancing = false;                          //关闭跳舞状态
-        health.isVpetInvincible = false;                //关闭无敌状态
-    }
-
-    #endregion
 
     #region 计时器更新
 
@@ -690,11 +310,7 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     private void TimerWork()
     {
-        fallAudioTimer -= Time.deltaTime;
-        sleepAudioTimer -= Time.deltaTime;
         attack.Tick(Time.deltaTime);
-        sleepRecoverTimer -= Time.deltaTime;
-        vpetDanceRecoverTimer -= Time.deltaTime;
         if (isAllowFallCheckTimer) fallConfirmTimer -= Time.deltaTime;
     }
 
@@ -748,16 +364,7 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     public void VpetDead()
     {
-        stateMachine.SetState(VpetState.Die);   //更改状态
-        StopAllCoroutines();            //停止其他所有协程
-        VpetColliderChange();           //改变碰撞箱
-        StopFallingLogic();             //进行一次坠落停止逻辑
-
-        _animatorVpet.SetBool("isClimbing", false);         //停止攀爬状态
-        AudioManager.Instance.PlaySound("die");             //播放死亡音效
-        _animatorVpet.SetTrigger("Die");                    //设置动画
-        GameManager.Instance.VpetDeadHandle();              //通知进行死亡处理
-
+        stateMachine.SetState(VpetState.Die);
     }
 
     /// <summary>
@@ -765,19 +372,7 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     public void VpetWin()
     {
-        stateMachine.SetState(VpetState.Win);   //更改状态
-        health.isVpetDead = true;       //防止执行其他操作
-        StopAllCoroutines();            //停止其他所有协程
-        VpetColliderChange();           //更新碰撞箱
-        StopFallingLogic();             //进行一次坠落停止逻辑
-
-        _animatorVpet.SetBool("isClimbing", false);         //停止攀爬状态
-        AudioManager.Instance.PlaySound("win");             //播放到达终点音效
-        AudioManager.Instance.PlaySound3D("setRespawnPoint", transform.position);   //音效播放
-        Instantiate(winParticle, transform.position, Quaternion.identity);          //粒子效果
-        _animatorVpet.SetTrigger("Win");                    //设置动画
-        GameManager.Instance.VpetWinHandle();               //通知游戏管理器进行胜利处理
-
+        stateMachine.SetState(VpetState.Win);
     }
 
     #endregion
@@ -800,20 +395,6 @@ public class VpetAction : MonoBehaviour
     [SerializeField] private GameObject TextPrefab;
     /// <summary>FigureCanvas父节点。</summary>
     private GameObject figureCanvas;
-    /// <summary>
-    /// 在提示画布下创建文本实例，并以浅黄色显示增益提示。
-    /// </summary>
-    /// <param name="text">要显示的提示文本。</param>
-    private void ShowText(string text)
-    {
-        Transform parent = figureCanvas.transform;
-        //创建TMP伤害数字实例
-        GameObject figureText = Instantiate(TextPrefab, transform.position + Vector3.up, Quaternion.identity, parent);
-        TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //获取TMP
-
-        tmp.SetText(text);
-        tmp.color = new Color(1f, 1f, 0.4f, 1f);
-    }
 
     #endregion
 
@@ -837,7 +418,7 @@ public class VpetAction : MonoBehaviour
                 stateMachine.SetState(VpetState.Climb);     //更改状态
             if(stateMachine.CurrentState == VpetState.Fall)
             {
-                StopFallingLogic();                 //停止坠落
+                fallState.StopFallingLogic();       //停止坠落
                 isAllowEat = true;                  //允许进食
                 stateMachine.SetState(VpetState.Climb);     //更改状态
 
