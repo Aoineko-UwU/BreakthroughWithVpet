@@ -61,13 +61,15 @@ public class VpetAction : MonoBehaviour
         ConstantForce2D floatingForce = GetComponent<ConstantForce2D>();
         CapsuleCollider2D capsule = GetComponent<CapsuleCollider2D>();
         health = GetComponent<VpetHealthSystem>();
-        stateMachine = new VpetStateMachine(VpetState.Idle);
 
         // 协作对象只执行显式调用，不引入额外的 Unity 生命周期顺序。
         environmentSensor = new VpetEnvironmentSensor(body, capsule);
         rigMotion = new VpetRigMotion(body, floatingForce, capsule);
         attack = new VpetAttack();
         effect = new VpetEffect();
+        stateMachine = new VpetStateMachine(
+            VpetState.Idle,
+            new VpetWalkingState(_animatorVpet, environmentSensor, rigMotion, effect));
         figureCanvas = GameObject.FindGameObjectWithTag("FigureCanvas");
     }
 
@@ -88,7 +90,7 @@ public class VpetAction : MonoBehaviour
     {
 
         if (health.isVpetDead) return;      //桌宠死亡则不执行
-        VpetWalk();     //桌宠移动行为
+        stateMachine.FixedUpdate(); //由当前状态执行物理帧行为
         VpetClimb();    //桌宠攀爬行为
         VpetFallHorSpeedSet();  //桌宠飘飞水平力
     }
@@ -103,6 +105,7 @@ public class VpetAction : MonoBehaviour
         VpetFall();         //桌宠飘飞行为
         VpetFallCheck();    //桌宠飘飞行为监测
         VpetDance();        //桌宠跳舞行为
+        stateMachine.Update(Time.deltaTime); //由当前状态执行普通帧行为
         TimerWork();        //计时器工作
     }
 
@@ -140,46 +143,7 @@ public class VpetAction : MonoBehaviour
 
     #endregion
 
-    #region 行走与地面接触
-
-    /// <summary>行走或游泳音效距离下次播放的剩余时间，单位为秒。</summary>
-    private float walkAudioTimer;
-    /// <summary>行走或游泳音效的播放间隔，单位为秒。</summary>
-    private float walkAudioCD = 0.62f;
-    /// <summary>
-    /// 仅在行走状态下沿接触面切线施加驱动力，并同步行走动画与音效。
-    /// <para>水面探测、地面接触和加速增益共同影响施力大小；该增益不直接修改目标速度。</para>
-    /// </summary>
-    private void VpetWalk()
-    {
-        //桌宠状态为行走时执行移动
-        if (stateMachine.CurrentState == VpetState.Walking)
-        {
-            //走路音效播放
-            if (walkAudioTimer <= 0)
-            {
-                walkAudioTimer = walkAudioCD;
-                if (environmentSensor.IsInWater)
-                    AudioManager.Instance.PlaySound("swim");
-                else
-                    AudioManager.Instance.PlaySound("walk");
-            }
-
-            _animatorVpet.SetBool("isWalk", true);
-
-            // 探测器提供环境信息，运动对象只负责沿用现有施力算法。
-            rigMotion.Walk(
-                environmentSensor.GetAverageGroundNormal(),
-                environmentSensor.IsInWater,
-                environmentSensor.IsInWater ? false : environmentSensor.HasGroundContact(),
-                environmentSensor.IsGrounded,
-                effect.SpeedForceMultiplier);
-        }
-        else
-        {
-            _animatorVpet.SetBool("isWalk", false);
-        }
-    }
+    #region 地面接触配置
 
     [Tooltip("仅地面层级")]
     [SerializeField] LayerMask groundLayer;
@@ -780,7 +744,6 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     private void TimerWork()
     {
-        walkAudioTimer -= Time.deltaTime;
         climbAudioTimer -= Time.deltaTime;
         fallAudioTimer -= Time.deltaTime;
         sleepAudioTimer -= Time.deltaTime;

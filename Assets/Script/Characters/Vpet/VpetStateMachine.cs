@@ -46,6 +46,15 @@ public interface IVpetStateHandler
 
     /// <summary>离开该状态时调用。</summary>
     void OnExit();
+
+    /// <summary>
+    /// 在普通帧执行当前状态行为。
+    /// </summary>
+    /// <param name="deltaTime">当前帧经过的时间，单位为秒。</param>
+    void OnUpdate(float deltaTime);
+
+    /// <summary>在物理帧执行当前状态行为。</summary>
+    void OnFixedUpdate();
 }
 
 /// <summary>
@@ -79,6 +88,19 @@ public abstract class VpetStateBase : IVpetStateHandler
     public virtual void OnExit()
     {
     }
+
+    /// <summary>
+    /// 状态普通帧行为的默认钩子，留给具体状态实现非物理逻辑。
+    /// </summary>
+    /// <param name="deltaTime">当前帧经过的时间，单位为秒。</param>
+    public virtual void OnUpdate(float deltaTime)
+    {
+    }
+
+    /// <summary>状态物理帧行为的默认钩子，留给具体状态实现刚体相关逻辑。</summary>
+    public virtual void OnFixedUpdate()
+    {
+    }
 }
 
 /// <summary>
@@ -89,16 +111,6 @@ public sealed class VpetIdleState : VpetStateBase
 {
     /// <summary>创建待机状态处理器。</summary>
     public VpetIdleState() : base(VpetState.Idle) { }
-}
-
-/// <summary>
-/// 桌宠行走状态
-/// - 作为状态机中的行走状态处理器占位。
-/// </summary>
-public sealed class VpetWalkingState : VpetStateBase
-{
-    /// <summary>创建行走状态处理器。</summary>
-    public VpetWalkingState() : base(VpetState.Walking) { }
 }
 
 /// <summary>
@@ -193,7 +205,8 @@ public sealed class VpetStateMachine
     /// 注册全部桌宠状态处理器，并以指定状态作为初始状态；初始化时不触发进入回调。
     /// </summary>
     /// <param name="initialState">状态机的初始状态。</param>
-    public VpetStateMachine(VpetState initialState)
+    /// <param name="overrides">用于替换默认处理器的状态实现，可为空。</param>
+    public VpetStateMachine(VpetState initialState, params IVpetStateHandler[] overrides)
     {
         Register(new VpetIdleState());
         Register(new VpetWalkingState());
@@ -204,6 +217,13 @@ public sealed class VpetStateMachine
         Register(new VpetDanceState());
         Register(new VpetDieState());
         Register(new VpetWinState());
+
+        if (overrides != null)
+        {
+            foreach (IVpetStateHandler handler in overrides)
+                Register(handler);
+        }
+
         CurrentState = initialState;
     }
 
@@ -233,6 +253,19 @@ public sealed class VpetStateMachine
         CurrentState = nextState;
         nextHandler.OnEnter();
         return true;
+    }
+
+    /// <summary>执行当前状态的普通帧行为。</summary>
+    /// <param name="deltaTime">当前帧经过的时间，单位为秒。</param>
+    public void Update(float deltaTime)
+    {
+        handlers[CurrentState].OnUpdate(deltaTime);
+    }
+
+    /// <summary>执行当前状态的物理帧行为。</summary>
+    public void FixedUpdate()
+    {
+        handlers[CurrentState].OnFixedUpdate();
     }
 
     #endregion
