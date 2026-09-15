@@ -1,8 +1,6 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
-using UnityEngine.ResourceManagement.AsyncOperations;
 
 /// <summary>
 /// 音频管理类
@@ -22,17 +20,8 @@ public class AudioManager : Singleton<AudioManager>
     [Tooltip("用于播放空间音效的 3D AudioSource 列表。请确保列表中的元素不重复。")]
     [SerializeField] private List<AudioSource> audioSources3DPool;
 
-    /// <summary>按资源地址缓存的已加载音频片段。</summary>
-    private readonly Dictionary<string, AudioClip> loadedClips = new();
-
-    /// <summary>已加载音频的资源句柄，销毁管理器时释放。</summary>
-    private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> loadedClipHandles = new();
-
-    /// <summary>正在加载的音频句柄，销毁管理器时用于释放未完成请求。</summary>
-    private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> loadingClipHandles = new();
-
-    /// <summary>按资源地址汇总的加载完成回调列表。</summary>
-    private readonly Dictionary<string, List<Action<AudioClip>>> pendingClipLoads = new();
+    /// <summary>统一提供音频加载、Label预加载和句柄管理的Addressables管理器。</summary>
+    private AddressableManager addressableManager;
 
     /// <summary>已登记的 2D 音源与音频资源地址映射。</summary>
     private readonly Dictionary<AudioSource, string> playingSourceAddresses = new();
@@ -78,26 +67,9 @@ public class AudioManager : Singleton<AudioManager>
         base.Awake();
         if (Instance != this)
             return;
-    }
 
-    /// <summary>
-    /// 释放已加载及仍在加载的有效音频句柄，再清理单例引用。
-    /// </summary>
-    protected override void OnDestroy()
-    {
-        foreach (AsyncOperationHandle<AudioClip> handle in loadedClipHandles.Values)
-        {
-            if (handle.IsValid())
-                Addressables.Release(handle);
-        }
-
-        foreach (AsyncOperationHandle<AudioClip> handle in loadingClipHandles.Values)
-        {
-            if (handle.IsValid())
-                Addressables.Release(handle);
-        }
-
-        base.OnDestroy();
+        // 音频管理器是项目现有的全局入口，确保Addressables管理器随其一并建立。
+        addressableManager = AddressableManager.GetOrCreate(gameObject);
     }
 
     #endregion
@@ -105,49 +77,16 @@ public class AudioManager : Singleton<AudioManager>
     #region 音频加载
 
     /// <summary>
-    /// 优先返回缓存音频；同地址加载期间合并回调，成功后缓存并通知等待方。
+    /// 通过统一Addressables管理器请求音频；缓存命中时同步返回，未命中时异步加载。
     /// </summary>
     /// <param name="address">非空的 Addressables 音频资源地址。</param>
     /// <param name="onLoaded">资源可用时执行的回调；缓存命中时同步执行，加载失败时不调用。</param>
     private void RequestClip(string address, Action<AudioClip> onLoaded)
     {
-        if (loadedClips.TryGetValue(address, out AudioClip cachedClip))
-        {
-            onLoaded(cachedClip);
-            return;
-        }
+        if (addressableManager == null)
+            addressableManager = AddressableManager.GetOrCreate(gameObject);
 
-        if (pendingClipLoads.TryGetValue(address, out List<Action<AudioClip>> callbacks))
-        {
-            callbacks.Add(onLoaded);
-            return;
-        }
-
-        pendingClipLoads[address] = new List<Action<AudioClip>> { onLoaded };
-        AsyncOperationHandle<AudioClip> handle = Addressables.LoadAssetAsync<AudioClip>(address);
-        loadingClipHandles[address] = handle;
-        handle.Completed += completedHandle =>
-        {
-            loadingClipHandles.Remove(address);
-
-            if (!pendingClipLoads.TryGetValue(address, out List<Action<AudioClip>> pendingCallbacks))
-                return;
-
-            pendingClipLoads.Remove(address);
-
-            if (completedHandle.Status != AsyncOperationStatus.Succeeded)
-            {
-                Debug.LogError($"音频加载失败 [{address}]: {completedHandle.OperationException}");
-                return;
-            }
-
-            AudioClip clip = completedHandle.Result;
-            loadedClips[address] = clip;
-            loadedClipHandles[address] = completedHandle;
-
-            foreach (Action<AudioClip> callback in pendingCallbacks)
-                callback(clip);
-        };
+        addressableManager.LoadAsset(address, onLoaded);
     }
 
     #endregion

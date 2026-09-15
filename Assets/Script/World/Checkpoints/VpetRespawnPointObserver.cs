@@ -110,7 +110,7 @@ public class VpetRespawnPointObserver : MonoBehaviour
     {
         sprite.color = Color.white;     //更改颜色
         AudioManager.Instance.PlaySound3D("setRespawnPoint", transform.position);   //音效播放
-        Instantiate(particle, transform.position, Quaternion.identity);             //粒子效果
+        ObjectPoolManager.GetOrCreate().Spawn(particle, transform.position, Quaternion.identity); //粒子效果
         MapProgressBar.Instance.SetArrive(respawnOrder);                            //进度条效果
     }
 

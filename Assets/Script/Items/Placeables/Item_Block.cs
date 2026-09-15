@@ -92,7 +92,7 @@ public class Item_Block : MonoBehaviour
         if (currentHealth <= 0)
         {
             Destroy(gameObject);
-            Instantiate(particlePrefab, transform.position, Quaternion.identity);   //生成粒子
+            ObjectPoolManager.GetOrCreate().Spawn(particlePrefab, transform.position, Quaternion.identity); //生成粒子
 
             if (item_id != 0)
             {
@@ -152,8 +152,9 @@ public class Item_Block : MonoBehaviour
     private void ShowFigure(float num, bool isRed)
     {
         Transform parent = figureCanvas.transform;
-        //创建TMP伤害数字实例
-        GameObject figureText = Instantiate(figureTextPrefab, transform.position + Vector3.up, Quaternion.identity, parent);
+        // 优先从对象池获取飘字，预制体或对象池不可用时保留直接实例化兜底。
+        ObjectPoolManager pool = ObjectPoolManager.GetOrCreate();
+        GameObject figureText = pool.Spawn(figureTextPrefab, transform.position + Vector3.up, Quaternion.identity, parent);
         TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();    //获取TMP
 
         tmp.SetText(num.ToString());

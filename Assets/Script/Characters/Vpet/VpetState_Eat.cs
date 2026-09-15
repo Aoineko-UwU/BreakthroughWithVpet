@@ -232,7 +232,7 @@ public sealed class VpetState_Eat : VpetStateBase
             case 2:
                 attack.GrantOnePunch();
                 onePunchState.SetActive(true);
-                UnityEngine.Object.Instantiate(onePunchEffect, ownerTransform.position, Quaternion.identity);
+                ObjectPoolManager.GetOrCreate().Spawn(onePunchEffect, ownerTransform.position, Quaternion.identity);
                 AudioManager.Instance.PlaySound("OnePunchState");
                 requestState(VpetState.Walking);
                 setAllowEat(true);
@@ -320,8 +320,9 @@ public sealed class VpetState_Eat : VpetStateBase
         ShowText("速度提升↑↑");
         AudioManager.Instance.PlaySound("getBuff");
         effect.ActivateSpeedBuff();
-        GameObject particle = UnityEngine.Object.Instantiate(speedUpParticle, ownerTransform.position, Quaternion.identity, ownerTransform);
-        UnityEngine.Object.Destroy(particle, VpetEffect.SpeedBuffDuration);
+        ObjectPoolManager pool = ObjectPoolManager.GetOrCreate();
+        GameObject particle = pool.Spawn(speedUpParticle, ownerTransform.position, Quaternion.identity, ownerTransform);
+        pool.ReleaseAfter(particle, VpetEffect.SpeedBuffDuration);
         yield return new WaitForSeconds(VpetEffect.SpeedBuffDuration);
         effect.ClearSpeedBuff();
         speedUpBuffCoroutine = null;
@@ -336,8 +337,9 @@ public sealed class VpetState_Eat : VpetStateBase
         AudioManager.Instance.PlaySound("getBuff");
         ShowText("攻击提升↑↑");
         health.SetKnockBack(false);
-        GameObject particle = UnityEngine.Object.Instantiate(attackUpParticle, ownerTransform.position, Quaternion.identity, ownerTransform);
-        UnityEngine.Object.Destroy(particle, VpetEffect.SpeedBuffDuration);
+        ObjectPoolManager pool = ObjectPoolManager.GetOrCreate();
+        GameObject particle = pool.Spawn(attackUpParticle, ownerTransform.position, Quaternion.identity, ownerTransform);
+        pool.ReleaseAfter(particle, VpetEffect.SpeedBuffDuration);
         effect.ActivateAttackBuff(attack);
         yield return new WaitForSeconds(VpetEffect.AttackBuffDuration);
         effect.ClearAttackBuff(attack);
@@ -375,7 +377,8 @@ public sealed class VpetState_Eat : VpetStateBase
     private void ShowText(string text)
     {
         Transform parent = figureCanvas.transform;
-        GameObject figureText = UnityEngine.Object.Instantiate(textPrefab, ownerTransform.position + Vector3.up, Quaternion.identity, parent);
+        ObjectPoolManager pool = ObjectPoolManager.GetOrCreate();
+        GameObject figureText = pool.Spawn(textPrefab, ownerTransform.position + Vector3.up, Quaternion.identity, parent);
         TextMeshProUGUI tmp = figureText.GetComponent<TextMeshProUGUI>();
         tmp.SetText(text);
         tmp.color = new Color(1f, 1f, 0.4f, 1f);

@@ -143,7 +143,7 @@ public class StoneCone : MonoBehaviour
                 other.GetComponent<Item_Block>().GetHurt(damageToBlock);
 
             AudioManager.Instance.PlaySound3D("stoneBreak", transform.position);    //播放音效
-            Instantiate(breakParticle, transform.position, Quaternion.identity);    //生成破碎粒子
+            ObjectPoolManager.GetOrCreate().Spawn(breakParticle, transform.position, Quaternion.identity); //生成破碎粒子
             Destroy(gameObject);    //销毁
         }
     }

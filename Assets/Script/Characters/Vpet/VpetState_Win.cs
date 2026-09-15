@@ -81,7 +81,7 @@ public sealed class VpetState_Win : VpetStateBase
 
         AudioManager.Instance.PlaySound("win");
         AudioManager.Instance.PlaySound3D("setRespawnPoint", ownerTransform.position);
-        UnityEngine.Object.Instantiate(winParticle, ownerTransform.position, Quaternion.identity);
+        ObjectPoolManager.GetOrCreate().Spawn(winParticle, ownerTransform.position, Quaternion.identity);
         animator?.SetTrigger("Win");
         notifyWin?.Invoke();
     }

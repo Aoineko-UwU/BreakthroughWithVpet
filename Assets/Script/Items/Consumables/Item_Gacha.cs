@@ -70,7 +70,7 @@ public class Item_Gacha : MonoBehaviour
 
         OpenRandomItemEvent();  //随机事件
         //生成粒子
-        Instantiate(openParticle, transform.position, Quaternion.identity);
+        ObjectPoolManager.GetOrCreate().Spawn(openParticle, transform.position, Quaternion.identity);
         tween.Kill();           //终止动画
         Destroy(gameObject);
     }
