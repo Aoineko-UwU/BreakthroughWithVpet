@@ -38,3 +38,6 @@ crashlytics-build.properties
 
 # Addressables local build output
 ServerData/
+
+# Local art exploration exports
+/ArtExports/
