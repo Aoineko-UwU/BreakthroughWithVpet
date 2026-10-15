@@ -42,7 +42,8 @@ public class Item_Pearl : MonoBehaviour
        if(!other.CompareTag("Item") && !other.CompareTag("Vpet") && !other.CompareTag("Ignore") && !other.CompareTag("Enemy"))
         {
             vpet.transform.position = transform.position;
-            vpet.GetComponent<VpetHealthSystem>().VpetGethurt(3f, Vector2.zero);
+            vpet.GetComponent<VpetHealthSystem>().TakeDamage(new DamageInfo(3f,
+                DamageSourceType.Pearl, vpet.transform.position, Vector2.zero, ForceMode2D.Force, true));
             AudioManager.Instance.PlaySound("teleport");
             Destroy(gameObject);
         }

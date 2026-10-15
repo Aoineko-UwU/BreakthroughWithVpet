@@ -6,7 +6,7 @@ using UnityEngine;
 /// 炸弹方块类
 /// - 管理炸弹自损引信、触发爆炸、范围推力和对方块及敌人的伤害。
 /// </summary>
-public class Item_Block_bomb : MonoBehaviour
+public class Item_Block_bomb : MonoBehaviour, IDamageable
 {
     #region 配置与运行状态
 
@@ -136,13 +136,21 @@ public class Item_Block_bomb : MonoBehaviour
                 rb.AddForce(direction.normalized * forceMagnitude * rb.mass, ForceMode2D.Impulse);
             }
 
-            //造成伤害
-            if (collider.GetComponent<Item_Block>() != null)
-                collider.GetComponent<Item_Block>().GetHurt(explosionDamageToBlock);
-            if(collider.GetComponent<Item_Block_bomb>()!=null)
-                collider.GetComponent<Item_Block_bomb>().GetHurt(explosionDamageToBlock);
-            if(collider.GetComponent<EnemyHealthSystem>()!=null)
-                collider.GetComponent<EnemyHealthSystem>().GetHurt(explosionDamageToEnemy, transform.position,25f);
+            // 范围冲量作用于所有刚体；下方的生命伤害仍只作用于原有的三类目标。
+            Item_Block block = collider.GetComponent<Item_Block>();
+            if (block != null)
+                block.TakeDamage(new DamageInfo(explosionDamageToBlock, DamageSourceType.Bomb,
+                    collider.transform.position, Vector2.zero));
+
+            Item_Block_bomb bomb = collider.GetComponent<Item_Block_bomb>();
+            if (bomb != null)
+                bomb.TakeDamage(new DamageInfo(explosionDamageToBlock, DamageSourceType.Bomb,
+                    collider.transform.position, Vector2.zero));
+
+            EnemyHealthSystem enemy = collider.GetComponent<EnemyHealthSystem>();
+            if (enemy != null)
+                enemy.TakeDamage(DamageInfo.FromSource(explosionDamageToEnemy, DamageSourceType.Bomb,
+                    transform.position, enemy.transform.position, 25f));
         }
 
         // 销毁炸弹对象
@@ -154,13 +162,22 @@ public class Item_Block_bomb : MonoBehaviour
     #region 受击反馈与接触引爆
 
     /// <summary>
-    /// 扣除炸弹生命并显示受击反馈；爆炸判定由更新流程处理。
+    /// 兼容旧受伤入口，将伤害数值转成统一伤害信息。
     /// </summary>
     /// <param name="damage">本次扣除的生命值。</param>
     public void GetHurt(float damage)
     {
-        currentHealth -= damage;        //扣除血量
-        ShowFigure(damage, true);
+        TakeDamage(new DamageInfo(damage, DamageSourceType.Unknown, transform.position, Vector2.zero));
+    }
+
+    /// <summary>
+    /// 接收炸弹伤害；保留生命直接递减且由更新流程触发爆炸的原有行为。
+    /// </summary>
+    /// <param name="damage">本次伤害信息。</param>
+    public void TakeDamage(DamageInfo damage)
+    {
+        currentHealth -= damage.Amount;        //扣除血量
+        ShowFigure(damage.Amount, true);
         StartCoroutine(HurtEffect());   //受伤效果
     }
 

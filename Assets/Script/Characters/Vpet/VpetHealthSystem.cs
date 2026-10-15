@@ -24,7 +24,7 @@ public enum VpetAvatarState
 /// 桌宠生命系统类
 /// - 管理生命、恢复、受击无敌与击退，并更新生命条、头像及飘字。
 /// </summary>
-public class VpetHealthSystem : MonoBehaviour
+public class VpetHealthSystem : MonoBehaviour, IDamageable
 {
     #region 配置与运行状态
 
@@ -251,15 +251,25 @@ public class VpetHealthSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 在非无敌且存活时扣除生命，处理死亡通知、击退、受击反馈及短暂无敌。
+    /// 兼容旧受伤入口，将数值与施力向量转成统一伤害信息。
     /// </summary>
     /// <param name="damage">本次扣除的生命值。</param>
     /// <param name="force">受击施力向量，会乘以当前击退系数；调用前会清零刚体速度。</param>
     public void VpetGethurt(float damage,Vector2 force)
     {
+        TakeDamage(new DamageInfo(damage, DamageSourceType.Unknown, transform.position, force,
+            ForceMode2D.Force, true));
+    }
+
+    /// <summary>
+    /// 接收桌宠伤害；维持无敌、死亡、速度清零及击退系数的原有处理顺序。
+    /// </summary>
+    /// <param name="damage">本次伤害及施力信息。</param>
+    public void TakeDamage(DamageInfo damage)
+    {
         if (isVpetInvincible || isVpetDead) return;
 
-        float newHealth = _vpetCurrentHealth - damage;  //受伤后的生命值
+        float newHealth = _vpetCurrentHealth - damage.Amount;  //受伤后的生命值
         //若受伤后生命值低于0
         if (newHealth <= 0)
         {
@@ -272,14 +282,15 @@ public class VpetHealthSystem : MonoBehaviour
         else
             _vpetCurrentHealth = newHealth;
 
-        rb.velocity = Vector2.zero;
-        rb.AddForce(force * knockBackFactor);
+        if (damage.ResetVelocity)
+            rb.velocity = Vector2.zero;
+        rb.AddForce(damage.Knockback * knockBackFactor, damage.ForceMode);
 
         AudioManager.Instance.PlaySound("getHurt");  //播放音效
 
         StartCoroutine(VpetHurtEffect());       //受伤效果
         StartCoroutine(VpetInvincibleSet());    //受伤无敌状态设置
-        ShowFigure(damage, true);
+        ShowFigure(damage.Amount, true);
     }
 
     /// <summary>生命恢复倍率。</summary>

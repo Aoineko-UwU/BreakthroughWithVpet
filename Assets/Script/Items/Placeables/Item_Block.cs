@@ -6,7 +6,7 @@ using UnityEngine;
 /// 可放置方块类
 /// - 管理方块生命、自损、受击反馈与破坏表现。
 /// </summary>
-public class Item_Block : MonoBehaviour
+public class Item_Block : MonoBehaviour, IDamageable
 {
     #region 配置与运行状态
 
@@ -105,12 +105,21 @@ public class Item_Block : MonoBehaviour
     }
 
     /// <summary>
-    /// 扣除生命且最低保留为零，并播放受击飘字和变色反馈。
+    /// 兼容旧受伤入口，将伤害数值转成统一伤害信息。
     /// </summary>
     /// <param name="damage">本次扣除的生命值。</param>
     public void GetHurt(float damage)
     {
-        float newHealth = currentHealth - damage;  //受伤后的生命值
+        TakeDamage(new DamageInfo(damage, DamageSourceType.Unknown, transform.position, Vector2.zero));
+    }
+
+    /// <summary>
+    /// 接收方块伤害，生命最低归零，保持原有飘字与受击变色反馈。
+    /// </summary>
+    /// <param name="damage">本次伤害信息。</param>
+    public void TakeDamage(DamageInfo damage)
+    {
+        float newHealth = currentHealth - damage.Amount;  //受伤后的生命值
         //若受伤后生命值低于0
         if (newHealth <= 0)
             currentHealth = 0;     //生命值固定为0
@@ -118,7 +127,7 @@ public class Item_Block : MonoBehaviour
         else
             currentHealth = newHealth;
 
-        ShowFigure(damage, true);       //受伤数字
+        ShowFigure(damage.Amount, true);       //受伤数字
         StartCoroutine(HurtEffect());   //受伤效果
     }
 

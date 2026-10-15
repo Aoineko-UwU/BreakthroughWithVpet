@@ -268,7 +268,8 @@ public sealed class VpetState_Eat : VpetStateBase
                 requestState(VpetState.Walking);
                 break;
             case 2:
-                health.VpetGethurt(999f, Vector2.up * 100f);
+                health.TakeDamage(new DamageInfo(999f, DamageSourceType.FoodEvent,
+                    health.transform.position, Vector2.up * 100f, ForceMode2D.Force, true));
                 requestState(VpetState.Die);
                 break;
             case 3:
@@ -280,7 +281,8 @@ public sealed class VpetState_Eat : VpetStateBase
                 requestState(VpetState.Walking);
                 break;
             case 5:
-                health.VpetGethurt(10f, Vector2.up * 100f);
+                health.TakeDamage(new DamageInfo(10f, DamageSourceType.FoodEvent,
+                    health.transform.position, Vector2.up * 100f, ForceMode2D.Force, true));
                 requestState(VpetState.Walking);
                 break;
             case 6:

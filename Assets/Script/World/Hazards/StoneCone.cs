@@ -119,10 +119,13 @@ public class StoneCone : MonoBehaviour
         {
             if (other.CompareTag("Vpet"))
             {
-                other.GetComponent<VpetHealthSystem>().VpetGethurt(damageToVpet, (Vector2.left + Vector2.up) * 40f);
+                other.GetComponent<VpetHealthSystem>().TakeDamage(new DamageInfo(damageToVpet,
+                    DamageSourceType.StoneCone, other.transform.position, (Vector2.left + Vector2.up) * 40f,
+                    ForceMode2D.Force, true));
             }
             if (other.CompareTag("Ground") && other.GetComponent<Item_Block>() != null)
-                other.GetComponent<Item_Block>().GetHurt(damageToBlock);
+                other.GetComponent<Item_Block>().TakeDamage(new DamageInfo(damageToBlock,
+                    DamageSourceType.StoneCone, other.transform.position, Vector2.zero));
 
             AudioManager.Instance.PlaySound3D("stoneBreak", transform.position);    //播放音效
             ObjectPoolManager.GetOrCreate().Spawn(breakParticle, transform.position, Quaternion.identity); //生成破碎粒子

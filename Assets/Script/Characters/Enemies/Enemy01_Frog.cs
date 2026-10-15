@@ -335,7 +335,8 @@ public class Enemy01_Frog : MonoBehaviour
         {
             //根据相对位置计算力的方向
             Vector2 force = transform.position.x > vpet.transform.position.x ? Vector2.left : Vector2.right;
-            other.gameObject.GetComponent<VpetHealthSystem>().VpetGethurt(attackDamage, force * 200f);
+            other.gameObject.GetComponent<VpetHealthSystem>().TakeDamage(new DamageInfo(attackDamage,
+                DamageSourceType.Enemy, other.transform.position, force * 200f, ForceMode2D.Force, true));
         }
     }
 

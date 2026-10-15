@@ -7,7 +7,7 @@ using UnityEngine;
 /// 敌人生命系统类
 /// - 管理敌人生命、受击与死亡表现，并在远离桌宠时自动销毁。
 /// </summary>
-public class EnemyHealthSystem : MonoBehaviour
+public class EnemyHealthSystem : MonoBehaviour, IDamageable
 {
     #region 配置与运行状态
 
@@ -117,16 +117,25 @@ public class EnemyHealthSystem : MonoBehaviour
     }
 
     /// <summary>
-    /// 扣除生命、播放受击反馈，并施加远离伤害来源的冲量；死亡后忽略请求。
+    /// 兼容旧受伤入口，将来源位置与击退冲量转成统一伤害信息。
     /// </summary>
     /// <param name="damage">本次扣除的生命值。</param>
     /// <param name="pos">伤害来源的世界坐标，用于计算击退方向。</param>
     /// <param name="force">沿远离来源方向施加的击退冲量大小。</param>
     public void GetHurt(float damage , Vector3 pos, float force)
     {
+        TakeDamage(DamageInfo.FromSource(damage, DamageSourceType.Unknown, pos, transform.position, force));
+    }
+
+    /// <summary>
+    /// 接收敌人伤害，维持原有的延迟死亡判定、受击反馈与冲量施加顺序。
+    /// </summary>
+    /// <param name="damage">本次伤害及施力信息。</param>
+    public void TakeDamage(DamageInfo damage)
+    {
         if (isDead) return;
 
-        float newHealth = currentHealth - damage;  //受伤后的生命值
+        float newHealth = currentHealth - damage.Amount;  //受伤后的生命值
         //若受伤后生命值低于0
         if (newHealth <= 0)
             currentHealth = 0;     //生命值固定为0
@@ -134,13 +143,13 @@ public class EnemyHealthSystem : MonoBehaviour
         else
             currentHealth = newHealth;
 
-        ShowFigure(damage, true);       //受伤数字
+        ShowFigure(damage.Amount, true);       //受伤数字
         StartCoroutine(HurtEffect());   //受伤效果
         AudioManager.Instance.PlaySound3D("Enemy_getHurt", transform.position);
 
-        Vector3 dir = (transform.position - pos).normalized;  //计算方向向量
-        Vector2 pushForce = dir * force;                      //将方向向量与力相乘，得到推力
-        rb.AddForce(pushForce, ForceMode2D.Impulse);          //将推力施加到刚体上
+        if (damage.ResetVelocity)
+            rb.velocity = Vector2.zero;
+        rb.AddForce(damage.Knockback, damage.ForceMode);
     }
 
     /// <summary>

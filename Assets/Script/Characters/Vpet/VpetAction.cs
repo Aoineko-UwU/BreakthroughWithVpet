@@ -410,7 +410,8 @@ public class VpetAction : MonoBehaviour
         if (other.CompareTag("Spike"))
         {
             Vector2 dir = transform.position.y > other.transform.position.y ? Vector2.up : Vector2.down;
-            health.VpetGethurt(spikeDamage, dir * 165f);
+            health.TakeDamage(new DamageInfo(spikeDamage, DamageSourceType.Spike,
+                transform.position, dir * 165f, ForceMode2D.Force, true));
         }
 
     }
@@ -443,7 +444,8 @@ public class VpetAction : MonoBehaviour
         if (other.collider.CompareTag("Spike"))
         {
             Vector2 dir = transform.position.y > other.transform.position.y ? Vector2.up + Vector2.right * 0.5f : Vector2.down;
-            health.VpetGethurt(spikeDamage, dir * 165f);
+            health.TakeDamage(new DamageInfo(spikeDamage, DamageSourceType.Spike,
+                transform.position, dir * 165f, ForceMode2D.Force, true));
         }
 
         //若碰到敌人

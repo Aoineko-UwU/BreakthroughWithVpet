@@ -266,7 +266,9 @@ public class Enemy03_Bear : MonoBehaviour
         {
             //根据相对位置计算力的方向
             Vector2 force = transform.position.x > vpet.transform.position.x ? Vector2.left : Vector2.right;
-            other.gameObject.GetComponent<VpetHealthSystem>().VpetGethurt(attackDamage, force * 400f + Vector2.up * 100f);
+            other.gameObject.GetComponent<VpetHealthSystem>().TakeDamage(new DamageInfo(attackDamage,
+                DamageSourceType.Enemy, other.transform.position, force * 400f + Vector2.up * 100f,
+                ForceMode2D.Force, true));
         }
     }
 

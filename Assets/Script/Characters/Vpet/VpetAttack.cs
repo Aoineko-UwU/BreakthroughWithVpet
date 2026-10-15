@@ -127,11 +127,13 @@ public sealed class VpetAttack
         if (consumedOnePunch)
         {
             HasOnePunch = false;
-            enemy.GetHurt(baseDamage * 999f * damageMultiplier, origin, 25f);
+            enemy.TakeDamage(DamageInfo.FromSource(baseDamage * 999f * damageMultiplier,
+                DamageSourceType.VpetAttack, origin, enemy.transform.position, 25f));
         }
         else
         {
-            enemy.GetHurt(baseDamage * damageMultiplier, origin, 5f);
+            enemy.TakeDamage(DamageInfo.FromSource(baseDamage * damageMultiplier,
+                DamageSourceType.VpetAttack, origin, enemy.transform.position, 5f));
         }
 
         return consumedOnePunch;
@@ -159,7 +161,9 @@ public sealed class VpetAttack
             if (collider != null)
             {
                 // 保持旧实现：敌人层上应挂有 EnemyHealthSystem，由场景配置保证。
-                collider.gameObject.GetComponent<EnemyHealthSystem>().GetHurt(DanceDamage, origin, DanceKnockbackForce);
+                EnemyHealthSystem enemy = collider.gameObject.GetComponent<EnemyHealthSystem>();
+                enemy.TakeDamage(DamageInfo.FromSource(DanceDamage, DamageSourceType.VpetDance,
+                    origin, enemy.transform.position, DanceKnockbackForce));
                 didHit = true;
             }
         }

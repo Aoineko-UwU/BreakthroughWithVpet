@@ -162,7 +162,8 @@ public class Enemy02_Bat : MonoBehaviour
         {
             //根据相对位置计算力的方向
             Vector2 force = transform.position.x > vpet.transform.position.x ? Vector2.left : Vector2.right;
-            other.gameObject.GetComponent<VpetHealthSystem>().VpetGethurt(attackDamage, force * 300f);
+            other.gameObject.GetComponent<VpetHealthSystem>().TakeDamage(new DamageInfo(attackDamage,
+                DamageSourceType.Enemy, other.transform.position, force * 300f, ForceMode2D.Force, true));
         }
     }
 
