@@ -101614,8 +101614,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   vpet: {fileID: 2127163876}
-  checkPoint01: {fileID: 954121264}
-  checkPoint02: {fileID: 1991293904}
+  checkPointIcons:
+  - {fileID: 954121264}
+  - {fileID: 1991293904}
 --- !u!1 &762513901
 GameObject:
   m_ObjectHideFlags: 0
@@ -129098,6 +129099,7 @@ MonoBehaviour:
   winText01: {fileID: 788522353}
   winText02: {fileID: 23695715}
   winPosTransform: {fileID: 646950352}
+  mapConfig: {fileID: 11400000, guid: a8f55f09cf4a47a9b70605a4e194210a, type: 2}
   guideBtn: {fileID: 996528706}
   guidePanel01: {fileID: 1352059986}
   guidePanel02: {fileID: 1869532845}

@@ -142,7 +142,7 @@ public sealed class VpetState_Dance : VpetStateBase
         animator.SetTrigger("DanceEnd");
         yield return new WaitForSeconds(0.5f);
         AudioManager.Instance.AdjustBGMVolume(1f);
-        AudioManager.Instance.PlayBGM("GameMusic");
+        AudioManager.Instance.PlayBGM(GameManager.Instance.CurrentMapConfig.bgmAddress);
         setAllowEat(true);
         isDancing = false;
         health.isVpetInvincible = false;

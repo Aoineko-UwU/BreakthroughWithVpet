@@ -62,6 +62,12 @@ public class GameManager : Singleton<GameManager>
     [Tooltip("胜利位置的Transform。")]
     [SerializeField] private Transform winPosTransform;
 
+    [Tooltip("当前关卡的进度范围与背景音乐配置。")]
+    [SerializeField] private MapConfig mapConfig;
+
+    /// <summary>当前关卡配置，供地图进度与状态表现读取。</summary>
+    public MapConfig CurrentMapConfig => mapConfig;
+
     [Tooltip("教程按钮。")]
     [SerializeField] private Button guideBtn;
 
@@ -103,7 +109,7 @@ public class GameManager : Singleton<GameManager>
         InitPanel();        //面板初始化
         AudioManager.Instance.AdjustBGMVolume(1);
         AudioManager.Instance.ClearBGM();
-        AudioManager.Instance.PlayBGM("GameMusic");
+        AudioManager.Instance.PlayBGM(mapConfig.bgmAddress);
     }
 
     /// <summary>

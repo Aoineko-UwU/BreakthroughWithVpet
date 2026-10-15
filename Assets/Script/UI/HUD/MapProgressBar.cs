@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -14,20 +12,11 @@ public class MapProgressBar : Singleton<MapProgressBar>
     [Tooltip("用于交互或距离判断的桌宠对象。")]
     [SerializeField] private Transform vpet;
 
-    [Tooltip("存档点1的Image。")]
-    [SerializeField] private Image checkPoint01;
-
-    [Tooltip("存档点2的Image。")]
-    [SerializeField] private Image checkPoint02;
+    [Tooltip("按重生点序号排列的进度图标，数组第一个元素对应序号 1。")]
+    [SerializeField] private Image[] checkPointIcons;
 
     /// <summary>滑动条。</summary>
     private Slider slider;
-
-    /// <summary>开始位置。</summary>
-    private float startPosX = -14f;
-
-    /// <summary>结束位置。</summary>
-    private float endPosX = 550f;
 
     #endregion
 
@@ -61,8 +50,9 @@ public class MapProgressBar : Singleton<MapProgressBar>
         if (vpet == null || slider == null)
             return;
 
+        MapConfig map = GameManager.Instance.CurrentMapConfig;
         float currentX = vpet.position.x;       //获取桌宠X轴位置
-        float progress = Mathf.InverseLerp(startPosX, endPosX, currentX); // 自动返回桌宠位置相对startPosX和endPosX的位置，并自动钳制为0~1
+        float progress = Mathf.InverseLerp(map.progressStartX, map.progressEndX, currentX);
 
         slider.value = progress;    //赋予value
     }
@@ -70,24 +60,16 @@ public class MapProgressBar : Singleton<MapProgressBar>
     /// <summary>
     /// 将指定重生点的图标设为已到达颜色。
     /// </summary>
-    /// <param name="index">重生点序号：1 或 2；其他值仅输出日志。</param>
+    /// <param name="index">从 1 开始的重生点序号；越界时仅输出日志。</param>
     public void SetArrive(int index)
     {
-        switch (index)
+        if (checkPointIcons == null || index < 1 || index > checkPointIcons.Length || checkPointIcons[index - 1] == null)
         {
-            case 1:
-                checkPoint01.color = new Color(1, 0.45f, 1, 1);
-                break;
-
-            case 2:
-                checkPoint02.color = new Color(1, 0.45f, 1, 1);
-                break;
-
-            default:
-                Debug.Log("序号未知");
-                break;
-
+            Debug.Log("序号未知");
+            return;
         }
+
+        checkPointIcons[index - 1].color = new Color(1, 0.45f, 1, 1);
     }
 
     #endregion
