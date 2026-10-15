@@ -41,3 +41,6 @@ ServerData/
 
 # Local art exploration exports
 /ArtExports/
+
+# Local Codex MCP diagnostics
+/.codex-work/
