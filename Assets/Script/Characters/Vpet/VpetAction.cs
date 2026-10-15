@@ -201,27 +201,9 @@ public class VpetAction : MonoBehaviour
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                attack.ConfigureBaseValues(4f, 1.2f);
-                spikeDamage = 2f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                attack.ConfigureBaseValues(3f, 1.3f);
-                spikeDamage = 3f;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                attack.ConfigureBaseValues(2f, 1.4f);
-                spikeDamage = 4f;
-                break;
-        }
+        GameDifficultyConfig config = GameDifficultySystem.Instance.CurrentConfig;
+        attack.ConfigureBaseValues(config.vpetAttackDamage, config.vpetAttackCooldown);
+        spikeDamage = config.vpetSpikeDamage;
     }
 
     #endregion

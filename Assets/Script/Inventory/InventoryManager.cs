@@ -69,24 +69,7 @@ public class InventoryManager : Singleton<InventoryManager>
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                itemAddCD = 3f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                itemAddCD = 4.5f;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                itemAddCD = 6f;
-                break;
-        }
+        itemAddCD = GameDifficultySystem.Instance.CurrentConfig.itemAddCooldown;
     }
 
     /// <summary>

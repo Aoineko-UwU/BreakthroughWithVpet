@@ -68,24 +68,7 @@ public class SpawnPoint : MonoBehaviour
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                spawnTimeFix = 5f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                spawnTimeFix = 0f;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                spawnTimeFix = -5f;
-                break;
-        }
+        spawnTimeFix = GameDifficultySystem.Instance.CurrentConfig.spawnTimeFix;
     }
 
     [Tooltip("生成位置相对出生点的最小水平偏移。")]

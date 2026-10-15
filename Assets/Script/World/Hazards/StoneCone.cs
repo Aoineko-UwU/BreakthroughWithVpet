@@ -57,27 +57,9 @@ public class StoneCone : MonoBehaviour
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配(对桌宠伤害|对建筑伤害)
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                damageToVpet = 3f;
-                damageToBlock = 6f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                damageToVpet = 4f;
-                damageToBlock = 8f;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                damageToVpet = 5f;
-                damageToBlock = 10f;
-                break;
-        }
+        GameDifficultyConfig config = GameDifficultySystem.Instance.CurrentConfig;
+        damageToVpet = config.stoneDamageToVpet;
+        damageToBlock = config.stoneDamageToBlock;
     }
 
     [Tooltip("是否已进入下落流程，避免重复触发。")]

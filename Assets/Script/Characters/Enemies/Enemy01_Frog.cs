@@ -111,24 +111,7 @@ public class Enemy01_Frog : MonoBehaviour
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配(伤害)
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                attackDamage = 2f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                attackDamage = 3f;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                attackDamage = 4f;
-                break;
-        }
+        attackDamage = GameDifficultySystem.Instance.CurrentConfig.frogAttackDamage;
     }
 
     /// <summary>跳跃计时器。</summary>

@@ -97,27 +97,9 @@ public class Enemy02_Bat : MonoBehaviour
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配(攻击伤害|飞行速度)
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                attackDamage = 2f;
-                moveSpeed = 120f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                attackDamage = 3f;
-                moveSpeed = 160f;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                attackDamage = 4f;
-                moveSpeed = 200f;
-                break;
-        }
+        GameDifficultyConfig config = GameDifficultySystem.Instance.CurrentConfig;
+        attackDamage = config.batAttackDamage;
+        moveSpeed = config.batMoveSpeed;
     }
 
     /// <summary>距离下次音效播放的剩余时间，单位为秒。</summary>

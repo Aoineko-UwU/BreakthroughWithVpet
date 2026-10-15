@@ -88,30 +88,10 @@ public class Enemy03_Bear : MonoBehaviour
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配(攻击伤害|移动速度|停滞时间修正)
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                attackDamage = 2f;
-                moveSpeed = 75f;
-                stopTimeFix = 2f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                attackDamage = 3f;
-                moveSpeed = 100f;
-                stopTimeFix = 0f;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                attackDamage = 4f;
-                moveSpeed = 125f;
-                stopTimeFix = -2f;
-                break;
-        }
+        GameDifficultyConfig config = GameDifficultySystem.Instance.CurrentConfig;
+        attackDamage = config.bearAttackDamage;
+        moveSpeed = config.bearMoveSpeed;
+        stopTimeFix = config.bearStopTimeFix;
     }
 
     /// <summary>

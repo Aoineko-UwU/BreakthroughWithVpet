@@ -103,30 +103,10 @@ public class VpetHealthSystem : MonoBehaviour
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配(桌宠生命值|无敌时间|生命恢复倍率)
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                vpetHealth = 40f;
-                invincibleTime = 1.25f;
-                recoverMultiplier = 1.5f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                vpetHealth = 30f;
-                invincibleTime = 1f;
-                recoverMultiplier = 1f;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                vpetHealth = 20f;
-                invincibleTime = 0.85f;
-                recoverMultiplier = 0.5f;
-                break;
-        }
+        GameDifficultyConfig config = GameDifficultySystem.Instance.CurrentConfig;
+        vpetHealth = config.vpetMaxHealth;
+        invincibleTime = config.vpetInvincibleTime;
+        recoverMultiplier = config.vpetRecoverMultiplier;
     }
 
     /// <summary>

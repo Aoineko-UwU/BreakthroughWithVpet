@@ -83,24 +83,7 @@ public class EnemyHealthSystem : MonoBehaviour
     /// </summary>
     private void InitValueBasedDifficulty()
     {
-        //获取游戏难度进行匹配(怪物生命倍率)
-        switch (GameDifficultySystem.Instance.CurrentDifficulty)
-        {
-            //简单难度
-            case GameDifficultyLevel.Easy:
-                healthMultiplier = 0.75f;
-                break;
-
-            //正常难度
-            case GameDifficultyLevel.Normal:
-                healthMultiplier = 1;
-                break;
-
-            //困难难度
-            case GameDifficultyLevel.Hard:
-                healthMultiplier = 1.25f;
-                break;
-        }
+        healthMultiplier = GameDifficultySystem.Instance.CurrentConfig.enemyHealthMultiplier;
     }
 
     /// <summary>生命倍率。</summary>
