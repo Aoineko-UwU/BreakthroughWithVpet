@@ -16,6 +16,15 @@ public sealed class ObjectPoolManager : Singleton<ObjectPoolManager>
     /// <summary>按实例反查所属预制体，供对象主动归还对象池。</summary>
     private readonly Dictionary<GameObject, GameObject> instanceSources = new();
 
+    /// <summary>当前已借出的实例，避免同一对象重复归还和重复入队。</summary>
+    private readonly HashSet<GameObject> rentedInstances = new();
+
+    /// <summary>实例最近一次借出的编号，用于识别过期的延迟归还请求。</summary>
+    private readonly Dictionary<GameObject, ulong> rentalIds = new();
+
+    /// <summary>下一个借出编号；每次取出实例时递增。</summary>
+    private ulong nextRentalId;
+
     /// <summary>闲置对象统一挂载的隐藏父节点。</summary>
     private Transform poolRoot;
 
@@ -79,17 +88,36 @@ public sealed class ObjectPoolManager : Singleton<ObjectPoolManager>
 
         GameObject instance = null;
         while (pool.Count > 0 && instance == null)
-            instance = pool.Dequeue();
+        {
+            GameObject candidate = pool.Dequeue();
+            if (candidate == null)
+            {
+                if (!ReferenceEquals(candidate, null))
+                {
+                    instanceSources.Remove(candidate);
+                    rentalIds.Remove(candidate);
+                }
+                continue;
+            }
+
+            // 已借出的对象不应再次交付，即使队列中残留了旧条目。
+            if (!rentedInstances.Contains(candidate))
+                instance = candidate;
+        }
 
         if (instance == null)
         {
-            instance = Instantiate(prefab);
+            instance = Instantiate(prefab, position, rotation, parent);
             instanceSources[instance] = prefab;
         }
-
-        Transform instanceTransform = instance.transform;
-        instanceTransform.SetParent(parent);
-        instanceTransform.SetPositionAndRotation(position, rotation);
+        else
+        {
+            Transform instanceTransform = instance.transform;
+            instanceTransform.SetParent(parent);
+            instanceTransform.SetPositionAndRotation(position, rotation);
+        }
+        rentedInstances.Add(instance);
+        rentalIds[instance] = ++nextRentalId;
         instance.SetActive(true);
         return instance;
     }
@@ -101,7 +129,8 @@ public sealed class ObjectPoolManager : Singleton<ObjectPoolManager>
     /// <returns>实例属于当前对象池并成功归还时为true。</returns>
     public bool Release(GameObject instance)
     {
-        if (instance == null || !instanceSources.TryGetValue(instance, out GameObject prefab))
+        if (instance == null || !instanceSources.TryGetValue(instance, out GameObject prefab)
+            || !rentedInstances.Remove(instance))
             return false;
 
         if (!pools.TryGetValue(prefab, out Queue<GameObject> pool))
@@ -123,18 +152,22 @@ public sealed class ObjectPoolManager : Singleton<ObjectPoolManager>
     /// <param name="delay">延迟时间，单位为秒。</param>
     public void ReleaseAfter(GameObject instance, float delay)
     {
-        if (instance != null)
-            StartCoroutine(ReleaseAfterRoutine(instance, delay));
+        if (instance != null && rentedInstances.Contains(instance)
+            && rentalIds.TryGetValue(instance, out ulong rentalId))
+            StartCoroutine(ReleaseAfterRoutine(instance, delay, rentalId));
     }
 
     /// <summary>等待指定时长后执行对象归还。</summary>
     /// <param name="instance">需要归还的对象实例。</param>
     /// <param name="delay">等待时长，单位为秒。</param>
+    /// <param name="rentalId">发起延迟归还时的借出编号。</param>
     /// <returns>控制延迟归还的协程迭代器。</returns>
-    private IEnumerator ReleaseAfterRoutine(GameObject instance, float delay)
+    private IEnumerator ReleaseAfterRoutine(GameObject instance, float delay, ulong rentalId)
     {
         yield return new WaitForSeconds(delay);
-        Release(instance);
+        if (instance != null && rentalIds.TryGetValue(instance, out ulong currentRentalId)
+            && currentRentalId == rentalId)
+            Release(instance);
     }
 
     /// <summary>
