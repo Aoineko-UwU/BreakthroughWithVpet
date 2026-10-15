@@ -89011,7 +89011,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 249285722}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -89020,7 +89020,7 @@ Transform:
   - {fileID: 1157863342}
   - {fileID: 120952186}
   - {fileID: 646950352}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 449513270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &256067773
 GameObject:
@@ -91430,7 +91430,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 388895265}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -91441,7 +91441,7 @@ Transform:
   - {fileID: 1800430393}
   - {fileID: 903032013}
   - {fileID: 2102926003}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 449513270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &388911372
 GameObject:
@@ -93274,6 +93274,41 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!1 &449513269
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 449513270}
+  m_Layer: 0
+  m_Name: Map01_Root
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &449513270
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 449513269}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 388895266}
+  - {fileID: 826047159}
+  - {fileID: 1903303757}
+  - {fileID: 249285723}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &450862716
 GameObject:
   m_ObjectHideFlags: 0
@@ -103997,7 +104032,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 826047158}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 1
@@ -104018,7 +104053,7 @@ Transform:
   - {fileID: 1040858931}
   - {fileID: 1471693980}
   - {fileID: 838073095}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 449513270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &829019678
 GameObject:
@@ -145468,7 +145503,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1903303756}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -145502,7 +145537,7 @@ Transform:
   - {fileID: 1539890235}
   - {fileID: 840880336}
   - {fileID: 1707224789}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 449513270}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1910161314
 GameObject:
@@ -150767,6 +150802,9 @@ MonoBehaviour:
   speedUpParticle: {fileID: 4325560933615000142, guid: 0ae53e5752778f04abbf47530cdf53a3, type: 3}
   attackUpParticle: {fileID: 7791688580447824482, guid: 9cd713f3478a9084894ba6315bc7ca69, type: 3}
   onePunchState: {fileID: 853606288}
+  enemyLayer:
+    serializedVersion: 2
+    m_Bits: 64
   groundLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -150776,9 +150814,6 @@ MonoBehaviour:
   eatenItemSprite: {fileID: 1388956157}
   onePunchEffect: {fileID: 8559110249404465883, guid: c29cb3a39d2730746874bb02528dc20e, type: 3}
   isAllowEat: 1
-  enemyLayer:
-    serializedVersion: 2
-    m_Bits: 64
   TextPrefab: {fileID: 1643227711384629807, guid: 0131e9254182a344aa3978662a566d7e, type: 3}
 --- !u!70 &2127163880
 CapsuleCollider2D:
@@ -155703,12 +155738,9 @@ SceneRoots:
   - {fileID: 519420032}
   - {fileID: 201377446}
   - {fileID: 2127163876}
-  - {fileID: 388895266}
-  - {fileID: 826047159}
-  - {fileID: 1903303757}
-  - {fileID: 249285723}
   - {fileID: 1509888071}
   - {fileID: 799039257}
   - {fileID: 1285188717}
   - {fileID: 1511973107}
   - {fileID: 2112823579}
+  - {fileID: 449513270}
