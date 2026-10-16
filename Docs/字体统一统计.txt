@@ -19,7 +19,7 @@ Unity 可直接使用的完整字符集：Assets/Font/GameCharacters.txt。
 沿用 24 采样字号、5 像素 Padding 和 SDFAA 渲染方式；图集由 1024 × 1024 缩减为 512 × 512。
 不使用其他字体作为缺字回退；源字体经字体引擎检查支持全部目标字符。
 36 个 TMP 组件及 TMP Settings 默认字体均已指向统一字库。
-原难度按钮的发光表现改由 Fangzheng Pixel16 Glow.mat 材质预设保留，不再保留一份重复字库。
+按用户后续手动调整保留主字体材质参数，移除发光材质预设；难度文字统一使用主字体材质，保留文字自身颜色。
 
 清理范围
 在包外依赖扫描为零后，移除两个 Huakang TMP 字库、重复的 Fangzheng Glow 字库，以及未使用的 Huakang/LiberationSans TTF。
