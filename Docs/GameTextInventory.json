@@ -1,0 +1,1952 @@
+{
+  "component_count": 36,
+  "source_count": 51,
+  "nonempty_source_count": 46,
+  "unique_visible_characters": 149,
+  "unique_with_dynamic_ascii": 224,
+  "category_counts": {
+    "汉字": 125,
+    "半角标点或其他符号": 10,
+    "英文字母": 5,
+    "数字": 5,
+    "全角标点或符号": 3,
+    "空格": 1
+  },
+  "controls": [
+    {
+      "code": "U+000A",
+      "name": "'\\n'"
+    }
+  ],
+  "characters": " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~↑一不与丝主么乐于人从伤体保全关具再减出击切刷削力化升单发变各合吗命品响喵回困均复外大头好始威宠害少屏属常度开弱强影得快性怪恢感愧慢戏我战护择换提攻放效斗新方是更来果标格桌次正游物生的硬等简算级继续缩置老肿胁能莉萝衡西规设返还这退选速道邦阱除陷难面音题！，？",
+  "actual_characters": " ()*+-./01245:ADHPV~↑一不与丝主么乐于人从伤体保全关具再减出击切刷削力化升单发变各合吗命品响喵回困均复外大头好始威宠害少屏属常度开弱强影得快性怪恢感愧慢戏我战护择换提攻放效斗新方是更来果标格桌次正游物生的硬等简算级继续缩置老肿胁能莉萝衡西规设返还这退选速道邦阱除陷难面音题！，？",
+  "codepoints": [
+    {
+      "character": " ",
+      "code": "U+0020",
+      "category": "空格",
+      "actual": true,
+      "unicode_name": "SPACE"
+    },
+    {
+      "character": "!",
+      "code": "U+0021",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "EXCLAMATION MARK"
+    },
+    {
+      "character": "\"",
+      "code": "U+0022",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "QUOTATION MARK"
+    },
+    {
+      "character": "#",
+      "code": "U+0023",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "NUMBER SIGN"
+    },
+    {
+      "character": "$",
+      "code": "U+0024",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "DOLLAR SIGN"
+    },
+    {
+      "character": "%",
+      "code": "U+0025",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "PERCENT SIGN"
+    },
+    {
+      "character": "&",
+      "code": "U+0026",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "AMPERSAND"
+    },
+    {
+      "character": "'",
+      "code": "U+0027",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "APOSTROPHE"
+    },
+    {
+      "character": "(",
+      "code": "U+0028",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "LEFT PARENTHESIS"
+    },
+    {
+      "character": ")",
+      "code": "U+0029",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "RIGHT PARENTHESIS"
+    },
+    {
+      "character": "*",
+      "code": "U+002A",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "ASTERISK"
+    },
+    {
+      "character": "+",
+      "code": "U+002B",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "PLUS SIGN"
+    },
+    {
+      "character": ",",
+      "code": "U+002C",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "COMMA"
+    },
+    {
+      "character": "-",
+      "code": "U+002D",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "HYPHEN-MINUS"
+    },
+    {
+      "character": ".",
+      "code": "U+002E",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "FULL STOP"
+    },
+    {
+      "character": "/",
+      "code": "U+002F",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "SOLIDUS"
+    },
+    {
+      "character": "0",
+      "code": "U+0030",
+      "category": "数字",
+      "actual": true,
+      "unicode_name": "DIGIT ZERO"
+    },
+    {
+      "character": "1",
+      "code": "U+0031",
+      "category": "数字",
+      "actual": true,
+      "unicode_name": "DIGIT ONE"
+    },
+    {
+      "character": "2",
+      "code": "U+0032",
+      "category": "数字",
+      "actual": true,
+      "unicode_name": "DIGIT TWO"
+    },
+    {
+      "character": "3",
+      "code": "U+0033",
+      "category": "数字",
+      "actual": false,
+      "unicode_name": "DIGIT THREE"
+    },
+    {
+      "character": "4",
+      "code": "U+0034",
+      "category": "数字",
+      "actual": true,
+      "unicode_name": "DIGIT FOUR"
+    },
+    {
+      "character": "5",
+      "code": "U+0035",
+      "category": "数字",
+      "actual": true,
+      "unicode_name": "DIGIT FIVE"
+    },
+    {
+      "character": "6",
+      "code": "U+0036",
+      "category": "数字",
+      "actual": false,
+      "unicode_name": "DIGIT SIX"
+    },
+    {
+      "character": "7",
+      "code": "U+0037",
+      "category": "数字",
+      "actual": false,
+      "unicode_name": "DIGIT SEVEN"
+    },
+    {
+      "character": "8",
+      "code": "U+0038",
+      "category": "数字",
+      "actual": false,
+      "unicode_name": "DIGIT EIGHT"
+    },
+    {
+      "character": "9",
+      "code": "U+0039",
+      "category": "数字",
+      "actual": false,
+      "unicode_name": "DIGIT NINE"
+    },
+    {
+      "character": ":",
+      "code": "U+003A",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "COLON"
+    },
+    {
+      "character": ";",
+      "code": "U+003B",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "SEMICOLON"
+    },
+    {
+      "character": "<",
+      "code": "U+003C",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "LESS-THAN SIGN"
+    },
+    {
+      "character": "=",
+      "code": "U+003D",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "EQUALS SIGN"
+    },
+    {
+      "character": ">",
+      "code": "U+003E",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "GREATER-THAN SIGN"
+    },
+    {
+      "character": "?",
+      "code": "U+003F",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "QUESTION MARK"
+    },
+    {
+      "character": "@",
+      "code": "U+0040",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "COMMERCIAL AT"
+    },
+    {
+      "character": "A",
+      "code": "U+0041",
+      "category": "英文字母",
+      "actual": true,
+      "unicode_name": "LATIN CAPITAL LETTER A"
+    },
+    {
+      "character": "B",
+      "code": "U+0042",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER B"
+    },
+    {
+      "character": "C",
+      "code": "U+0043",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER C"
+    },
+    {
+      "character": "D",
+      "code": "U+0044",
+      "category": "英文字母",
+      "actual": true,
+      "unicode_name": "LATIN CAPITAL LETTER D"
+    },
+    {
+      "character": "E",
+      "code": "U+0045",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER E"
+    },
+    {
+      "character": "F",
+      "code": "U+0046",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER F"
+    },
+    {
+      "character": "G",
+      "code": "U+0047",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER G"
+    },
+    {
+      "character": "H",
+      "code": "U+0048",
+      "category": "英文字母",
+      "actual": true,
+      "unicode_name": "LATIN CAPITAL LETTER H"
+    },
+    {
+      "character": "I",
+      "code": "U+0049",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER I"
+    },
+    {
+      "character": "J",
+      "code": "U+004A",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER J"
+    },
+    {
+      "character": "K",
+      "code": "U+004B",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER K"
+    },
+    {
+      "character": "L",
+      "code": "U+004C",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER L"
+    },
+    {
+      "character": "M",
+      "code": "U+004D",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER M"
+    },
+    {
+      "character": "N",
+      "code": "U+004E",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER N"
+    },
+    {
+      "character": "O",
+      "code": "U+004F",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER O"
+    },
+    {
+      "character": "P",
+      "code": "U+0050",
+      "category": "英文字母",
+      "actual": true,
+      "unicode_name": "LATIN CAPITAL LETTER P"
+    },
+    {
+      "character": "Q",
+      "code": "U+0051",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER Q"
+    },
+    {
+      "character": "R",
+      "code": "U+0052",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER R"
+    },
+    {
+      "character": "S",
+      "code": "U+0053",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER S"
+    },
+    {
+      "character": "T",
+      "code": "U+0054",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER T"
+    },
+    {
+      "character": "U",
+      "code": "U+0055",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER U"
+    },
+    {
+      "character": "V",
+      "code": "U+0056",
+      "category": "英文字母",
+      "actual": true,
+      "unicode_name": "LATIN CAPITAL LETTER V"
+    },
+    {
+      "character": "W",
+      "code": "U+0057",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER W"
+    },
+    {
+      "character": "X",
+      "code": "U+0058",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER X"
+    },
+    {
+      "character": "Y",
+      "code": "U+0059",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER Y"
+    },
+    {
+      "character": "Z",
+      "code": "U+005A",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN CAPITAL LETTER Z"
+    },
+    {
+      "character": "[",
+      "code": "U+005B",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "LEFT SQUARE BRACKET"
+    },
+    {
+      "character": "\\",
+      "code": "U+005C",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "REVERSE SOLIDUS"
+    },
+    {
+      "character": "]",
+      "code": "U+005D",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "RIGHT SQUARE BRACKET"
+    },
+    {
+      "character": "^",
+      "code": "U+005E",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "CIRCUMFLEX ACCENT"
+    },
+    {
+      "character": "_",
+      "code": "U+005F",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "LOW LINE"
+    },
+    {
+      "character": "`",
+      "code": "U+0060",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "GRAVE ACCENT"
+    },
+    {
+      "character": "a",
+      "code": "U+0061",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER A"
+    },
+    {
+      "character": "b",
+      "code": "U+0062",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER B"
+    },
+    {
+      "character": "c",
+      "code": "U+0063",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER C"
+    },
+    {
+      "character": "d",
+      "code": "U+0064",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER D"
+    },
+    {
+      "character": "e",
+      "code": "U+0065",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER E"
+    },
+    {
+      "character": "f",
+      "code": "U+0066",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER F"
+    },
+    {
+      "character": "g",
+      "code": "U+0067",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER G"
+    },
+    {
+      "character": "h",
+      "code": "U+0068",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER H"
+    },
+    {
+      "character": "i",
+      "code": "U+0069",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER I"
+    },
+    {
+      "character": "j",
+      "code": "U+006A",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER J"
+    },
+    {
+      "character": "k",
+      "code": "U+006B",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER K"
+    },
+    {
+      "character": "l",
+      "code": "U+006C",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER L"
+    },
+    {
+      "character": "m",
+      "code": "U+006D",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER M"
+    },
+    {
+      "character": "n",
+      "code": "U+006E",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER N"
+    },
+    {
+      "character": "o",
+      "code": "U+006F",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER O"
+    },
+    {
+      "character": "p",
+      "code": "U+0070",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER P"
+    },
+    {
+      "character": "q",
+      "code": "U+0071",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER Q"
+    },
+    {
+      "character": "r",
+      "code": "U+0072",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER R"
+    },
+    {
+      "character": "s",
+      "code": "U+0073",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER S"
+    },
+    {
+      "character": "t",
+      "code": "U+0074",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER T"
+    },
+    {
+      "character": "u",
+      "code": "U+0075",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER U"
+    },
+    {
+      "character": "v",
+      "code": "U+0076",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER V"
+    },
+    {
+      "character": "w",
+      "code": "U+0077",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER W"
+    },
+    {
+      "character": "x",
+      "code": "U+0078",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER X"
+    },
+    {
+      "character": "y",
+      "code": "U+0079",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER Y"
+    },
+    {
+      "character": "z",
+      "code": "U+007A",
+      "category": "英文字母",
+      "actual": false,
+      "unicode_name": "LATIN SMALL LETTER Z"
+    },
+    {
+      "character": "{",
+      "code": "U+007B",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "LEFT CURLY BRACKET"
+    },
+    {
+      "character": "|",
+      "code": "U+007C",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "VERTICAL LINE"
+    },
+    {
+      "character": "}",
+      "code": "U+007D",
+      "category": "半角标点或其他符号",
+      "actual": false,
+      "unicode_name": "RIGHT CURLY BRACKET"
+    },
+    {
+      "character": "~",
+      "code": "U+007E",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "TILDE"
+    },
+    {
+      "character": "↑",
+      "code": "U+2191",
+      "category": "半角标点或其他符号",
+      "actual": true,
+      "unicode_name": "UPWARDS ARROW"
+    },
+    {
+      "character": "一",
+      "code": "U+4E00",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4E00"
+    },
+    {
+      "character": "不",
+      "code": "U+4E0D",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4E0D"
+    },
+    {
+      "character": "与",
+      "code": "U+4E0E",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4E0E"
+    },
+    {
+      "character": "丝",
+      "code": "U+4E1D",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4E1D"
+    },
+    {
+      "character": "主",
+      "code": "U+4E3B",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4E3B"
+    },
+    {
+      "character": "么",
+      "code": "U+4E48",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4E48"
+    },
+    {
+      "character": "乐",
+      "code": "U+4E50",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4E50"
+    },
+    {
+      "character": "于",
+      "code": "U+4E8E",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4E8E"
+    },
+    {
+      "character": "人",
+      "code": "U+4EBA",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4EBA"
+    },
+    {
+      "character": "从",
+      "code": "U+4ECE",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4ECE"
+    },
+    {
+      "character": "伤",
+      "code": "U+4F24",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4F24"
+    },
+    {
+      "character": "体",
+      "code": "U+4F53",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4F53"
+    },
+    {
+      "character": "保",
+      "code": "U+4FDD",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-4FDD"
+    },
+    {
+      "character": "全",
+      "code": "U+5168",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5168"
+    },
+    {
+      "character": "关",
+      "code": "U+5173",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5173"
+    },
+    {
+      "character": "具",
+      "code": "U+5177",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5177"
+    },
+    {
+      "character": "再",
+      "code": "U+518D",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-518D"
+    },
+    {
+      "character": "减",
+      "code": "U+51CF",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-51CF"
+    },
+    {
+      "character": "出",
+      "code": "U+51FA",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-51FA"
+    },
+    {
+      "character": "击",
+      "code": "U+51FB",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-51FB"
+    },
+    {
+      "character": "切",
+      "code": "U+5207",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5207"
+    },
+    {
+      "character": "刷",
+      "code": "U+5237",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5237"
+    },
+    {
+      "character": "削",
+      "code": "U+524A",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-524A"
+    },
+    {
+      "character": "力",
+      "code": "U+529B",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-529B"
+    },
+    {
+      "character": "化",
+      "code": "U+5316",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5316"
+    },
+    {
+      "character": "升",
+      "code": "U+5347",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5347"
+    },
+    {
+      "character": "单",
+      "code": "U+5355",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5355"
+    },
+    {
+      "character": "发",
+      "code": "U+53D1",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-53D1"
+    },
+    {
+      "character": "变",
+      "code": "U+53D8",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-53D8"
+    },
+    {
+      "character": "各",
+      "code": "U+5404",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5404"
+    },
+    {
+      "character": "合",
+      "code": "U+5408",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5408"
+    },
+    {
+      "character": "吗",
+      "code": "U+5417",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5417"
+    },
+    {
+      "character": "命",
+      "code": "U+547D",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-547D"
+    },
+    {
+      "character": "品",
+      "code": "U+54C1",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-54C1"
+    },
+    {
+      "character": "响",
+      "code": "U+54CD",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-54CD"
+    },
+    {
+      "character": "喵",
+      "code": "U+55B5",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-55B5"
+    },
+    {
+      "character": "回",
+      "code": "U+56DE",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-56DE"
+    },
+    {
+      "character": "困",
+      "code": "U+56F0",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-56F0"
+    },
+    {
+      "character": "均",
+      "code": "U+5747",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5747"
+    },
+    {
+      "character": "复",
+      "code": "U+590D",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-590D"
+    },
+    {
+      "character": "外",
+      "code": "U+5916",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5916"
+    },
+    {
+      "character": "大",
+      "code": "U+5927",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5927"
+    },
+    {
+      "character": "头",
+      "code": "U+5934",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5934"
+    },
+    {
+      "character": "好",
+      "code": "U+597D",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-597D"
+    },
+    {
+      "character": "始",
+      "code": "U+59CB",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-59CB"
+    },
+    {
+      "character": "威",
+      "code": "U+5A01",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5A01"
+    },
+    {
+      "character": "宠",
+      "code": "U+5BA0",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5BA0"
+    },
+    {
+      "character": "害",
+      "code": "U+5BB3",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5BB3"
+    },
+    {
+      "character": "少",
+      "code": "U+5C11",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5C11"
+    },
+    {
+      "character": "屏",
+      "code": "U+5C4F",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5C4F"
+    },
+    {
+      "character": "属",
+      "code": "U+5C5E",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5C5E"
+    },
+    {
+      "character": "常",
+      "code": "U+5E38",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5E38"
+    },
+    {
+      "character": "度",
+      "code": "U+5EA6",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5EA6"
+    },
+    {
+      "character": "开",
+      "code": "U+5F00",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5F00"
+    },
+    {
+      "character": "弱",
+      "code": "U+5F31",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5F31"
+    },
+    {
+      "character": "强",
+      "code": "U+5F3A",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5F3A"
+    },
+    {
+      "character": "影",
+      "code": "U+5F71",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5F71"
+    },
+    {
+      "character": "得",
+      "code": "U+5F97",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5F97"
+    },
+    {
+      "character": "快",
+      "code": "U+5FEB",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-5FEB"
+    },
+    {
+      "character": "性",
+      "code": "U+6027",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6027"
+    },
+    {
+      "character": "怪",
+      "code": "U+602A",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-602A"
+    },
+    {
+      "character": "恢",
+      "code": "U+6062",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6062"
+    },
+    {
+      "character": "感",
+      "code": "U+611F",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-611F"
+    },
+    {
+      "character": "愧",
+      "code": "U+6127",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6127"
+    },
+    {
+      "character": "慢",
+      "code": "U+6162",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6162"
+    },
+    {
+      "character": "戏",
+      "code": "U+620F",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-620F"
+    },
+    {
+      "character": "我",
+      "code": "U+6211",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6211"
+    },
+    {
+      "character": "战",
+      "code": "U+6218",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6218"
+    },
+    {
+      "character": "护",
+      "code": "U+62A4",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-62A4"
+    },
+    {
+      "character": "择",
+      "code": "U+62E9",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-62E9"
+    },
+    {
+      "character": "换",
+      "code": "U+6362",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6362"
+    },
+    {
+      "character": "提",
+      "code": "U+63D0",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-63D0"
+    },
+    {
+      "character": "攻",
+      "code": "U+653B",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-653B"
+    },
+    {
+      "character": "放",
+      "code": "U+653E",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-653E"
+    },
+    {
+      "character": "效",
+      "code": "U+6548",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6548"
+    },
+    {
+      "character": "斗",
+      "code": "U+6597",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6597"
+    },
+    {
+      "character": "新",
+      "code": "U+65B0",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-65B0"
+    },
+    {
+      "character": "方",
+      "code": "U+65B9",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-65B9"
+    },
+    {
+      "character": "是",
+      "code": "U+662F",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-662F"
+    },
+    {
+      "character": "更",
+      "code": "U+66F4",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-66F4"
+    },
+    {
+      "character": "来",
+      "code": "U+6765",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6765"
+    },
+    {
+      "character": "果",
+      "code": "U+679C",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-679C"
+    },
+    {
+      "character": "标",
+      "code": "U+6807",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6807"
+    },
+    {
+      "character": "格",
+      "code": "U+683C",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-683C"
+    },
+    {
+      "character": "桌",
+      "code": "U+684C",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-684C"
+    },
+    {
+      "character": "次",
+      "code": "U+6B21",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6B21"
+    },
+    {
+      "character": "正",
+      "code": "U+6B63",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6B63"
+    },
+    {
+      "character": "游",
+      "code": "U+6E38",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-6E38"
+    },
+    {
+      "character": "物",
+      "code": "U+7269",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7269"
+    },
+    {
+      "character": "生",
+      "code": "U+751F",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-751F"
+    },
+    {
+      "character": "的",
+      "code": "U+7684",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7684"
+    },
+    {
+      "character": "硬",
+      "code": "U+786C",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-786C"
+    },
+    {
+      "character": "等",
+      "code": "U+7B49",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7B49"
+    },
+    {
+      "character": "简",
+      "code": "U+7B80",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7B80"
+    },
+    {
+      "character": "算",
+      "code": "U+7B97",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7B97"
+    },
+    {
+      "character": "级",
+      "code": "U+7EA7",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7EA7"
+    },
+    {
+      "character": "继",
+      "code": "U+7EE7",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7EE7"
+    },
+    {
+      "character": "续",
+      "code": "U+7EED",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7EED"
+    },
+    {
+      "character": "缩",
+      "code": "U+7F29",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7F29"
+    },
+    {
+      "character": "置",
+      "code": "U+7F6E",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-7F6E"
+    },
+    {
+      "character": "老",
+      "code": "U+8001",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-8001"
+    },
+    {
+      "character": "肿",
+      "code": "U+80BF",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-80BF"
+    },
+    {
+      "character": "胁",
+      "code": "U+80C1",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-80C1"
+    },
+    {
+      "character": "能",
+      "code": "U+80FD",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-80FD"
+    },
+    {
+      "character": "莉",
+      "code": "U+8389",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-8389"
+    },
+    {
+      "character": "萝",
+      "code": "U+841D",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-841D"
+    },
+    {
+      "character": "衡",
+      "code": "U+8861",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-8861"
+    },
+    {
+      "character": "西",
+      "code": "U+897F",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-897F"
+    },
+    {
+      "character": "规",
+      "code": "U+89C4",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-89C4"
+    },
+    {
+      "character": "设",
+      "code": "U+8BBE",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-8BBE"
+    },
+    {
+      "character": "返",
+      "code": "U+8FD4",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-8FD4"
+    },
+    {
+      "character": "还",
+      "code": "U+8FD8",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-8FD8"
+    },
+    {
+      "character": "这",
+      "code": "U+8FD9",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-8FD9"
+    },
+    {
+      "character": "退",
+      "code": "U+9000",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-9000"
+    },
+    {
+      "character": "选",
+      "code": "U+9009",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-9009"
+    },
+    {
+      "character": "速",
+      "code": "U+901F",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-901F"
+    },
+    {
+      "character": "道",
+      "code": "U+9053",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-9053"
+    },
+    {
+      "character": "邦",
+      "code": "U+90A6",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-90A6"
+    },
+    {
+      "character": "阱",
+      "code": "U+9631",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-9631"
+    },
+    {
+      "character": "除",
+      "code": "U+9664",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-9664"
+    },
+    {
+      "character": "陷",
+      "code": "U+9677",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-9677"
+    },
+    {
+      "character": "难",
+      "code": "U+96BE",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-96BE"
+    },
+    {
+      "character": "面",
+      "code": "U+9762",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-9762"
+    },
+    {
+      "character": "音",
+      "code": "U+97F3",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-97F3"
+    },
+    {
+      "character": "题",
+      "code": "U+9898",
+      "category": "汉字",
+      "actual": true,
+      "unicode_name": "CJK UNIFIED IDEOGRAPH-9898"
+    },
+    {
+      "character": "！",
+      "code": "U+FF01",
+      "category": "全角标点或符号",
+      "actual": true,
+      "unicode_name": "FULLWIDTH EXCLAMATION MARK"
+    },
+    {
+      "character": "，",
+      "code": "U+FF0C",
+      "category": "全角标点或符号",
+      "actual": true,
+      "unicode_name": "FULLWIDTH COMMA"
+    },
+    {
+      "character": "？",
+      "code": "U+FF1F",
+      "category": "全角标点或符号",
+      "actual": true,
+      "unicode_name": "FULLWIDTH QUESTION MARK"
+    }
+  ],
+  "sources": [
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/Text_Version",
+      "text": "V1.0.2",
+      "visible_text": "V1.0.2"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/01-Menu/Button_Start/Text (TMP)",
+      "text": "开始游戏",
+      "visible_text": "开始游戏"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/01-Menu/Button_Setting/Text (TMP)",
+      "text": "游戏设置",
+      "visible_text": "游戏设置"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/01-Menu/Button_About/Text (TMP)",
+      "text": "关于游戏",
+      "visible_text": "关于游戏"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/01-Menu/Button_Quit/Text (TMP)",
+      "text": "退出游戏",
+      "visible_text": "退出游戏"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/02_GameSetPanel/Slider_BGMVolume/Text",
+      "text": "音乐",
+      "visible_text": "音乐"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/02_GameSetPanel/Slider_SoundVolume/Text",
+      "text": "音效",
+      "visible_text": "音效"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/02_GameSetPanel/Toggle_IsFullScreen/Text",
+      "text": "切换全屏",
+      "visible_text": "切换全屏"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/06_GameDifficultySelect/Text_title",
+      "text": "选择游戏难度:",
+      "visible_text": "选择游戏难度:"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/06_GameDifficultySelect/Button_Easy/Text (TMP)",
+      "text": "简单",
+      "visible_text": "简单"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/06_GameDifficultySelect/Button_Normal/Text (TMP)",
+      "text": "正常",
+      "visible_text": "正常"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/06_GameDifficultySelect/Button_Hard/Text (TMP)",
+      "text": "困难",
+      "visible_text": "困难"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/06_GameDifficultySelect/Text_Describe",
+      "text": "",
+      "visible_text": ""
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/0_MainMenu.unity",
+      "location": "Canvas_Menu/06_GameDifficultySelect/Text_Static",
+      "text": "-难度等级不影响道具效果(生命恢复除外)-",
+      "visible_text": "-难度等级不影响道具效果(生命恢复除外)-"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/01_GamingPanel/001_VpetStateUI/Text_Hp",
+      "text": "HP",
+      "visible_text": "HP"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/01_GamingPanel/002_PlayerControlUI/ItemSelection/Text_Item",
+      "text": "物品",
+      "visible_text": "物品"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/01_GamingPanel/003_SettingUI/CameraScaleBar/Text_Scale",
+      "text": "缩放",
+      "visible_text": "缩放"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/01_GamingPanel/003_SettingUI/CameraScaleBar/Image_BtnA/Text",
+      "text": "A",
+      "visible_text": "A"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/01_GamingPanel/003_SettingUI/CameraScaleBar/Image_BtnD/Text",
+      "text": "D",
+      "visible_text": "D"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/02_SettingPanel/Button_Continue/Text (TMP)",
+      "text": "继续游戏",
+      "visible_text": "继续游戏"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/02_SettingPanel/Button_GameSet/Text (TMP)",
+      "text": "游戏设置",
+      "visible_text": "游戏设置"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/02_SettingPanel/Button_ReturnMenu/Text (TMP)",
+      "text": "返回标题",
+      "visible_text": "返回标题"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_GameSetPanel/Slider_BGMVolume/Text",
+      "text": "音乐",
+      "visible_text": "音乐"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_GameSetPanel/Slider_SoundVolume/Text",
+      "text": "音效",
+      "visible_text": "音效"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_GameSetPanel/Toggle_IsFullScreen/Text",
+      "text": "切换全屏",
+      "visible_text": "切换全屏"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_ResultPanel/001_WinPanel/Text_Title01",
+      "text": "不愧是我的主人喵~",
+      "visible_text": "不愧是我的主人喵~"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_ResultPanel/001_WinPanel/Text_Title02",
+      "text": "",
+      "visible_text": ""
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_ResultPanel/001_WinPanel/Button_Restart/Text (TMP)",
+      "text": "再来一次",
+      "visible_text": "再来一次"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_ResultPanel/001_WinPanel/Button_BackToTitle/Text (TMP)",
+      "text": "返回标题",
+      "visible_text": "返回标题"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_ResultPanel/002_LosePanel/Text_Title",
+      "text": "老大我的西体肿么硬邦邦的喵？",
+      "visible_text": "老大我的西体肿么硬邦邦的喵？"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_ResultPanel/002_LosePanel/Button_Respawn/Text (TMP)",
+      "text": "继续游戏",
+      "visible_text": "继续游戏"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_ResultPanel/002_LosePanel/Button_StartFromInit/Text (TMP)",
+      "text": "从头开始",
+      "visible_text": "从头开始"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/03_ResultPanel/002_LosePanel/Button_BackToTitle/Text (TMP)",
+      "text": "返回标题",
+      "visible_text": "返回标题"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Scenes/1_GameScene.unity",
+      "location": "Canvas_GUI/Text_StartText",
+      "text": "保护 萝莉丝 出发！",
+      "visible_text": "保护 萝莉丝 出发！"
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Prefabs/UI/Figure.prefab",
+      "location": "Figure",
+      "text": "",
+      "visible_text": ""
+    },
+    {
+      "kind": "serialized",
+      "source": "Assets/Prefabs/UI/Text.prefab",
+      "location": "Text",
+      "text": "",
+      "visible_text": ""
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/Characters/Vpet/VpetState_Eat.cs",
+      "location": "line 322",
+      "text": "速度提升↑↑",
+      "visible_text": "速度提升↑↑"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/Characters/Vpet/VpetState_Eat.cs",
+      "location": "line 340",
+      "text": "攻击提升↑↑",
+      "visible_text": "攻击提升↑↑"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 244",
+      "text": "保护",
+      "visible_text": "保护"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 247",
+      "text": "保护 萝莉丝",
+      "visible_text": "保护 萝莉丝"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 250",
+      "text": "保护 萝莉丝 出发！",
+      "visible_text": "保护 萝莉丝 出发！"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 408",
+      "text": "还算合格喵~",
+      "visible_text": "还算合格喵~"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 409",
+      "text": "(好感度+50)",
+      "visible_text": "(好感度+50)"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 415",
+      "text": "不愧是我的主人喵~",
+      "visible_text": "不愧是我的主人喵~"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 416",
+      "text": "(好感度+100)",
+      "visible_text": "(好感度+100)"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 422",
+      "text": "主人这么强吗喵！！",
+      "visible_text": "主人这么强吗喵！！"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/GameFlow/GameManager.cs",
+      "location": "line 423",
+      "text": "(好感度+114514)",
+      "visible_text": "(好感度+114514)"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/UI/Menu/BtnDifficultyHover.cs",
+      "location": "line 34",
+      "text": "*更快的物品刷新\n*桌宠生命/恢复能力/攻击能力提升\n*陷阱伤害减少\n*怪物属性弱化",
+      "visible_text": "*更快的物品刷新\n*桌宠生命/恢复能力/攻击能力提升\n*陷阱伤害减少\n*怪物属性弱化"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/UI/Menu/BtnDifficultyHover.cs",
+      "location": "line 40",
+      "text": "\n*常规的游戏难度，各方面均衡",
+      "visible_text": "\n*常规的游戏难度，各方面均衡"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/UI/Menu/BtnDifficultyHover.cs",
+      "location": "line 46",
+      "text": "*物品刷新速度变慢\n*桌宠生命与战斗能力削弱\n*陷阱变得更具威胁\n*怪物属性提升",
+      "visible_text": "*物品刷新速度变慢\n*桌宠生命与战斗能力削弱\n*陷阱变得更具威胁\n*怪物属性提升"
+    },
+    {
+      "kind": "runtime_literal",
+      "source": "Assets/Script/UI/Menu/BtnDifficultyHover.cs",
+      "location": "line 63",
+      "text": "",
+      "visible_text": ""
+    }
+  ]
+}
