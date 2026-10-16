@@ -1,0 +1,80 @@
+白色玻璃 UI 图集配置与替换安排
+更新日期：2026-10-16
+
+一、素材来源与切分
+来源：ArtExports/PassTexture/UI 下经修复的 28 件功能版套图。
+图集：White_Glass_Functional_28_2048x2464.png。
+SHA-256：c654d837fedc153eb9b5a22bde790c9ce93d43fd1a84c3a9a2d3909a1bda496f。
+28 个精灵均按单图文件名去掉扩展名命名，如 01_window、03_button_normal。
+同目录 UI_SpriteConfig.json 保留原始配置；其中 file 对应实际精灵名称，name 为语义简称。
+配置中的 rect 使用 Unity 左下角坐标；Border 顺序为左、下、右、上。
+不得按不透明像素自动裁掉留白：关闭底板与图标、勾选底板与标记需要同尺寸中心叠加。
+
+二、纹理导入设置
+Texture Type：Sprite (2D and UI)；Sprite Mode：Multiple。
+Pixels Per Unit：100，与当前两个场景 Canvas 的 Reference Pixels Per Unit 对齐。
+Filter Mode：Point；Wrap Mode：Clamp；关闭 MipMap 和 Read/Write。
+NPOT：None；默认平台最大尺寸：4096；RGBA32 无压缩。
+实际导入尺寸：2048 × 2464，不缩小原图。
+网格：Full Rect；不生成碰撞形状；Pivot：中心。
+若后续新增平台覆盖设置，应保持原尺寸和无损格式，避免边框失真。
+
+三、控件实例配置
+Sprite 资源保存 Rect、Border 和 Pivot，不保存 Image Type、Raycast Target 或控件引用。
+替换场景或预制体时，还需按配置表设置各 Image 实例及 Slider、Toggle 等组件。
+
+20 个带边框部件：Image.Type = Sliced，Fill Center = true。
+其他 8 个部件：Image.Type = Simple。
+图标、圆形滑块保持比例；Slider 填充不保持比例，由 Fill Rect 的宽度驱动。
+背景和装饰图形通常关闭 Raycast Target；可交互控件保留适当的射线接收区域。
+Sliced 部件的宽高应大于对应两侧 Border 之和；小尺寸 HUD 需另行核对边框比例。
+按钮四态使用同尺寸、同 Pivot 的 03、04、25、26，避免状态切换跳动。
+替换时检查原 Image.color 和 Selectable 的颜色状态，避免旧配色叠乘改变新图透明度。
+
+Slider：07 为底轨、08 为填充，09 或 10 为滑块；06 仅为空容器底板。
+FillArea 与 HandleSlideArea 的左右边界一致，相对底轨各内缩 8 个逻辑像素。
+填充交给 Slider.fillRect 控制，不再叠加另一套 Image.fillAmount 驱动。
+底轨高 16、填充高 8、滑块 32 × 32 为原始比例示例，可按控件布局统一换算。
+Slider 会驱动 Handle 的锚点；若 HandleSlideArea 高 32，Handle 纵向拉伸时 sizeDelta.y 应为 0，避免实际高变成 64。
+
+Toggle：13 为底板，14 仅为独立勾选标记，绑定 Toggle.graphic。
+关闭按钮：05 为底板，27 为中心子图标；两者同为 48 × 48，图标关闭射线。
+下拉框：17 为底板，18 为独立箭头；现有文字、选项模板及事件保持独立。
+开关：15 与 16 分层；滑块移动由交互逻辑驱动，不能只更换 Toggle.graphic。
+提示框：21 仅为底板；28 是可选固定尺寸箭头，不能随底板九宫格拉伸。
+
+四、已完成验证
+28 个图集切片与来源单图逐像素一致，来源哈希、区域边界和区域不重叠检查通过。
+Unity 读回 28 个精灵的 Rect、Border、Pivot、PPU 均与配置一致。
+强制重新导入后，28 个精灵的 local fileID 保持稳定。
+20 个 Sliced 部件各渲染缩小、横向拉伸、纵向拉伸三种尺寸，共 60 个实例。
+实际 Slider 组件验证 0%、50%、100% 填充宽度和滑块位置，滑块尺寸为 32 × 32。
+勾选框开关、关闭图标叠加、下拉箭头及按钮四态组合渲染已检查。
+验证对象位于临时场景，结束后已清理；原主菜单场景未产生未保存改动。
+本次配置结束时 Unity Console 无错误；尚未替换原游戏场景和预制体。
+本地验证截图：.codex-work/Screenshots/GlassUI/。
+
+五、现有 UI 替换安排
+当前发现 SimplePixelUI 的 113 处精灵引用，覆盖 2 个场景和 7 个预制体。
+0_MainMenu：37 处；1_GameScene：62 处；敌人和道具预制体合计 14 处。
+完整对象路径清单：.codex-work/Reports/GlassUI_ReplacementInventory.json（本地诊断记录，不纳入版本管理）。
+
+第一批：主菜单、设置、难度选择、关于和引导面板。
+按控件语义替换底板、普通/小按钮、关闭按钮、音量滑条、全屏勾选框和滚动条。
+返回、关闭、下一页按钮须分别判断语义，不按旧图集的精灵编号统一替换。
+保留 Button.onClick、Slider.onValueChanged、Toggle.onValueChanged 以及文本和现有布局。
+验证按钮四态、音量调节、全屏切换、引导滚动与面板进出。
+
+第二批：游戏内设置、结算面板、道具栏、角色血条和进度条。
+根据进度条/血条用途分别设置底轨与无边框填充，核验零值和满值。
+同步调整 3 个敌人和 4 个道具预制体中的世界空间血条。
+世界空间血条需单独检查 SpriteRenderer 的 Sliced 或现有填充方式，不能直接套用 UI Image 设置。
+检查道具槽的选中反馈、遮罩、图层与射线行为。
+
+第三批：专用图标与删除前检查。
+旧图集还提供下一页箭头、设置齿轮、终点图标、检查点心形，以及地图路牌问号和感叹号。
+当前 28 件套图没有这些独立图标；旧的返回/关闭符号还需按具体控件用途处理。
+为缺失图标准备替代素材，或单独迁出仍需保留的原图，之后重新扫描所有包外依赖。
+同时检查场景、预制体、动画、Addressables、精灵图集及脚本中的动态资源使用。
+全部替换并确认依赖清零后，再处理 Assets/ExtraPackages/SimplePixelUI 与 Assets/Textures/UI/SimplePixelUI 的删除。
+当前阶段保留这两个目录，避免已有控件、血条和地图路牌失去资源引用。

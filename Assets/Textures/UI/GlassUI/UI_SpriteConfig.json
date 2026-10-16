@@ -1,0 +1,790 @@
+{
+  "origin": "Unity bottom-left",
+  "atlas": "White_Glass_Functional_28_2048x2464.png",
+  "sprites": [
+    {
+      "file": "01_window.png",
+      "name": "window",
+      "label": "窗口底板",
+      "size": [
+        464,
+        304
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "empty panel",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 24,
+        "y": 2136,
+        "width": 464,
+        "height": 304
+      }
+    },
+    {
+      "file": "02_dialog.png",
+      "name": "dialog",
+      "label": "对话底板 · 4px切角",
+      "size": [
+        368,
+        272
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "empty panel",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 584,
+        "y": 2152,
+        "width": 368,
+        "height": 272
+      }
+    },
+    {
+      "file": "03_button_normal.png",
+      "name": "button_normal",
+      "label": "普通按钮",
+      "size": [
+        464,
+        112
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "button background",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1048,
+        "y": 2232,
+        "width": 464,
+        "height": 112
+      }
+    },
+    {
+      "file": "04_button_selected.png",
+      "name": "button_selected",
+      "label": "选中按钮",
+      "size": [
+        464,
+        112
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "button background",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1560,
+        "y": 2232,
+        "width": 464,
+        "height": 112
+      }
+    },
+    {
+      "file": "05_close.png",
+      "name": "close",
+      "label": "关闭按钮底板",
+      "size": [
+        48,
+        48
+      ],
+      "border_LBRT": [
+        10,
+        10,
+        10,
+        10
+      ],
+      "image_type": "Sliced",
+      "role": "button background; overlay27",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 232,
+        "y": 1912,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "file": "06_slider_panel.png",
+      "name": "slider_panel",
+      "label": "滑条容器空底板",
+      "size": [
+        464,
+        80
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "empty optional container; overlay07,08,09",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 536,
+        "y": 1896,
+        "width": 464,
+        "height": 80
+      }
+    },
+    {
+      "file": "07_slider_track.png",
+      "name": "slider_track",
+      "label": "滑条独立底轨",
+      "size": [
+        384,
+        16
+      ],
+      "border_LBRT": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "image_type": "Sliced",
+      "role": "slider background",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1088,
+        "y": 1928,
+        "width": 384,
+        "height": 16
+      }
+    },
+    {
+      "file": "08_slider_fill.png",
+      "name": "slider_fill",
+      "label": "无边框纯色填充",
+      "size": [
+        16,
+        8
+      ],
+      "border_LBRT": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_type": "Simple",
+      "role": "slider fill child; FillArea horizontal inset8px",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1784,
+        "y": 1932,
+        "width": 16,
+        "height": 8
+      }
+    },
+    {
+      "file": "09_slider_handle_square.png",
+      "name": "slider_handle_square",
+      "label": "方形 handle",
+      "size": [
+        32,
+        32
+      ],
+      "border_LBRT": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_type": "Simple",
+      "role": "Slider.handleRect",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 240,
+        "y": 1568,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "file": "10_slider_handle_round.png",
+      "name": "slider_handle_round",
+      "label": "圆形 handle",
+      "size": [
+        32,
+        32
+      ],
+      "border_LBRT": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_type": "Simple",
+      "role": "Slider.handleRect alternative",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 752,
+        "y": 1568,
+        "width": 32,
+        "height": 32
+      }
+    },
+    {
+      "file": "11_scrollbar_track_vertical.png",
+      "name": "scrollbar_track_vertical",
+      "label": "竖滚动条底轨",
+      "size": [
+        24,
+        256
+      ],
+      "border_LBRT": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "image_type": "Sliced",
+      "role": "scrollbar background",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1268,
+        "y": 1456,
+        "width": 24,
+        "height": 256
+      }
+    },
+    {
+      "file": "12_scrollbar_handle_vertical.png",
+      "name": "scrollbar_handle_vertical",
+      "label": "竖滚动条 handle",
+      "size": [
+        24,
+        64
+      ],
+      "border_LBRT": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "image_type": "Sliced",
+      "role": "Scrollbar.handleRect",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1780,
+        "y": 1552,
+        "width": 24,
+        "height": 64
+      }
+    },
+    {
+      "file": "13_checkbox_off.png",
+      "name": "checkbox_off",
+      "label": "勾选框底板",
+      "size": [
+        48,
+        48
+      ],
+      "border_LBRT": [
+        10,
+        10,
+        10,
+        10
+      ],
+      "image_type": "Sliced",
+      "role": "Toggle targetGraphic; overlay14",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 232,
+        "y": 1208,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "file": "14_checkbox_on.png",
+      "name": "checkbox_on",
+      "label": "独立勾选标记",
+      "size": [
+        48,
+        48
+      ],
+      "border_LBRT": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_type": "Simple",
+      "role": "Toggle.graphic; no frame",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 744,
+        "y": 1208,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "file": "15_switch_track.png",
+      "name": "switch_track",
+      "label": "开关独立底板",
+      "size": [
+        96,
+        48
+      ],
+      "border_LBRT": [
+        10,
+        10,
+        10,
+        10
+      ],
+      "image_type": "Sliced",
+      "role": "toggle background; overlay16",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1232,
+        "y": 1208,
+        "width": 96,
+        "height": 48
+      }
+    },
+    {
+      "file": "16_switch_handle.png",
+      "name": "switch_handle",
+      "label": "开关独立滑块",
+      "size": [
+        40,
+        40
+      ],
+      "border_LBRT": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_type": "Simple",
+      "role": "move center x24(off) to72(on); y24",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1772,
+        "y": 1212,
+        "width": 40,
+        "height": 40
+      }
+    },
+    {
+      "file": "17_dropdown_field.png",
+      "name": "dropdown_field",
+      "label": "下拉框底板",
+      "size": [
+        320,
+        64
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "Dropdown targetGraphic; child18",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 96,
+        "y": 848,
+        "width": 320,
+        "height": 64
+      }
+    },
+    {
+      "file": "18_dropdown_arrow.png",
+      "name": "dropdown_arrow",
+      "label": "下拉箭头",
+      "size": [
+        24,
+        24
+      ],
+      "border_LBRT": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_type": "Simple",
+      "role": "right aligned child graphic",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 756,
+        "y": 868,
+        "width": 24,
+        "height": 24
+      }
+    },
+    {
+      "file": "19_small_button.png",
+      "name": "small_button",
+      "label": "小按钮底板",
+      "size": [
+        48,
+        48
+      ],
+      "border_LBRT": [
+        10,
+        10,
+        10,
+        10
+      ],
+      "image_type": "Sliced",
+      "role": "button background",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1256,
+        "y": 856,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "file": "20_tab.png",
+      "name": "tab",
+      "label": "页签底板",
+      "size": [
+        160,
+        48
+      ],
+      "border_LBRT": [
+        10,
+        10,
+        10,
+        10
+      ],
+      "image_type": "Sliced",
+      "role": "tab background; label separate",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1712,
+        "y": 856,
+        "width": 160,
+        "height": 48
+      }
+    },
+    {
+      "file": "21_tooltip.png",
+      "name": "tooltip",
+      "label": "提示框独立底板",
+      "size": [
+        320,
+        160
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "empty tooltip body; optional child28",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 96,
+        "y": 448,
+        "width": 320,
+        "height": 160
+      }
+    },
+    {
+      "file": "22_input_field.png",
+      "name": "input_field",
+      "label": "输入框底板",
+      "size": [
+        320,
+        64
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "InputField targetGraphic; text separate",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 608,
+        "y": 496,
+        "width": 320,
+        "height": 64
+      }
+    },
+    {
+      "file": "23_scrollbar_track_horizontal.png",
+      "name": "scrollbar_track_horizontal",
+      "label": "横滚动条底轨",
+      "size": [
+        256,
+        24
+      ],
+      "border_LBRT": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "image_type": "Sliced",
+      "role": "scrollbar background",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1152,
+        "y": 516,
+        "width": 256,
+        "height": 24
+      }
+    },
+    {
+      "file": "24_scrollbar_handle_horizontal.png",
+      "name": "scrollbar_handle_horizontal",
+      "label": "横滚动条 handle",
+      "size": [
+        64,
+        24
+      ],
+      "border_LBRT": [
+        4,
+        4,
+        4,
+        4
+      ],
+      "image_type": "Sliced",
+      "role": "Scrollbar.handleRect",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1760,
+        "y": 516,
+        "width": 64,
+        "height": 24
+      }
+    },
+    {
+      "file": "25_button_pressed.png",
+      "name": "button_pressed",
+      "label": "按下按钮",
+      "size": [
+        464,
+        112
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "button background",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 24,
+        "y": 120,
+        "width": 464,
+        "height": 112
+      }
+    },
+    {
+      "file": "26_button_disabled.png",
+      "name": "button_disabled",
+      "label": "禁用按钮",
+      "size": [
+        464,
+        112
+      ],
+      "border_LBRT": [
+        12,
+        12,
+        12,
+        12
+      ],
+      "image_type": "Sliced",
+      "role": "button background",
+      "raycast_target": true,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 536,
+        "y": 120,
+        "width": 464,
+        "height": 112
+      }
+    },
+    {
+      "file": "27_close_icon.png",
+      "name": "close_icon",
+      "label": "独立关闭图标",
+      "size": [
+        48,
+        48
+      ],
+      "border_LBRT": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_type": "Simple",
+      "role": "close button child graphic",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1256,
+        "y": 152,
+        "width": 48,
+        "height": 48
+      }
+    },
+    {
+      "file": "28_tooltip_pointer.png",
+      "name": "tooltip_pointer",
+      "label": "独立提示箭头",
+      "size": [
+        24,
+        12
+      ],
+      "border_LBRT": [
+        0,
+        0,
+        0,
+        0
+      ],
+      "image_type": "Simple",
+      "role": "optional fixed-size tooltip child below body; never sliced",
+      "raycast_target": false,
+      "pivot": [
+        0.5,
+        0.5
+      ],
+      "rect": {
+        "x": 1780,
+        "y": 170,
+        "width": 24,
+        "height": 12
+      }
+    }
+  ]
+}
