@@ -1,0 +1,505 @@
+fileFormatVersion: 2
+guid: 9dc19dc4e51023b4e9a45802c0d20f9f
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Desert_01_BranchCactus
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 484
+        width: 152
+        height: 236
+      alignment: 9
+      pivot: {x: 0.4901316, y: 0.029661017}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4a6cf52ae608fd544be95fbc353cd5a3
+      internalID: 211622109
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_02_BarrelCacti
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 332
+        width: 172
+        height: 152
+      alignment: 9
+      pivot: {x: 0.49418604, y: 0.04605263}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cc3b85e99d2e3484cb9dd09e1c4ebcb9
+      internalID: 1564382872
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_03_DryGrass
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 92
+        width: 136
+        height: 104
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.03846154}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 40feb7719861e994780fce8308b78587
+      internalID: -1480784250
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_04_DeadTree
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 332
+        width: 136
+        height: 152
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.04605263}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6cbe310149df9a04aa21a87dea33ec66
+      internalID: -306036042
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_05_AdobeShelter
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 484
+        width: 248
+        height: 184
+      alignment: 9
+      pivot: {x: 0.5, y: 0.032608695}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eeb75f595118d1e44a7d4d6494e4b438
+      internalID: 1335635182
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_06_SandstonePillar
+      rect:
+        serializedVersion: 2
+        x: 308
+        y: 332
+        width: 124
+        height: 152
+      alignment: 9
+      pivot: {x: 0.4919355, y: 0.04605263}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db4489d1e3c4d2142b7ebb05ec012589
+      internalID: -130971269
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_07_SandstoneSlab
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 172
+        height: 92
+      alignment: 9
+      pivot: {x: 0.49418604, y: 0.04347826}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 84e7a50edc1f7144d8be76f8ef36b327
+      internalID: -1680162622
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_08_DeadWood
+      rect:
+        serializedVersion: 2
+        x: 264
+        y: 0
+        width: 136
+        height: 88
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.06818182}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: b413e92333646e446b1db6fc32b1ae88
+      internalID: -1470460271
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_09_ClothMarker
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 484
+        width: 88
+        height: 140
+      alignment: 9
+      pivot: {x: 0.48863637, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 64b2b613f460adb4abf52778410ee379
+      internalID: -1035280865
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_10_WaterJars
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 92
+        width: 124
+        height: 104
+      alignment: 9
+      pivot: {x: 0.4919355, y: 0.03846154}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c4774357c7ee3b242bf4de6044df0772
+      internalID: 645288494
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_11_Skull
+      rect:
+        serializedVersion: 2
+        x: 400
+        y: 0
+        width: 88
+        height: 72
+      alignment: 9
+      pivot: {x: 0.48863637, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 15b805bbef8691f4ab809a6ea7a866bb
+      internalID: -103041565
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_12_Tumbleweed
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 92
+        width: 108
+        height: 104
+      alignment: 9
+      pivot: {x: 0.49537036, y: 0.03846154}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 74dc1610c9b92ed4d96edff5654e93a9
+      internalID: -1933121960
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_13_SandstoneSpikes
+      rect:
+        serializedVersion: 2
+        x: 172
+        y: 0
+        width: 92
+        height: 92
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07608695}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2e737bcde6247ca478fc20b017248b22
+      internalID: -1775904170
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_14_CactusBarrier
+      rect:
+        serializedVersion: 2
+        x: 304
+        y: 196
+        width: 172
+        height: 116
+      alignment: 9
+      pivot: {x: 0.49418604, y: 0.03448276}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: de85362771b202e479138a739f56f09d
+      internalID: 1129948452
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_15_HangingSandstone
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 196
+        width: 152
+        height: 120
+      alignment: 9
+      pivot: {x: 0.4901316, y: 0.96666664}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 1f4a08e40c5224342afb1c6c22d4cd16
+      internalID: -758278755
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Desert_16_FloatingIsland
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 196
+        width: 152
+        height: 136
+      alignment: 9
+      pivot: {x: 0.5, y: 0.04411765}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb9dccddb6ccc9147b8af00e3a901623
+      internalID: -544757659
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Desert_01_BranchCactus: 211622109
+      Desert_02_BarrelCacti: 1564382872
+      Desert_03_DryGrass: -1480784250
+      Desert_04_DeadTree: -306036042
+      Desert_05_AdobeShelter: 1335635182
+      Desert_06_SandstonePillar: -130971269
+      Desert_07_SandstoneSlab: -1680162622
+      Desert_08_DeadWood: -1470460271
+      Desert_09_ClothMarker: -1035280865
+      Desert_10_WaterJars: 645288494
+      Desert_11_Skull: -103041565
+      Desert_12_Tumbleweed: -1933121960
+      Desert_13_SandstoneSpikes: -1775904170
+      Desert_14_CactusBarrier: 1129948452
+      Desert_15_HangingSandstone: -758278755
+      Desert_16_FloatingIsland: -544757659
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

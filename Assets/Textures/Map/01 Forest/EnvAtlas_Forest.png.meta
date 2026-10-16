@@ -1,0 +1,505 @@
+fileFormatVersion: 2
+guid: 06a326cd2b1c3484d823a9512eb19da2
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Forest_01_RootTree
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 192
+        width: 200
+        height: 220
+      alignment: 9
+      pivot: {x: 0.5, y: 0.027272727}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 639573c4caa03e04599d0aaa78609dd3
+      internalID: 1320334964
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_02_RootCottage
+      rect:
+        serializedVersion: 2
+        x: 408
+        y: 192
+        width: 248
+        height: 204
+      alignment: 9
+      pivot: {x: 0.5, y: 0.024509804}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 194840f754485c746aada5e241bbca16
+      internalID: 590160018
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_03_MossBoulder
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 72
+        width: 136
+        height: 104
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.067307696}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6c238fbdbf4509a4682ea4c2101cb04e
+      internalID: -234650742
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_04_Fern
+      rect:
+        serializedVersion: 2
+        x: 224
+        y: 0
+        width: 88
+        height: 68
+      alignment: 9
+      pivot: {x: 0.48863637, y: 0.10294118}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 658a9b39a91789d458ab258ee1371a23
+      internalID: 454135587
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_05_Sapling
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 72
+        width: 104
+        height: 120
+      alignment: 9
+      pivot: {x: 0.5, y: 0.041666668}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c07fffe867880df4497f6ae19cd17cea
+      internalID: 1774898999
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_06_HollowStump
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 72
+        width: 104
+        height: 92
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07608695}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 68a215698bd54184fa61dbecc80e5e35
+      internalID: 1949200657
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_07_Mushrooms
+      rect:
+        serializedVersion: 2
+        x: 312
+        y: 0
+        width: 76
+        height: 56
+      alignment: 9
+      pivot: {x: 0.4868421, y: 0.071428575}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a4431ac72bf1d294b9e2926598d61d00
+      internalID: 1501836070
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_08_HollowLog
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 72
+        width: 136
+        height: 80
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.0875}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a7e31e9dadef4a74fa80d92632f0fcea
+      internalID: -1712789352
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_09_Shrub
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 72
+        width: 136
+        height: 88
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.06818182}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4edf613d6f61e3647a55dc7efba7bc14
+      internalID: 1296671878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_10_WoodCrate
+      rect:
+        serializedVersion: 2
+        x: 136
+        y: 0
+        width: 88
+        height: 72
+      alignment: 9
+      pivot: {x: 0.48863637, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 31115e9fa1e463445b676e790dc25e0c
+      internalID: -307392932
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_11_BrambleTrap
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 136
+        height: 72
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 90dcc1b8f8ea0f44ebc9ebb365f6ba7a
+      internalID: -19037878
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_12_HangingRoots
+      rect:
+        serializedVersion: 2
+        x: 512
+        y: 412
+        width: 104
+        height: 128
+      alignment: 9
+      pivot: {x: 0.5, y: 0.96875}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 0f02d16ab250e3e4e9287e230e6151bf
+      internalID: 1209568813
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_13_Birch
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 412
+        width: 140
+        height: 236
+      alignment: 9
+      pivot: {x: 0.5, y: 0.029661017}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 99543082f86fa9144aa0ef7dd1226a70
+      internalID: -1957297741
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_14_Willow
+      rect:
+        serializedVersion: 2
+        x: 200
+        y: 192
+        width: 208
+        height: 216
+      alignment: 9
+      pivot: {x: 0.49519232, y: 0.023148147}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c16179df596b2974994abf0e88f920fa
+      internalID: -1898946812
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_15_Fir
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 412
+        width: 152
+        height: 236
+      alignment: 9
+      pivot: {x: 0.5, y: 0.029661017}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 8631cc89b248f504d971ccb68bd9604c
+      internalID: -328003606
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Forest_16_HollowOldOak
+      rect:
+        serializedVersion: 2
+        x: 292
+        y: 412
+        width: 220
+        height: 224
+      alignment: 9
+      pivot: {x: 0.49545455, y: 0.03125}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 3a5b49122a9044e44818e420456205e3
+      internalID: 415780917
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Forest_01_RootTree: 1320334964
+      Forest_02_RootCottage: 590160018
+      Forest_03_MossBoulder: -234650742
+      Forest_04_Fern: 454135587
+      Forest_05_Sapling: 1774898999
+      Forest_06_HollowStump: 1949200657
+      Forest_07_Mushrooms: 1501836070
+      Forest_08_HollowLog: -1712789352
+      Forest_09_Shrub: 1296671878
+      Forest_10_WoodCrate: -307392932
+      Forest_11_BrambleTrap: -19037878
+      Forest_12_HangingRoots: 1209568813
+      Forest_13_Birch: -1957297741
+      Forest_14_Willow: -1898946812
+      Forest_15_Fir: -328003606
+      Forest_16_HollowOldOak: 415780917
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

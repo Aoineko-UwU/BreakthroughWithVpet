@@ -1,0 +1,505 @@
+fileFormatVersion: 2
+guid: aa404b1b7bd15c349aac63629b878b64
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Mountain_01_WindPine
+      rect:
+        serializedVersion: 2
+        x: 160
+        y: 344
+        width: 180
+        height: 188
+      alignment: 9
+      pivot: {x: 0.49722221, y: 0.03723404}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ca5faa0b6520a4c4589c49dc2e1aaa63
+      internalID: -1869706151
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_02_AiryLarch
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 344
+        width: 160
+        height: 232
+      alignment: 9
+      pivot: {x: 0.49375, y: 0.02586207}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 513850bb0d3eaa744ba4d7fded6e51db
+      internalID: -1958681733
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_03_DwarfShrub
+      rect:
+        serializedVersion: 2
+        x: 152
+        y: 0
+        width: 136
+        height: 88
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.06818182}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c377d6c0cfe4e714bb711a5014e9dd6d
+      internalID: -1981983026
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_04_EdelweissBellflower
+      rect:
+        serializedVersion: 2
+        x: 392
+        y: 0
+        width: 88
+        height: 80
+      alignment: 9
+      pivot: {x: 0.48863637, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 004ddd3913cf34640a9565cb86595828
+      internalID: 595416913
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_05_StoneShelter
+      rect:
+        serializedVersion: 2
+        x: 340
+        y: 344
+        width: 248
+        height: 152
+      alignment: 9
+      pivot: {x: 0.49395162, y: 0.04605263}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 10a59d71e1b3b35449b4f2cecc274769
+      internalID: 1927629643
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_06_SplitMonolith
+      rect:
+        serializedVersion: 2
+        x: 272
+        y: 204
+        width: 124
+        height: 136
+      alignment: 9
+      pivot: {x: 0.4919355, y: 0.04411765}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f4faa22286e2d174a9221b13722eb6d5
+      internalID: 555289302
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_07_StratifiedOutcrop
+      rect:
+        serializedVersion: 2
+        x: 396
+        y: 204
+        width: 200
+        height: 124
+      alignment: 9
+      pivot: {x: 0.4925, y: 0.048387095}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: eb230cfbabf7d9548bd2498e1a590497
+      internalID: -2105443739
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_08_AlpineReeds
+      rect:
+        serializedVersion: 2
+        x: 260
+        y: 88
+        width: 84
+        height: 104
+      alignment: 9
+      pivot: {x: 0.4940476, y: 0.067307696}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9ce43617863cd7c4399cf1c61d2a9009
+      internalID: 1185186035
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_09_SlateCairn
+      rect:
+        serializedVersion: 2
+        x: 288
+        y: 0
+        width: 104
+        height: 80
+      alignment: 9
+      pivot: {x: 0.48557693, y: 0.0875}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: bb345b8bc0c9c7b44ae57ab2e51bbccd
+      internalID: 1415142665
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_10_TrailMarker
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 204
+        width: 104
+        height: 140
+      alignment: 9
+      pivot: {x: 0.48557693, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e9ee171e7e173074685c3f761ed29dc5
+      internalID: 1513150734
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_11_BrokenPineLimb
+      rect:
+        serializedVersion: 2
+        x: 344
+        y: 88
+        width: 116
+        height: 92
+      alignment: 9
+      pivot: {x: 0.5, y: 0.07608695}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: f132a55b4fc001d46bcd240f9408295b
+      internalID: 1688633312
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_12_HollowStump
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 88
+        width: 124
+        height: 116
+      alignment: 9
+      pivot: {x: 0.4919355, y: 0.03448276}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 375c3b21657a5ca46a61a31d21091271
+      internalID: 1103276477
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_13_RockRidge
+      rect:
+        serializedVersion: 2
+        x: 124
+        y: 88
+        width: 136
+        height: 104
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.03846154}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 4e8b2689e77dcaf4090c7d7433b70d79
+      internalID: -1982526471
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_14_HangingOverhang
+      rect:
+        serializedVersion: 2
+        x: 104
+        y: 204
+        width: 168
+        height: 136
+      alignment: 9
+      pivot: {x: 0.49702382, y: 0.9705882}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2469b830ea6b2694bb40f6d9f7fcd712
+      internalID: 508696236
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_15_Scree
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 152
+        height: 88
+      alignment: 9
+      pivot: {x: 0.4901316, y: 0.06818182}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: aaaedc0d108915a44b49eed8aa00573f
+      internalID: 418053117
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Mountain_16_MeadowCushion
+      rect:
+        serializedVersion: 2
+        x: 480
+        y: 0
+        width: 96
+        height: 72
+      alignment: 9
+      pivot: {x: 0.49479166, y: 0.06944445}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50be2fce66ea2de40bbea7ff498f605e
+      internalID: -2032588325
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Mountain_01_WindPine: -1869706151
+      Mountain_02_AiryLarch: -1958681733
+      Mountain_03_DwarfShrub: -1981983026
+      Mountain_04_EdelweissBellflower: 595416913
+      Mountain_05_StoneShelter: 1927629643
+      Mountain_06_SplitMonolith: 555289302
+      Mountain_07_StratifiedOutcrop: -2105443739
+      Mountain_08_AlpineReeds: 1185186035
+      Mountain_09_SlateCairn: 1415142665
+      Mountain_10_TrailMarker: 1513150734
+      Mountain_11_BrokenPineLimb: 1688633312
+      Mountain_12_HollowStump: 1103276477
+      Mountain_13_RockRidge: -1982526471
+      Mountain_14_HangingOverhang: 508696236
+      Mountain_15_Scree: 418053117
+      Mountain_16_MeadowCushion: -2032588325
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

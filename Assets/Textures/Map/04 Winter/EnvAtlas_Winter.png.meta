@@ -1,0 +1,505 @@
+fileFormatVersion: 2
+guid: 20b1851968aad9e418266c9b14dc648c
+TextureImporter:
+  internalIDToNameTable: []
+  externalObjects: {}
+  serializedVersion: 13
+  mipmaps:
+    mipMapMode: 0
+    enableMipMap: 0
+    sRGBTexture: 1
+    linearTexture: 0
+    fadeOut: 0
+    borderMipMap: 0
+    mipMapsPreserveCoverage: 0
+    alphaTestReferenceValue: 0.5
+    mipMapFadeDistanceStart: 1
+    mipMapFadeDistanceEnd: 3
+  bumpmap:
+    convertToNormalMap: 0
+    externalNormalMap: 0
+    heightScale: 0.25
+    normalMapFilter: 0
+    flipGreenChannel: 0
+  isReadable: 0
+  streamingMipmaps: 0
+  streamingMipmapsPriority: 0
+  vTOnly: 0
+  ignoreMipmapLimit: 0
+  grayScaleToAlpha: 0
+  generateCubemap: 6
+  cubemapConvolution: 0
+  seamlessCubemap: 0
+  textureFormat: 1
+  maxTextureSize: 2048
+  textureSettings:
+    serializedVersion: 2
+    filterMode: 1
+    aniso: 1
+    mipBias: 0
+    wrapU: 1
+    wrapV: 1
+    wrapW: 1
+  nPOTScale: 0
+  lightmap: 0
+  compressionQuality: 50
+  spriteMode: 2
+  spriteExtrude: 1
+  spriteMeshType: 1
+  alignment: 0
+  spritePivot: {x: 0.5, y: 0.5}
+  spritePixelsToUnits: 100
+  spriteBorder: {x: 0, y: 0, z: 0, w: 0}
+  spriteGenerateFallbackPhysicsShape: 1
+  alphaUsage: 1
+  alphaIsTransparency: 1
+  spriteTessellationDetail: -1
+  textureType: 8
+  textureShape: 1
+  singleChannelComponent: 0
+  flipbookRows: 1
+  flipbookColumns: 1
+  maxTextureSizeSet: 0
+  compressionQualitySet: 0
+  textureFormatSet: 0
+  ignorePngGamma: 0
+  applyGammaDecoding: 0
+  swizzle: 50462976
+  cookieLightType: 0
+  platformSettings:
+  - serializedVersion: 3
+    buildTarget: DefaultTexturePlatform
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Standalone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: iPhone
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: Android
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 1
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    ignorePlatformSupport: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
+  spriteSheet:
+    serializedVersion: 2
+    sprites:
+    - serializedVersion: 2
+      name: Winter_01_SnowSpruce
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 432
+        width: 192
+        height: 236
+      alignment: 9
+      pivot: {x: 0.49739584, y: 0.029661017}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2c6b51bead4681e40a93c26e3e8c8cc4
+      internalID: 1822913475
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_02_BareBirch
+      rect:
+        serializedVersion: 2
+        x: 192
+        y: 432
+        width: 160
+        height: 236
+      alignment: 9
+      pivot: {x: 0.49375, y: 0.029661017}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: d00c3e432c586bf46b40b9afcbe255ff
+      internalID: 1822840633
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_03_BerryBush
+      rect:
+        serializedVersion: 2
+        x: 164
+        y: 104
+        width: 136
+        height: 120
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.041666668}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 25eef7fcab5413e49ad14e4ec823ccd0
+      internalID: -1523679575
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_04_DormantGrass
+      rect:
+        serializedVersion: 2
+        x: 572
+        y: 244
+        width: 88
+        height: 76
+      alignment: 9
+      pivot: {x: 0.48863637, y: 0.078947365}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 50dbbd6f996a69546a38e5541c4cd07e
+      internalID: 1167224199
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_05_TimberCabin
+      rect:
+        serializedVersion: 2
+        x: 352
+        y: 432
+        width: 248
+        height: 216
+      alignment: 9
+      pivot: {x: 0.5, y: 0.023148147}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 77393cd749586514d864ab196f18bccd
+      internalID: 1096055024
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_06_SnowRock
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 104
+        width: 164
+        height: 140
+      alignment: 9
+      pivot: {x: 0.49085367, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2cfb72f3778781f478db95e02001e30a
+      internalID: -141221516
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_07_HollowStump
+      rect:
+        serializedVersion: 2
+        x: 300
+        y: 104
+        width: 124
+        height: 108
+      alignment: 9
+      pivot: {x: 0.4919355, y: 0.046296295}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: a838202af6c797e43be46678c4e9d49b
+      internalID: 73803326
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_08_FallenLog
+      rect:
+        serializedVersion: 2
+        x: 424
+        y: 104
+        width: 156
+        height: 104
+      alignment: 9
+      pivot: {x: 0.49679488, y: 0.03846154}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: e4ffe61741f84aa4f817d192e2e7ad26
+      internalID: -686007073
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_09_FirSaplings
+      rect:
+        serializedVersion: 2
+        x: 404
+        y: 244
+        width: 168
+        height: 152
+      alignment: 9
+      pivot: {x: 0.49702382, y: 0.04605263}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: db7ac6834680ff84e9bc69ce37a80f76
+      internalID: -401735064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_10_WinterJuniper
+      rect:
+        serializedVersion: 2
+        x: 520
+        y: 0
+        width: 136
+        height: 80
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.05}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 7f0a0762ab8075f499349c7865ba0646
+      internalID: -677614398
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_11_WoodFence
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 140
+        height: 104
+      alignment: 9
+      pivot: {x: 0.5, y: 0.03846154}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 2da0c7f39687d09458d0df624617b167
+      internalID: -868439266
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_12_FirewoodShelter
+      rect:
+        serializedVersion: 2
+        x: 184
+        y: 244
+        width: 220
+        height: 164
+      alignment: 9
+      pivot: {x: 0.49545455, y: 0.024390243}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: cb4a41b6c28925d4f9d8c1c5912b9689
+      internalID: -875105238
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_13_BareRowan
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 244
+        width: 184
+        height: 188
+      alignment: 9
+      pivot: {x: 0.49456522, y: 0.021276595}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 9415034b9c31c2944b9ebca4480e372d
+      internalID: 2065938588
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_14_SmallBoulders
+      rect:
+        serializedVersion: 2
+        x: 384
+        y: 0
+        width: 136
+        height: 92
+      alignment: 9
+      pivot: {x: 0.49264705, y: 0.07608695}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 530fcda3e3755374e9887bc8c03ef2bf
+      internalID: -1854450251
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_15_HangingIcicles
+      rect:
+        serializedVersion: 2
+        x: 140
+        y: 0
+        width: 100
+        height: 104
+      alignment: 9
+      pivot: {x: 0.49, y: 0.96153843}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: c1f48f476b68e0c4388e872967ea3393
+      internalID: 1266173099
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Winter_16_ThornBush
+      rect:
+        serializedVersion: 2
+        x: 240
+        y: 0
+        width: 144
+        height: 92
+      alignment: 9
+      pivot: {x: 0.4965278, y: 0.07608695}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 6237b3fa1e6951345a21263a68af3294
+      internalID: 231423528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    outline: []
+    physicsShape: []
+    bones: []
+    spriteID: 5e97eb03825dee720800000000000000
+    internalID: 0
+    vertices: []
+    indices: 
+    edges: []
+    weights: []
+    secondaryTextures: []
+    nameFileIdTable:
+      Winter_01_SnowSpruce: 1822913475
+      Winter_02_BareBirch: 1822840633
+      Winter_03_BerryBush: -1523679575
+      Winter_04_DormantGrass: 1167224199
+      Winter_05_TimberCabin: 1096055024
+      Winter_06_SnowRock: -141221516
+      Winter_07_HollowStump: 73803326
+      Winter_08_FallenLog: -686007073
+      Winter_09_FirSaplings: -401735064
+      Winter_10_WinterJuniper: -677614398
+      Winter_11_WoodFence: -868439266
+      Winter_12_FirewoodShelter: -875105238
+      Winter_13_BareRowan: 2065938588
+      Winter_14_SmallBoulders: -1854450251
+      Winter_15_HangingIcicles: 1266173099
+      Winter_16_ThornBush: 231423528
+  mipmapLimitGroupName: 
+  pSDRemoveMatte: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
