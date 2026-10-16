@@ -3,10 +3,11 @@
 
 一、素材来源与切分
 来源：ArtExports/PassTexture/UI 下经修复的 28 件功能版套图。
-图集：White_Glass_Functional_28_2048x2464.png。
-SHA-256：c654d837fedc153eb9b5a22bde790c9ce93d43fd1a84c3a9a2d3909a1bda496f。
+原始套图：White_Glass_Functional_28_2048x2464.png。
+项目使用的重排图集：GlassUI_Atlas.png，1024 × 1024。
+重排图集 SHA-256：63dc3a5df389c7bb398c9730ad77626d967a97ebba6d61abe9ca77a32a4bfb7c。
 28 个精灵均按单图文件名去掉扩展名命名，如 01_window、03_button_normal。
-同目录 UI_SpriteConfig.json 保留原始配置；其中 file 对应实际精灵名称，name 为语义简称。
+同目录 UI_SpriteConfig.json 已同步重排后的坐标与尺寸；name 为实际精灵名称，file 为原始单图名称。
 配置中的 rect 使用 Unity 左下角坐标；Border 顺序为左、下、右、上。
 不得按不透明像素自动裁掉留白：关闭底板与图标、勾选底板与标记需要同尺寸中心叠加。
 
@@ -14,10 +15,14 @@ SHA-256：c654d837fedc153eb9b5a22bde790c9ce93d43fd1a84c3a9a2d3909a1bda496f。
 Texture Type：Sprite (2D and UI)；Sprite Mode：Multiple。
 Pixels Per Unit：100，与当前两个场景 Canvas 的 Reference Pixels Per Unit 对齐。
 Filter Mode：Point；Wrap Mode：Clamp；关闭 MipMap 和 Read/Write。
-NPOT：None；默认平台最大尺寸：4096；RGBA32 无压缩。
-实际导入尺寸：2048 × 2464，不缩小原图。
+NPOT：None；默认平台最大尺寸：2048；启用纹理压缩和 Crunch，保留当前质量值 8。
+当前 Standalone 实际格式：DXT5Crunched；图集实际导入尺寸：1024 × 1024，不发生缩放。
+画布尺寸及所有精灵 Rect 的 x、y、width、height 均为 4 的倍数，满足 4 × 4 压缩块对齐。
+每个精灵四周至少保留 4 像素透明间隔，相邻精灵之间至少间隔 8 像素。
+重排仅复制原始单图像素，不旋转、不缩放；源 PNG 保持原像素，导入后由 Unity 执行纹理压缩。
+通过 Unity 显式保存默认平台的导入设置，并在重新读取磁盘配置后核验尺寸和压缩格式。
 网格：Full Rect；不生成碰撞形状；Pivot：中心。
-若后续新增平台覆盖设置，应保持原尺寸和无损格式，避免边框失真。
+若后续新增平台覆盖设置，应保留原尺寸并选择支持透明通道的压缩格式，再检查像素边框表现。
 
 三、控件实例配置
 Sprite 资源保存 Rect、Border 和 Pivot，不保存 Image Type、Raycast Target 或控件引用。
@@ -47,6 +52,8 @@ Toggle：13 为底板，14 仅为独立勾选标记，绑定 Toggle.graphic。
 28 个图集切片与来源单图逐像素一致，来源哈希、区域边界和区域不重叠检查通过。
 Unity 读回 28 个精灵的 Rect、Border、Pivot、PPU 均与配置一致。
 强制重新导入后，28 个精灵的 local fileID 保持稳定。
+图集重排并改名后，Atlas GUID 和 28 个精灵的 local fileID 均保持不变。
+持久化核验：重新导入后仍为 1024 × 1024，启用压缩与 Crunch；PNG 切片与原始单图像素一致。
 20 个 Sliced 部件各渲染缩小、横向拉伸、纵向拉伸三种尺寸，共 60 个实例。
 实际 Slider 组件验证 0%、50%、100% 填充宽度和滑块位置，滑块尺寸为 32 × 32。
 勾选框开关、关闭图标叠加、下拉箭头及按钮四态组合渲染已检查。

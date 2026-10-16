@@ -139,8 +139,8 @@ TextureImporter:
       name: 01_window
       rect:
         serializedVersion: 2
-        x: 24
-        y: 2136
+        x: 4
+        y: 4
         width: 464
         height: 304
       alignment: 0
@@ -160,8 +160,8 @@ TextureImporter:
       name: 02_dialog
       rect:
         serializedVersion: 2
-        x: 584
-        y: 2152
+        x: 476
+        y: 4
         width: 368
         height: 272
       alignment: 0
@@ -181,8 +181,8 @@ TextureImporter:
       name: 03_button_normal
       rect:
         serializedVersion: 2
-        x: 1048
-        y: 2232
+        x: 476
+        y: 284
         width: 464
         height: 112
       alignment: 0
@@ -202,8 +202,8 @@ TextureImporter:
       name: 04_button_selected
       rect:
         serializedVersion: 2
-        x: 1560
-        y: 2232
+        x: 4
+        y: 316
         width: 464
         height: 112
       alignment: 0
@@ -223,8 +223,8 @@ TextureImporter:
       name: 05_close
       rect:
         serializedVersion: 2
-        x: 232
-        y: 1912
+        x: 332
+        y: 644
         width: 48
         height: 48
       alignment: 0
@@ -244,8 +244,8 @@ TextureImporter:
       name: 06_slider_panel
       rect:
         serializedVersion: 2
-        x: 536
-        y: 1896
+        x: 4
+        y: 556
         width: 464
         height: 80
       alignment: 0
@@ -265,8 +265,8 @@ TextureImporter:
       name: 07_slider_track
       rect:
         serializedVersion: 2
-        x: 1088
-        y: 1928
+        x: 4
+        y: 788
         width: 384
         height: 16
       alignment: 0
@@ -286,8 +286,8 @@ TextureImporter:
       name: 08_slider_fill
       rect:
         serializedVersion: 2
-        x: 1784
-        y: 1932
+        x: 372
+        y: 812
         width: 16
         height: 8
       alignment: 0
@@ -307,8 +307,8 @@ TextureImporter:
       name: 09_slider_handle_square
       rect:
         serializedVersion: 2
-        x: 240
-        y: 1568
+        x: 76
+        y: 868
         width: 32
         height: 32
       alignment: 0
@@ -328,8 +328,8 @@ TextureImporter:
       name: 10_slider_handle_round
       rect:
         serializedVersion: 2
-        x: 752
-        y: 1568
+        x: 116
+        y: 868
         width: 32
         height: 32
       alignment: 0
@@ -349,8 +349,8 @@ TextureImporter:
       name: 11_scrollbar_track_vertical
       rect:
         serializedVersion: 2
-        x: 1268
-        y: 1456
+        x: 396
+        y: 644
         width: 24
         height: 256
       alignment: 0
@@ -370,8 +370,8 @@ TextureImporter:
       name: 12_scrollbar_handle_vertical
       rect:
         serializedVersion: 2
-        x: 1780
-        y: 1552
+        x: 4
+        y: 940
         width: 24
         height: 64
       alignment: 0
@@ -391,8 +391,8 @@ TextureImporter:
       name: 13_checkbox_off
       rect:
         serializedVersion: 2
-        x: 232
-        y: 1208
+        x: 332
+        y: 700
         width: 48
         height: 48
       alignment: 0
@@ -412,8 +412,8 @@ TextureImporter:
       name: 14_checkbox_on
       rect:
         serializedVersion: 2
-        x: 744
-        y: 1208
+        x: 948
+        y: 60
         width: 48
         height: 48
       alignment: 0
@@ -433,8 +433,8 @@ TextureImporter:
       name: 15_switch_track
       rect:
         serializedVersion: 2
-        x: 1232
-        y: 1208
+        x: 268
+        y: 812
         width: 96
         height: 48
       alignment: 0
@@ -454,8 +454,8 @@ TextureImporter:
       name: 16_switch_handle
       rect:
         serializedVersion: 2
-        x: 1772
-        y: 1212
+        x: 428
+        y: 644
         width: 40
         height: 40
       alignment: 0
@@ -475,8 +475,8 @@ TextureImporter:
       name: 17_dropdown_field
       rect:
         serializedVersion: 2
-        x: 96
-        y: 848
+        x: 4
+        y: 644
         width: 320
         height: 64
       alignment: 0
@@ -496,8 +496,8 @@ TextureImporter:
       name: 18_dropdown_arrow
       rect:
         serializedVersion: 2
-        x: 756
-        y: 868
+        x: 332
+        y: 756
         width: 24
         height: 24
       alignment: 0
@@ -517,8 +517,8 @@ TextureImporter:
       name: 19_small_button
       rect:
         serializedVersion: 2
-        x: 1256
-        y: 856
+        x: 948
+        y: 116
         width: 48
         height: 48
       alignment: 0
@@ -538,8 +538,8 @@ TextureImporter:
       name: 20_tab
       rect:
         serializedVersion: 2
-        x: 1712
-        y: 856
+        x: 852
+        y: 4
         width: 160
         height: 48
       alignment: 0
@@ -559,8 +559,8 @@ TextureImporter:
       name: 21_tooltip
       rect:
         serializedVersion: 2
-        x: 96
-        y: 448
+        x: 476
+        y: 524
         width: 320
         height: 160
       alignment: 0
@@ -580,8 +580,8 @@ TextureImporter:
       name: 22_input_field
       rect:
         serializedVersion: 2
-        x: 608
-        y: 496
+        x: 4
+        y: 716
         width: 320
         height: 64
       alignment: 0
@@ -601,8 +601,8 @@ TextureImporter:
       name: 23_scrollbar_track_horizontal
       rect:
         serializedVersion: 2
-        x: 1152
-        y: 516
+        x: 4
+        y: 908
         width: 256
         height: 24
       alignment: 0
@@ -622,8 +622,8 @@ TextureImporter:
       name: 24_scrollbar_handle_horizontal
       rect:
         serializedVersion: 2
-        x: 1760
-        y: 516
+        x: 4
+        y: 868
         width: 64
         height: 24
       alignment: 0
@@ -643,8 +643,8 @@ TextureImporter:
       name: 25_button_pressed
       rect:
         serializedVersion: 2
-        x: 24
-        y: 120
+        x: 476
+        y: 404
         width: 464
         height: 112
       alignment: 0
@@ -664,8 +664,8 @@ TextureImporter:
       name: 26_button_disabled
       rect:
         serializedVersion: 2
-        x: 536
-        y: 120
+        x: 4
+        y: 436
         width: 464
         height: 112
       alignment: 0
@@ -685,8 +685,8 @@ TextureImporter:
       name: 27_close_icon
       rect:
         serializedVersion: 2
-        x: 1256
-        y: 152
+        x: 948
+        y: 172
         width: 48
         height: 48
       alignment: 0
@@ -706,8 +706,8 @@ TextureImporter:
       name: 28_tooltip_pointer
       rect:
         serializedVersion: 2
-        x: 1780
-        y: 170
+        x: 364
+        y: 756
         width: 24
         height: 12
       alignment: 0

@@ -1,10 +1,10 @@
 {
   "origin": "Unity bottom-left",
-  "atlas": "White_Glass_Functional_28_2048x2464.png",
+  "atlas": "GlassUI_Atlas.png",
   "sprites": [
     {
       "file": "01_window.png",
-      "name": "window",
+      "name": "01_window",
       "label": "窗口底板",
       "size": [
         464,
@@ -24,15 +24,15 @@
         0.5
       ],
       "rect": {
-        "x": 24,
-        "y": 2136,
+        "x": 4,
+        "y": 4,
         "width": 464,
         "height": 304
       }
     },
     {
       "file": "02_dialog.png",
-      "name": "dialog",
+      "name": "02_dialog",
       "label": "对话底板 · 4px切角",
       "size": [
         368,
@@ -52,15 +52,15 @@
         0.5
       ],
       "rect": {
-        "x": 584,
-        "y": 2152,
+        "x": 476,
+        "y": 4,
         "width": 368,
         "height": 272
       }
     },
     {
       "file": "03_button_normal.png",
-      "name": "button_normal",
+      "name": "03_button_normal",
       "label": "普通按钮",
       "size": [
         464,
@@ -80,15 +80,15 @@
         0.5
       ],
       "rect": {
-        "x": 1048,
-        "y": 2232,
+        "x": 476,
+        "y": 284,
         "width": 464,
         "height": 112
       }
     },
     {
       "file": "04_button_selected.png",
-      "name": "button_selected",
+      "name": "04_button_selected",
       "label": "选中按钮",
       "size": [
         464,
@@ -108,15 +108,15 @@
         0.5
       ],
       "rect": {
-        "x": 1560,
-        "y": 2232,
+        "x": 4,
+        "y": 316,
         "width": 464,
         "height": 112
       }
     },
     {
       "file": "05_close.png",
-      "name": "close",
+      "name": "05_close",
       "label": "关闭按钮底板",
       "size": [
         48,
@@ -136,15 +136,15 @@
         0.5
       ],
       "rect": {
-        "x": 232,
-        "y": 1912,
+        "x": 332,
+        "y": 644,
         "width": 48,
         "height": 48
       }
     },
     {
       "file": "06_slider_panel.png",
-      "name": "slider_panel",
+      "name": "06_slider_panel",
       "label": "滑条容器空底板",
       "size": [
         464,
@@ -164,15 +164,15 @@
         0.5
       ],
       "rect": {
-        "x": 536,
-        "y": 1896,
+        "x": 4,
+        "y": 556,
         "width": 464,
         "height": 80
       }
     },
     {
       "file": "07_slider_track.png",
-      "name": "slider_track",
+      "name": "07_slider_track",
       "label": "滑条独立底轨",
       "size": [
         384,
@@ -192,15 +192,15 @@
         0.5
       ],
       "rect": {
-        "x": 1088,
-        "y": 1928,
+        "x": 4,
+        "y": 788,
         "width": 384,
         "height": 16
       }
     },
     {
       "file": "08_slider_fill.png",
-      "name": "slider_fill",
+      "name": "08_slider_fill",
       "label": "无边框纯色填充",
       "size": [
         16,
@@ -220,15 +220,15 @@
         0.5
       ],
       "rect": {
-        "x": 1784,
-        "y": 1932,
+        "x": 372,
+        "y": 812,
         "width": 16,
         "height": 8
       }
     },
     {
       "file": "09_slider_handle_square.png",
-      "name": "slider_handle_square",
+      "name": "09_slider_handle_square",
       "label": "方形 handle",
       "size": [
         32,
@@ -248,15 +248,15 @@
         0.5
       ],
       "rect": {
-        "x": 240,
-        "y": 1568,
+        "x": 76,
+        "y": 868,
         "width": 32,
         "height": 32
       }
     },
     {
       "file": "10_slider_handle_round.png",
-      "name": "slider_handle_round",
+      "name": "10_slider_handle_round",
       "label": "圆形 handle",
       "size": [
         32,
@@ -276,15 +276,15 @@
         0.5
       ],
       "rect": {
-        "x": 752,
-        "y": 1568,
+        "x": 116,
+        "y": 868,
         "width": 32,
         "height": 32
       }
     },
     {
       "file": "11_scrollbar_track_vertical.png",
-      "name": "scrollbar_track_vertical",
+      "name": "11_scrollbar_track_vertical",
       "label": "竖滚动条底轨",
       "size": [
         24,
@@ -304,15 +304,15 @@
         0.5
       ],
       "rect": {
-        "x": 1268,
-        "y": 1456,
+        "x": 396,
+        "y": 644,
         "width": 24,
         "height": 256
       }
     },
     {
       "file": "12_scrollbar_handle_vertical.png",
-      "name": "scrollbar_handle_vertical",
+      "name": "12_scrollbar_handle_vertical",
       "label": "竖滚动条 handle",
       "size": [
         24,
@@ -332,15 +332,15 @@
         0.5
       ],
       "rect": {
-        "x": 1780,
-        "y": 1552,
+        "x": 4,
+        "y": 940,
         "width": 24,
         "height": 64
       }
     },
     {
       "file": "13_checkbox_off.png",
-      "name": "checkbox_off",
+      "name": "13_checkbox_off",
       "label": "勾选框底板",
       "size": [
         48,
@@ -360,15 +360,15 @@
         0.5
       ],
       "rect": {
-        "x": 232,
-        "y": 1208,
+        "x": 332,
+        "y": 700,
         "width": 48,
         "height": 48
       }
     },
     {
       "file": "14_checkbox_on.png",
-      "name": "checkbox_on",
+      "name": "14_checkbox_on",
       "label": "独立勾选标记",
       "size": [
         48,
@@ -388,15 +388,15 @@
         0.5
       ],
       "rect": {
-        "x": 744,
-        "y": 1208,
+        "x": 948,
+        "y": 60,
         "width": 48,
         "height": 48
       }
     },
     {
       "file": "15_switch_track.png",
-      "name": "switch_track",
+      "name": "15_switch_track",
       "label": "开关独立底板",
       "size": [
         96,
@@ -416,15 +416,15 @@
         0.5
       ],
       "rect": {
-        "x": 1232,
-        "y": 1208,
+        "x": 268,
+        "y": 812,
         "width": 96,
         "height": 48
       }
     },
     {
       "file": "16_switch_handle.png",
-      "name": "switch_handle",
+      "name": "16_switch_handle",
       "label": "开关独立滑块",
       "size": [
         40,
@@ -444,15 +444,15 @@
         0.5
       ],
       "rect": {
-        "x": 1772,
-        "y": 1212,
+        "x": 428,
+        "y": 644,
         "width": 40,
         "height": 40
       }
     },
     {
       "file": "17_dropdown_field.png",
-      "name": "dropdown_field",
+      "name": "17_dropdown_field",
       "label": "下拉框底板",
       "size": [
         320,
@@ -472,15 +472,15 @@
         0.5
       ],
       "rect": {
-        "x": 96,
-        "y": 848,
+        "x": 4,
+        "y": 644,
         "width": 320,
         "height": 64
       }
     },
     {
       "file": "18_dropdown_arrow.png",
-      "name": "dropdown_arrow",
+      "name": "18_dropdown_arrow",
       "label": "下拉箭头",
       "size": [
         24,
@@ -500,15 +500,15 @@
         0.5
       ],
       "rect": {
-        "x": 756,
-        "y": 868,
+        "x": 332,
+        "y": 756,
         "width": 24,
         "height": 24
       }
     },
     {
       "file": "19_small_button.png",
-      "name": "small_button",
+      "name": "19_small_button",
       "label": "小按钮底板",
       "size": [
         48,
@@ -528,15 +528,15 @@
         0.5
       ],
       "rect": {
-        "x": 1256,
-        "y": 856,
+        "x": 948,
+        "y": 116,
         "width": 48,
         "height": 48
       }
     },
     {
       "file": "20_tab.png",
-      "name": "tab",
+      "name": "20_tab",
       "label": "页签底板",
       "size": [
         160,
@@ -556,15 +556,15 @@
         0.5
       ],
       "rect": {
-        "x": 1712,
-        "y": 856,
+        "x": 852,
+        "y": 4,
         "width": 160,
         "height": 48
       }
     },
     {
       "file": "21_tooltip.png",
-      "name": "tooltip",
+      "name": "21_tooltip",
       "label": "提示框独立底板",
       "size": [
         320,
@@ -584,15 +584,15 @@
         0.5
       ],
       "rect": {
-        "x": 96,
-        "y": 448,
+        "x": 476,
+        "y": 524,
         "width": 320,
         "height": 160
       }
     },
     {
       "file": "22_input_field.png",
-      "name": "input_field",
+      "name": "22_input_field",
       "label": "输入框底板",
       "size": [
         320,
@@ -612,15 +612,15 @@
         0.5
       ],
       "rect": {
-        "x": 608,
-        "y": 496,
+        "x": 4,
+        "y": 716,
         "width": 320,
         "height": 64
       }
     },
     {
       "file": "23_scrollbar_track_horizontal.png",
-      "name": "scrollbar_track_horizontal",
+      "name": "23_scrollbar_track_horizontal",
       "label": "横滚动条底轨",
       "size": [
         256,
@@ -640,15 +640,15 @@
         0.5
       ],
       "rect": {
-        "x": 1152,
-        "y": 516,
+        "x": 4,
+        "y": 908,
         "width": 256,
         "height": 24
       }
     },
     {
       "file": "24_scrollbar_handle_horizontal.png",
-      "name": "scrollbar_handle_horizontal",
+      "name": "24_scrollbar_handle_horizontal",
       "label": "横滚动条 handle",
       "size": [
         64,
@@ -668,15 +668,15 @@
         0.5
       ],
       "rect": {
-        "x": 1760,
-        "y": 516,
+        "x": 4,
+        "y": 868,
         "width": 64,
         "height": 24
       }
     },
     {
       "file": "25_button_pressed.png",
-      "name": "button_pressed",
+      "name": "25_button_pressed",
       "label": "按下按钮",
       "size": [
         464,
@@ -696,15 +696,15 @@
         0.5
       ],
       "rect": {
-        "x": 24,
-        "y": 120,
+        "x": 476,
+        "y": 404,
         "width": 464,
         "height": 112
       }
     },
     {
       "file": "26_button_disabled.png",
-      "name": "button_disabled",
+      "name": "26_button_disabled",
       "label": "禁用按钮",
       "size": [
         464,
@@ -724,15 +724,15 @@
         0.5
       ],
       "rect": {
-        "x": 536,
-        "y": 120,
+        "x": 4,
+        "y": 436,
         "width": 464,
         "height": 112
       }
     },
     {
       "file": "27_close_icon.png",
-      "name": "close_icon",
+      "name": "27_close_icon",
       "label": "独立关闭图标",
       "size": [
         48,
@@ -752,15 +752,15 @@
         0.5
       ],
       "rect": {
-        "x": 1256,
-        "y": 152,
+        "x": 948,
+        "y": 172,
         "width": 48,
         "height": 48
       }
     },
     {
       "file": "28_tooltip_pointer.png",
-      "name": "tooltip_pointer",
+      "name": "28_tooltip_pointer",
       "label": "独立提示箭头",
       "size": [
         24,
@@ -780,11 +780,17 @@
         0.5
       ],
       "rect": {
-        "x": 1780,
-        "y": 170,
+        "x": 364,
+        "y": 756,
         "width": 24,
         "height": 12
       }
     }
-  ]
+  ],
+  "atlas_size": [
+    1024,
+    1024
+  ],
+  "padding": 4,
+  "alignment": 4
 }
