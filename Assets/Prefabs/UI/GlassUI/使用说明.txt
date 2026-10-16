@@ -1,0 +1,31 @@
+GlassUI 通用界面预制体
+
+使用方式
+将预制体拖入现有 Canvas；不附带 Canvas、EventSystem 或场景管理器。
+全部文字使用 Fangzheng Pixel16 SDF，保留主字体材质的当前参数。
+模板不包含业务事件；使用方在 Inspector 或项目脚本中绑定回调。
+现有场景保留原对象和事件绑定，本轮没有强制转换为模板实例。
+
+按钮
+GlassUI_Button：普通按钮，240 × 64；Label 修改文字，SpriteSwap 已配置四态。
+GlassUI_SmallButton：小按钮，64 × 64；使用颜色过渡，Label 可替换为业务图标。
+GlassUI_CloseButton：关闭按钮，48 × 48；Icon 独立叠加且不接收射线。
+只有关闭图标模板，不自动执行关闭面板逻辑，请绑定所属界面的关闭方法。
+
+面板
+GlassUI_WindowPanel：640 × 400 的通用窗口。
+GlassUI_DialogPanel：480 × 280 的通用对话框。
+Title 为标题；Content 为业务内容挂点；右上角关闭按钮为嵌套预制体。
+面板底板启用九宫格，调整根节点宽高即可；不要直接缩放 Transform。
+模板不含全屏遮罩和模态输入逻辑，模态窗口请由业务层提供遮罩并管理焦点。
+
+控件
+GlassUI_Slider：取值 0～1，初值 0.5；Background、FillArea、HandleSlideArea 分层。
+填充与滑块由 Slider 引用驱动，左右内缩 8；Handle 纵向拉伸，sizeDelta.y 保持 0。
+GlassUI_Toggle：初始未勾选；独立 Background、Checkmark 与 Label，不绑定 ToggleGroup。
+Toggle 的文字和底板均可点击；文字采用白色，适配深色游戏背景，可按界面配色调整。
+
+维护
+新增文案先更新 Assets/Font/GameCharacters.txt 并验证字库覆盖。
+专用旧图标暂放 Assets/Textures/UI/GlassUI/Icons，等待后续替换。
+预制体只依赖统一字体、GlassUI 图集和 Unity UI/TMP，不依赖 SimplePixelUI。
